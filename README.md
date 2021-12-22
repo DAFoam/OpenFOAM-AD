@@ -8,7 +8,7 @@ This repository contains the OpenFOAM source codes differentiated by automatic d
 Download
 --------
 
-We only differentiate certain versions of OpenFOAM releases. So check the branches on this repo; **the main branch does not contain any AD codes**.
+We only differentiate certain versions of OpenFOAM releases. So check the branches (e.g., openfoam-v1812-ad) on this repo; **the main branch does not contain any AD codes**.
 
 Installation
 ------------
@@ -27,6 +27,6 @@ OpenFOAM-AD uses the AD tools [CoDiPack](https://github.com/scicompkl/codipack) 
 License
 -------
 
-Copyright 2020 iDesign Lab, Aerospace Engineering Department, Iowa State University.
+Copyright 2021 iDesign Lab, Aerospace Engineering Department, Iowa State University.
 
 Distributed using the GNU General Public License (GPL), version 3; see the COPYING file for details.
