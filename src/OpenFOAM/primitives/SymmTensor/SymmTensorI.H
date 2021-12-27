@@ -32,13 +32,14 @@ template<class Cmpt>
 inline Foam::SymmTensor<Cmpt>::SymmTensor()
 {}
 
-
+// CoDiPack4OpenFOAM TODO commented out for now
+/*
 template<class Cmpt>
 inline Foam::SymmTensor<Cmpt>::SymmTensor(const Foam::zero)
 :
     SymmTensor::vsType(Zero)
 {}
-
+*/
 
 template<class Cmpt>
 template<class Cmpt2>
@@ -297,7 +298,7 @@ inline Cmpt tr(const SymmTensor<Cmpt>& st)
 template<class Cmpt>
 inline SphericalTensor<Cmpt> sph(const SymmTensor<Cmpt>& st)
 {
-    return (1.0/3.0)*tr(st);
+    return SphericalTensor<Cmpt>((1.0/3.0)*tr(st));
 }
 
 

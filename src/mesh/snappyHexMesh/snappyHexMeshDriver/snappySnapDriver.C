@@ -674,7 +674,7 @@ Foam::tmp<Foam::scalarField> Foam::snappySnapDriver::edgePatchDist
 
     forAll(allEdgeInfo, edgei)
     {
-        edgeDist[edgei] = Foam::sqrt(allEdgeInfo[edgei].distSqr());
+        edgeDist[edgei] = sqrt(allEdgeInfo[edgei].distSqr());
     }
 
     return tedgeDist;
@@ -801,7 +801,7 @@ Foam::scalarField Foam::snappySnapDriver::calcSnapDistance
         pp.meshPoints(),
         maxEdgeLen,
         maxEqOp<scalar>(),  // combine op
-        -GREAT              // null value
+        scalar(-GREAT)              // null value
     );
 
     return scalarField(snapParams.snapTol()*maxEdgeLen);
@@ -2772,7 +2772,7 @@ void Foam::snappySnapDriver::doSnap
             {
                 detectNearSurfaces
                 (
-                    Foam::cos(degToRad(planarAngle)),// planar cos for gaps
+                    cos(degToRad(planarAngle)),// planar cos for gaps
                     pp,
                     nearestPoint,   // surfacepoint from nearest test
                     nearestNormal,  // surfacenormal from nearest test

@@ -31,6 +31,11 @@ Description
 
 #include <mpi.h>
 
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 bool Foam::UOPstream::write
@@ -39,16 +44,26 @@ bool Foam::UOPstream::write
     const int toProcNo,
     const char* buf,
     const std::streamsize bufSize,
+    const word callerInfo,
+    const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )
 {
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (debug)
     {
         Pout<< "UOPstream::write : starting write to:" << toProcNo
             << " tag:" << tag
             << " comm:" << communicator << " size:" << label(bufSize)
             << " commsType:" << UPstream::commsTypeNames[commsType]
+            << Foam::endl;
+
+        Pout<< " caller " << callerInfo
+            << " typeActive: " << typeActive
+            << " typeid: " << typeInfo.name()
             << Foam::endl;
     }
     if (UPstream::warnComm != -1 && communicator != UPstream::warnComm)
@@ -62,23 +77,36 @@ bool Foam::UOPstream::write
         error::printStack(Pout);
     }
 
-
     PstreamGlobals::checkCommunicator(communicator, toProcNo);
 
-
     bool transferFailed = true;
-
+    // not checking the type
     if (commsType == commsTypes::blocking)
     {
-        transferFailed = MPI_Bsend
-        (
-            const_cast<char*>(buf),
-            bufSize,
-            MPI_BYTE,
-            toProcNo,   //procID(toProcNo),
-            tag,
-            PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
-        );
+        if(typeActive) 
+        {
+            transferFailed = AMPI_Bsend
+            (
+                reinterpret_cast<scalar*>(const_cast<char*>(buf)),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
+                toProcNo,   //procID(toProcNo),
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
+            );
+        } 
+        else
+        {
+            transferFailed = AMPI_Bsend
+            (
+                reinterpret_cast<unsigned char*>(const_cast<char*>(buf)),
+                bufSize,
+                AMPI_BYTE,
+                toProcNo,   //procID(toProcNo),
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
+            );
+        }
 
         if (debug)
         {
@@ -90,15 +118,30 @@ bool Foam::UOPstream::write
     }
     else if (commsType == commsTypes::scheduled)
     {
-        transferFailed = MPI_Send
-        (
-            const_cast<char*>(buf),
-            bufSize,
-            MPI_BYTE,
-            toProcNo,   //procID(toProcNo),
-            tag,
-            PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
-        );
+        if(typeActive)
+        {
+            transferFailed = AMPI_Send
+            (
+                reinterpret_cast<scalar*>(const_cast<char*>(buf)),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE, // MPI_BYTE,
+                toProcNo,   //procID(toProcNo),
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
+            );
+        }
+        else
+        {
+            transferFailed = AMPI_Send
+            (
+                reinterpret_cast<unsigned char*>(const_cast<char*>(buf)),
+                bufSize,
+                AMPI_BYTE, // AMPI_Type_No_Check, // MPI_BYTE,
+                toProcNo,   //procID(toProcNo),
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator] //MPI_COMM_WORLD
+            );
+        }
 
         if (debug)
         {
@@ -110,18 +153,33 @@ bool Foam::UOPstream::write
     }
     else if (commsType == commsTypes::nonBlocking)
     {
-        MPI_Request request;
-
-        transferFailed = MPI_Isend
-        (
-            const_cast<char*>(buf),
-            bufSize,
-            MPI_BYTE,
-            toProcNo,   //procID(toProcNo),
-            tag,
-            PstreamGlobals::MPICommunicators_[communicator],//MPI_COMM_WORLD,
-            &request
-        );
+        AMPI_Request request;
+        if(typeActive)
+        {
+            transferFailed = AMPI_Isend
+            (
+                reinterpret_cast<scalar*>(const_cast<char*>(buf)),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE, // MPI_BYTE,
+                toProcNo,   //procID(toProcNo),
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],//MPI_COMM_WORLD,
+                &request
+            );
+        }
+        else
+        {
+            transferFailed = AMPI_Isend
+            (
+                reinterpret_cast<unsigned char*>(const_cast<char*>(buf)),
+                bufSize,
+                AMPI_BYTE,
+                toProcNo,   //procID(toProcNo),
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],//MPI_COMM_WORLD,
+                &request
+            );
+        }
 
         if (debug)
         {
@@ -144,6 +202,5 @@ bool Foam::UOPstream::write
 
     return !transferFailed;
 }
-
 
 // ************************************************************************* //

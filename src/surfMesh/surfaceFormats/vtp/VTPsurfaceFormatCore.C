@@ -90,7 +90,8 @@ void Foam::fileFormats::VTPsurfaceFormatCore::writeHeader
 
     format.writeSize(payLoad);
 
-    vtk::writeList(format, pts);
+    // CoDiPack4OpenFOAM TODO need to fix this!
+    //vtk::writeList(format, pts);
     format.flush();
 
     format

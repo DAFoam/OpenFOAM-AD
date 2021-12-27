@@ -392,7 +392,7 @@ void Foam::mapDistributeBase::distribute
 
         if (!contiguous<T>())
         {
-            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, tag);
+            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::mapDistributeBase::distribute", false, tag);
 
             // Stream data into buffer
             for (label domain = 0; domain < Pstream::nProcs(); domain++)
@@ -512,6 +512,8 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<const char*>(subField.begin()),
                         subField.byteSize(),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(subField.begin()),
                         tag
                     );
                 }
@@ -534,6 +536,8 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<char*>(recvFields[domain].begin()),
                         recvFields[domain].byteSize(),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(recvFields[domain].begin()),
                         tag
                     );
                 }
@@ -890,7 +894,7 @@ void Foam::mapDistributeBase::distribute
 
         if (!contiguous<T>())
         {
-            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, tag);
+            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::mapDistributeBase::distribute", false, tag);
 
             // Stream data into buffer
             for (label domain = 0; domain < Pstream::nProcs(); domain++)
@@ -1013,6 +1017,8 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<const char*>(subField.begin()),
                         subField.size()*sizeof(T),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(subField.begin()),
                         tag
                     );
                 }
@@ -1035,6 +1041,8 @@ void Foam::mapDistributeBase::distribute
                         domain,
                         reinterpret_cast<char*>(recvFields[domain].begin()),
                         recvFields[domain].size()*sizeof(T),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(recvFields[domain].begin()),
                         tag
                     );
                 }

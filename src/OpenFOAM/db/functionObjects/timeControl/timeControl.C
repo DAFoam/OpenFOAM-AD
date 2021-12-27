@@ -178,10 +178,12 @@ bool Foam::timeControl::execute()
             label executionIndex = label
             (
                 (
+                (
                     (time_.value() - time_.startTime().value())
                   + 0.5*time_.deltaTValue()
                 )
                /interval_
+               ).getValue()
             );
 
             if (executionIndex > executionIndex_)
@@ -196,8 +198,10 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                returnReduce(time_.elapsedCpuTime(), maxOp<double>())
+                (
+                returnReduce(scalar(time_.elapsedCpuTime()), maxOp<scalar>())
                /interval_
+                ).getValue()
             );
             if (executionIndex > executionIndex_)
             {
@@ -211,8 +215,10 @@ bool Foam::timeControl::execute()
         {
             label executionIndex = label
             (
-                returnReduce(time_.elapsedClockTime(), maxOp<double>())
+                (
+                returnReduce(scalar(time_.elapsedClockTime()), maxOp<scalar>())
                /interval_
+                ).getValue()
             );
             if (executionIndex > executionIndex_)
             {

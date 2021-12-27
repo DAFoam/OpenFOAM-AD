@@ -36,6 +36,8 @@ bool Foam::UOPstream::write
     const int toProcNo,
     const char* buf,
     const std::streamsize bufSize,
+    const word callerInfo,
+    const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )

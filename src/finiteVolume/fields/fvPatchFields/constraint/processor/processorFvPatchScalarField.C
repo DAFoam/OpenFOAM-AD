@@ -69,6 +69,8 @@ void processorFvPatchField<scalar>::initInterfaceMatrixUpdate
             procPatch_.neighbProcNo(),
             reinterpret_cast<char*>(scalarReceiveBuf_.begin()),
             scalarReceiveBuf_.byteSize(),
+            "processorFvPatchField<scalar>::initInterfaceMatrixUpdate",
+            typeid(scalarReceiveBuf_.begin()),
             procPatch_.tag(),
             procPatch_.comm()
         );
@@ -80,6 +82,8 @@ void processorFvPatchField<scalar>::initInterfaceMatrixUpdate
             procPatch_.neighbProcNo(),
             reinterpret_cast<const char*>(scalarSendBuf_.begin()),
             scalarSendBuf_.byteSize(),
+            "processorFvPatchField<scalar>::initInterfaceMatrixUpdate",
+            typeid(scalarSendBuf_.begin()),
             procPatch_.tag(),
             procPatch_.comm()
         );

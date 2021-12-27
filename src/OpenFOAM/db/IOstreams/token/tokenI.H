@@ -127,8 +127,7 @@ inline void Foam::token::clear()
 
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
-inline constexpr Foam::token::token() noexcept
+inline Foam::token::token() noexcept
 :
     data_(), // bit-wise zero for union content
     type_(tokenType::UNDEFINED),

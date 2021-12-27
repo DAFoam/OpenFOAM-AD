@@ -83,7 +83,8 @@ public:
         inline SymmTensor();
 
         //- Construct initialized to zero
-        inline SymmTensor(const Foam::zero);
+        // CoDiPack4OpenFOAM TODO commented out for now
+        //inline SymmTensor(const Foam::zero);
 
         //- Construct given VectorSpace of the same rank
         template<class Cmpt2>

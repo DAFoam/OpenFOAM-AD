@@ -1,6 +1,5 @@
 turbulenceModel.C
 RAS/v2f/v2fBase.C
-
 LESdelta = LES/LESdeltas
 
 $(LESdelta)/LESdelta/LESdelta.C
@@ -20,10 +19,8 @@ $(LESfilters)/simpleFilter/simpleFilter.C
 $(LESfilters)/laplaceFilter/laplaceFilter.C
 $(LESfilters)/anisotropicFilter/anisotropicFilter.C
 
-
 /* Base class for DES models */
 DES/DESModel/DESModelBase.C
-
 
 /* Turbulence BCs */
 derivedFvPatchFields/fixedShearStress/fixedShearStressFvPatchVectorField.C
@@ -70,4 +67,4 @@ $(RASBCs)/turbulentMixingLengthDissipationRateInlet/turbulentMixingLengthDissipa
 $(RASBCs)/turbulentMixingLengthFrequencyInlet/turbulentMixingLengthFrequencyInletFvPatchScalarField.C
 
 
-LIB = $(FOAM_LIBBIN)/libturbulenceModels
+LIB = $(FOAM_LIBBIN)/libturbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

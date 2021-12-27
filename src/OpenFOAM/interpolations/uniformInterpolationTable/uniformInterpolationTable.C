@@ -102,7 +102,7 @@ Foam::uniformInterpolationTable<Type>::uniformInterpolationTable
     if (initialiseOnly)
     {
         const scalar xMax = dict.get<scalar>("xMax");
-        const label nIntervals = static_cast<label>(xMax - x0_)/dx_ + 1;
+        const label nIntervals = static_cast<label>((xMax - x0_).getValue())/dx_ + 1;
         this->setSize(nIntervals);
     }
     else
@@ -166,7 +166,7 @@ Type Foam::uniformInterpolationTable<Type>::interpolate(scalar x) const
         }
     }
 
-    const label i = static_cast<label>((x - x0_)/dx_);
+    const label i = static_cast<label>(((x - x0_)/dx_).getValue());
 
     const scalar xLo = x0_ + i*dx_;
 
@@ -194,7 +194,7 @@ Type Foam::uniformInterpolationTable<Type>::interpolateLog10
     {
         if (x > 0)
         {
-            x = ::log10(x);
+	    x = log(x)/log(scalar(10.0));
         }
         else if (bound_ && (x <= 0))
         {

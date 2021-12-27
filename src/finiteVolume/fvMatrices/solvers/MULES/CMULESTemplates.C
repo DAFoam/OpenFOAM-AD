@@ -319,8 +319,8 @@ void Foam::MULES::limiterCorr
 
     for (int j=0; j<nLimiterIter; j++)
     {
-        sumlPhip = 0;
-        mSumlPhim = 0;
+        sumlPhip = scalar(0.0);
+        mSumlPhim = scalar(0.0);
 
         forAll(lambdaIf, facei)
         {

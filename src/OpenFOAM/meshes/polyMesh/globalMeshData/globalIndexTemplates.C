@@ -64,6 +64,8 @@ void Foam::globalIndex::gather
                         procIDs[i],
                         reinterpret_cast<char*>(procSlot.begin()),
                         procSlot.byteSize(),
+                        "Foam::globalIndex::gather",
+                        typeid(procSlot.begin()),
                         tag,
                         comm
                     );
@@ -106,6 +108,8 @@ void Foam::globalIndex::gather
                     procIDs[i],
                     reinterpret_cast<char*>(procSlot.begin()),
                     procSlot.byteSize(),
+                    "Foam::globalIndex::gather",
+                    typeid(procSlot.begin()),
                     tag,
                     comm
                 );
@@ -131,6 +135,8 @@ void Foam::globalIndex::gather
                     procIDs[0],
                     reinterpret_cast<const char*>(fld.begin()),
                     fld.byteSize(),
+                    "Foam::globalIndex::gather",
+                    typeid(fld.begin()),
                     tag,
                     comm
                 );
@@ -168,6 +174,8 @@ void Foam::globalIndex::gather
                 procIDs[0],
                 reinterpret_cast<const char*>(fld.begin()),
                 fld.byteSize(),
+                "Foam::globalIndex::gather",
+                typeid(fld.begin()),
                 tag,
                 comm
             );
@@ -240,6 +248,8 @@ void Foam::globalIndex::scatter
                         procIDs[i],
                         reinterpret_cast<const char*>(procSlot.begin()),
                         procSlot.byteSize(),
+                        "Foam::globalIndex::scatter",
+                        typeid(procSlot.begin()),
                         tag,
                         comm
                     );
@@ -287,6 +297,8 @@ void Foam::globalIndex::scatter
                     procIDs[i],
                     reinterpret_cast<const char*>(procSlot.begin()),
                     procSlot.byteSize(),
+                    "Foam::globalIndex::scatter",
+                    typeid(procSlot.begin()),
                     tag,
                     comm
                 );
@@ -312,6 +324,8 @@ void Foam::globalIndex::scatter
                     procIDs[0],
                     reinterpret_cast<char*>(fld.begin()),
                     fld.byteSize(),
+                    "Foam::globalIndex::scatter",
+                    typeid(fld.begin()),
                     tag,
                     comm
                 );
@@ -349,6 +363,8 @@ void Foam::globalIndex::scatter
                 procIDs[0],
                 reinterpret_cast<char*>(fld.begin()),
                 fld.byteSize(),
+                "Foam::globalIndex::scatter",
+                typeid(fld.begin()),
                 tag,
                 comm
             );

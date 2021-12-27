@@ -42,7 +42,7 @@ inline Foam::septernion::septernion(const vector& t)
 
 inline Foam::septernion::septernion(const quaternion& r)
 :
-    t_(Zero),
+    t_(vector::zero),
     r_(r)
 {}
 
@@ -125,7 +125,7 @@ inline void Foam::septernion::operator-=(const vector& t)
 
 inline void Foam::septernion::operator=(const quaternion& r)
 {
-    t_ = Zero;
+    t_ = vector::zero;
     r_ = r;
 }
 

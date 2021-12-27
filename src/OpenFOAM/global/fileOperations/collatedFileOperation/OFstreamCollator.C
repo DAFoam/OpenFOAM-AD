@@ -464,6 +464,8 @@ bool Foam::OFstreamCollator::write
                     proci,
                     reinterpret_cast<char*>(slaveData[proci].begin()),
                     slaveData[proci].byteSize(),
+                    "Foam::OFstreamCollator::write",
+                    typeid(slaveData[proci].begin()),
                     Pstream::msgType(),
                     localComm_
                 );
@@ -479,6 +481,8 @@ bool Foam::OFstreamCollator::write
                     0,
                     reinterpret_cast<const char*>(slice.begin()),
                     slice.byteSize(),
+                    "Foam::OFstreamCollator::write",
+                    typeid(slice.begin()),
                     Pstream::msgType(),
                     localComm_
                 )

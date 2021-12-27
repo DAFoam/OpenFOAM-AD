@@ -429,8 +429,7 @@ inline Foam::vector Foam::edge::unitVec(const UList<point>& pts) const
 
     const vector v = (pts[second()] - pts[first()]);
     const scalar s(Foam::mag(v));
-
-    return s < ROOTVSMALL ? Zero : v/s;
+    return s < ROOTVSMALL ? vector::zero : v/s;
 }
 
 

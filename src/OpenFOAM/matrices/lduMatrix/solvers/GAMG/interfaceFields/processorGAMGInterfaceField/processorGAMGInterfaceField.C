@@ -117,6 +117,8 @@ void Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate
             procInterface_.neighbProcNo(),
             reinterpret_cast<char*>(scalarReceiveBuf_.begin()),
             scalarReceiveBuf_.byteSize(),
+            "Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate",
+            typeid(scalarReceiveBuf_.begin()),
             procInterface_.tag(),
             comm()
         );
@@ -128,6 +130,8 @@ void Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate
             procInterface_.neighbProcNo(),
             reinterpret_cast<const char*>(scalarSendBuf_.begin()),
             scalarSendBuf_.byteSize(),
+            "Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate",
+            typeid(scalarSendBuf_.begin()),
             procInterface_.tag(),
             comm()
         );

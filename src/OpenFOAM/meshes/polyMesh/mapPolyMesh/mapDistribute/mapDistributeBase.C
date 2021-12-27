@@ -453,6 +453,8 @@ void Foam::mapDistributeBase::exchangeAddressing
     (
         wantedRemoteElements,
         subMap_,
+	"Foam::mapDistributeBase::exchangeAddressing",
+	false,
         tag,
         Pstream::worldComm  //TBD
     );
@@ -530,6 +532,8 @@ void Foam::mapDistributeBase::exchangeAddressing
     (
         wantedRemoteElements,
         subMap_,
+	"Foam::mapDistributeBase::exchangeAddressing",
+	false,
         tag,
         Pstream::worldComm      //TBD
     );
@@ -918,6 +922,8 @@ void Foam::mapDistributeBase::compact(const boolList& elemIsUsed, const int tag)
                     domain,
                     reinterpret_cast<char*>(recvFields[domain].begin()),
                     recvFields[domain].size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(recvFields[domain].begin()),
                     tag
                 );
             }
@@ -951,6 +957,8 @@ void Foam::mapDistributeBase::compact(const boolList& elemIsUsed, const int tag)
                     domain,
                     reinterpret_cast<const char*>(subField.begin()),
                     subField.size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(subField.begin()),
                     tag
                 );
             }
@@ -1085,6 +1093,8 @@ void Foam::mapDistributeBase::compact
                     domain,
                     reinterpret_cast<char*>(recvFields[domain].begin()),
                     recvFields[domain].size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(recvFields[domain].begin()),
                     tag
                 );
             }
@@ -1117,6 +1127,8 @@ void Foam::mapDistributeBase::compact
                     domain,
                     reinterpret_cast<const char*>(subField.begin()),
                     subField.size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(subField.begin()),
                     tag
                 );
             }

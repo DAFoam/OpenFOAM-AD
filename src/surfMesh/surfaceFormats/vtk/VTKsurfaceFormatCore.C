@@ -71,7 +71,8 @@ void Foam::fileFormats::VTKsurfaceFormatCore::writeHeader
 
     vtk::legacy::beginPoints(format.os(), pts.size());
 
-    vtk::writeList(format, pts);
+    // CoDiPack4OpenFOAM TODO Need to fix this!
+    //vtk::writeList(format, pts);
     format.flush();
 }
 

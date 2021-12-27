@@ -58,6 +58,7 @@ tmp<scalarField> nutUSpaldingWallFunctionFvPatchScalarField::calcNut() const
         scalar(0),
         sqr(calcUTau(magGradU))/(magGradU + ROOTVSMALL) - nuw
     );
+
 }
 
 

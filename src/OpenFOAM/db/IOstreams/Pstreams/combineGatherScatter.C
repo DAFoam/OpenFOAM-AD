@@ -69,6 +69,8 @@ void Foam::Pstream::combineGather
                     belowID,
                     reinterpret_cast<char*>(&value),
                     sizeof(T),
+                    "Foam::Pstream::combineGather",
+                    typeid(&value),
                     tag,
                     comm
                 );
@@ -120,6 +122,8 @@ void Foam::Pstream::combineGather
                     myComm.above(),
                     reinterpret_cast<const char*>(&Value),
                     sizeof(T),
+                    "Foam::Pstream::combineGather",
+                    typeid(&Value),
                     tag,
                     comm
                 );
@@ -200,6 +204,8 @@ void Foam::Pstream::combineScatter
                     myComm.above(),
                     reinterpret_cast<char*>(&Value),
                     sizeof(T),
+                    "Foam::Pstream::combineScatter",
+                    typeid(&Value),
                     tag,
                     comm
                 );
@@ -242,6 +248,8 @@ void Foam::Pstream::combineScatter
                     belowID,
                     reinterpret_cast<const char*>(&Value),
                     sizeof(T),
+                    "Foam::Pstream::combineScatter",
+                    typeid(&Value),
                     tag,
                     comm
                 );
@@ -312,6 +320,8 @@ void Foam::Pstream::listCombineGather
                     belowID,
                     reinterpret_cast<char*>(receivedValues.begin()),
                     receivedValues.byteSize(),
+                    "Foam::Pstream::listCombineGather",
+                    typeid(receivedValues.begin()),
                     tag,
                     comm
                 );
@@ -369,6 +379,8 @@ void Foam::Pstream::listCombineGather
                     myComm.above(),
                     reinterpret_cast<const char*>(Values.begin()),
                     Values.byteSize(),
+                    "Foam::Pstream::listCombineGather",
+                    typeid(Values.begin()),
                     tag,
                     comm
                 );
@@ -449,6 +461,8 @@ void Foam::Pstream::listCombineScatter
                     myComm.above(),
                     reinterpret_cast<char*>(Values.begin()),
                     Values.byteSize(),
+                    "Foam::Pstream::listCombineScatter",
+                    typeid(Values.begin()),
                     tag,
                     comm
                 );
@@ -491,6 +505,8 @@ void Foam::Pstream::listCombineScatter
                     belowID,
                     reinterpret_cast<const char*>(Values.begin()),
                     Values.byteSize(),
+                    "Foam::Pstream::listCombineScatter",
+                    typeid(Values.begin()),
                     tag,
                     comm
                 );

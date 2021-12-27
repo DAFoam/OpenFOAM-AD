@@ -64,7 +64,7 @@ Type Foam::Function1<Type>::value(const scalar x) const
 {
     NotImplemented;
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 template<class Type>
@@ -83,7 +83,7 @@ Type Foam::Function1<Type>::integrate(const scalar x1, const scalar x2) const
 {
     NotImplemented;
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 

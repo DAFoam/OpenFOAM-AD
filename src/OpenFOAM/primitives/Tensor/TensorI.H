@@ -31,13 +31,14 @@ template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor()
 {}
 
-
+// CoDiPack4OpenFOAM TODO commented out for now
+/*
 template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor(const Foam::zero)
 :
     Tensor::msType(Zero)
 {}
-
+*/
 
 template<class Cmpt>
 template<class Cmpt2>
@@ -669,7 +670,8 @@ inline Cmpt tr(const Tensor<Cmpt>& t)
 template<class Cmpt>
 inline SphericalTensor<Cmpt> sph(const Tensor<Cmpt>& t)
 {
-    return (1.0/3.0)*tr(t);
+    // CodiPack4OpenFOAM
+    return SphericalTensor<Cmpt>(1.0/3.0)*tr(t);
 }
 
 

@@ -32,6 +32,11 @@ Description
 
 #include <mpi.h>
 
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
 // * * * * * * * * * * * * * * * * Constructor * * * * * * * * * * * * * * * //
 
 Foam::UIPstream::UIPstream
@@ -66,7 +71,7 @@ Foam::UIPstream::UIPstream
     }
     else
     {
-        MPI_Status status;
+        AMPI_Status status;
 
         label wantedSize = externalBuf_.capacity();
 
@@ -83,14 +88,14 @@ Foam::UIPstream::UIPstream
         // and set it
         if (!wantedSize)
         {
-            MPI_Probe
+            AMPI_Probe
             (
                 fromProcNo_,
                 tag_,
                 PstreamGlobals::MPICommunicators_[comm_],
                 &status
             );
-            MPI_Get_count(&status, MPI_BYTE, &messageSize_);
+            AMPI_Get_count(&status, AMPI_BYTE, &messageSize_);
 
             externalBuf_.setCapacity(messageSize_);
             wantedSize = messageSize_;
@@ -108,6 +113,8 @@ Foam::UIPstream::UIPstream
             fromProcNo_,
             externalBuf_.begin(),
             wantedSize,
+            "UIPstream::UIPstream",
+            typeid(externalBuf_.begin()),
             tag_,
             comm_
         );
@@ -135,6 +142,15 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
     clearAtEnd_(true),
     messageSize_(0)
 {
+
+    if (debug)
+    {
+        Pout<< "UIPstream::UIPstream :" << Foam::endl;
+        Pout<< " caller " << buffers.getCallerInfo() 
+            << " typeActive: " << buffers.getTypeActive() 
+            << Foam::endl;
+    }
+
     if
     (
         commsType() != UPstream::commsTypes::scheduled
@@ -167,7 +183,7 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
     }
     else
     {
-        MPI_Status status;
+        AMPI_Status status;
 
         label wantedSize = externalBuf_.capacity();
 
@@ -184,14 +200,14 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
         // and set it
         if (!wantedSize)
         {
-            MPI_Probe
+            AMPI_Probe
             (
                 fromProcNo_,
                 tag_,
                 PstreamGlobals::MPICommunicators_[comm_],
                 &status
             );
-            MPI_Get_count(&status, MPI_BYTE, &messageSize_);
+            AMPI_Get_count(&status, AMPI_BYTE, &messageSize_);
 
             externalBuf_.setCapacity(messageSize_);
             wantedSize = messageSize_;
@@ -203,15 +219,36 @@ Foam::UIPstream::UIPstream(const int fromProcNo, PstreamBuffers& buffers)
             }
         }
 
-        messageSize_ = UIPstream::read
-        (
-            commsType(),
-            fromProcNo_,
-            externalBuf_.begin(),
-            wantedSize,
-            tag_,
-            comm_
-        );
+        if (buffers.getTypeActive())
+        {
+            scalar dummyActiveType = 1.0;
+            messageSize_ = UIPstream::read
+            (
+                commsType(),
+                fromProcNo_,
+                externalBuf_.begin(),
+                wantedSize,
+                buffers.getCallerInfo(),
+                typeid(&dummyActiveType),
+                tag_,
+                comm_
+            );
+        }
+        else
+        {
+            label dummyPassiveType = 0;
+            messageSize_ = UIPstream::read
+            (
+                commsType(),
+                fromProcNo_,
+                externalBuf_.begin(),
+                wantedSize,
+                buffers.getCallerInfo(),
+                typeid(&dummyPassiveType),
+                tag_,
+                comm_
+            );
+        }
 
         // Set addressed size. Leave actual allocated memory intact.
         externalBuf_.setSize(messageSize_);
@@ -232,16 +269,26 @@ Foam::label Foam::UIPstream::read
     const int fromProcNo,
     char* buf,
     const std::streamsize bufSize,
+    const word callerInfo,
+    const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )
 {
+
+    bool typeActive = Foam::PstreamGlobals::isTypeActive(typeInfo)
+                   && codi::RealReverse::getGlobalTape().isActive();
+
     if (debug)
     {
         Pout<< "UIPstream::read : starting read from:" << fromProcNo
             << " tag:" << tag << " comm:" << communicator
             << " wanted size:" << label(bufSize)
             << " commsType:" << UPstream::commsTypeNames[commsType]
+            << Foam::endl;
+        Pout<< " caller " << callerInfo 
+            << " typeActive: " << typeActive 
+            << " typeid: " << typeInfo.name()
             << Foam::endl;
     }
     if (UPstream::warnComm != -1 && communicator != UPstream::warnComm)
@@ -257,21 +304,35 @@ Foam::label Foam::UIPstream::read
 
     if (commsType == commsTypes::blocking || commsType == commsTypes::scheduled)
     {
-        MPI_Status status;
-
-        if
-        (
-            MPI_Recv
+        AMPI_Status status;
+        label Err = 0;
+        if(typeActive)
+        {
+            Err = AMPI_Recv
             (
-                buf,
-                bufSize,
-                MPI_BYTE,
+                reinterpret_cast<scalar*>(buf),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
                 fromProcNo,
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
                 &status
-            )
-        )
+            );
+        }
+        else
+        {
+            Err = AMPI_Recv
+            (
+                reinterpret_cast<unsigned char*>(buf),
+                bufSize,
+                AMPI_BYTE,
+                fromProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],
+                &status
+            );
+        }
+        if(Err)
         {
             FatalErrorInFunction
                 << "MPI_Recv cannot receive incoming message"
@@ -284,7 +345,7 @@ Foam::label Foam::UIPstream::read
         // Check size of message read
 
         int messageSize;
-        MPI_Get_count(&status, MPI_BYTE, &messageSize);
+        AMPI_Get_count(&status, AMPI_BYTE, &messageSize);
 
         if (debug)
         {
@@ -307,21 +368,36 @@ Foam::label Foam::UIPstream::read
     }
     else if (commsType == commsTypes::nonBlocking)
     {
-        MPI_Request request;
-
-        if
-        (
-            MPI_Irecv
+        AMPI_Request request;
+        label Err = 0;
+        if (typeActive)
+        {
+            Err = AMPI_Irecv
             (
-                buf,
-                bufSize,
-                MPI_BYTE,
+                reinterpret_cast<scalar*>(buf),
+                bufSize/sizeof(scalar),
+                PstreamGlobals::mpiTypes_->MPI_TYPE,
                 fromProcNo,
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
                 &request
-            )
-        )
+            );
+        }
+        else
+        {
+            Err = AMPI_Irecv
+            (
+                reinterpret_cast<unsigned char*>(buf),
+                bufSize,
+                AMPI_BYTE,
+                fromProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],
+                &request
+            );
+        }
+
+        if (Err)
         {
             FatalErrorInFunction
                 << "MPI_Recv cannot start non-blocking receive"
@@ -354,6 +430,5 @@ Foam::label Foam::UIPstream::read
         return 0;
     }
 }
-
 
 // ************************************************************************* //

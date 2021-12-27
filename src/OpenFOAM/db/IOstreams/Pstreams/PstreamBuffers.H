@@ -94,6 +94,10 @@ class PstreamBuffers
         //- Communications type of this stream
         const UPstream::commsTypes commsType_;
 
+        const word callerInfo_;
+
+        const bool typeActive_;
+
         const int tag_;
 
         const label comm_;
@@ -113,6 +117,8 @@ class PstreamBuffers
 
         bool finishedSendsCalled_;
 
+        List<label> oneToOneList_;
+
 public:
 
     // Static data
@@ -127,6 +133,8 @@ public:
         PstreamBuffers
         (
             const UPstream::commsTypes commsType,
+            const word callerInfo,
+            const bool typeActive,
             const int tag = UPstream::msgType(),
             const label comm = UPstream::worldComm,
             IOstream::streamFormat format=IOstream::BINARY,
@@ -147,6 +155,16 @@ public:
         label comm() const
         {
             return comm_;
+        }
+
+        const bool& getTypeActive() const
+        {
+            return typeActive_;
+        }
+
+        word getCallerInfo() const
+        {
+            return callerInfo_;
         }
 
         //- Mark all sends as having been done. This will start receives

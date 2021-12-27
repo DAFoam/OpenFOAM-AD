@@ -255,7 +255,7 @@ Foam::Map<Foam::label> Foam::meshRefinement::findEdgeConnectedProblemCells
 
         if (angle >= 0)
         {
-            if (mag(n & nearestNormal[i]) < Foam::sin(angle))
+            if (mag(n & nearestNormal[i]) < sin(angle))
             {
                 perpFaces.insert(facei);
                 candidateCells.insert
@@ -293,7 +293,7 @@ bool Foam::meshRefinement::isCollapsedFace
 {
     // Severe nonorthogonality threshold
     const scalar severeNonorthogonalityThreshold =
-        ::cos(degToRad(maxNonOrtho));
+        cos(degToRad(maxNonOrtho));
 
     vector s = mesh_.faces()[facei].areaNormal(points);
     scalar magS = mag(s);

@@ -142,7 +142,7 @@ Istream& operator>>(Istream& is, Scalar& val)
 
     if (t.isNumber())
     {
-        val = t.number();
+        val = t.number().getValue();
     }
     else
     {

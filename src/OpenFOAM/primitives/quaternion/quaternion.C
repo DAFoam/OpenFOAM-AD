@@ -100,7 +100,7 @@ Foam::quaternion Foam::exp(const quaternion& q)
 
     if (magV == 0)
     {
-        return quaternion(1, Zero);
+        return quaternion(1, vector::zero);
     }
 
     const scalar expW = exp(q.w());

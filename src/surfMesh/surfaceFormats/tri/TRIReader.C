@@ -212,6 +212,9 @@ Foam::label Foam::fileFormats::TRIReader::mergePointsMap
     labelList& pointMap
 ) const
 {
+    return 1;
+    // CoDiPack4OpenFOAM TODO Need to fix this!
+    /*
     return Foam::mergePoints
     (
         points_,
@@ -219,6 +222,7 @@ Foam::label Foam::fileFormats::TRIReader::mergePointsMap
         false, // verbose
         pointMap
     );
+    */
 }
 
 

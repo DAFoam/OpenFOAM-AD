@@ -24,18 +24,22 @@ License
 \*---------------------------------------------------------------------------*/
 
 #include "PstreamGlobals.H"
+#include "Vector.H"
+#include "Tensor.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
 
-Foam::DynamicList<MPI_Request> Foam::PstreamGlobals::outstandingRequests_;
+Foam::DynamicList<AMPI_Request> Foam::PstreamGlobals::outstandingRequests_;
 
 int Foam::PstreamGlobals::nTags_ = 0;
 
 Foam::DynamicList<int> Foam::PstreamGlobals::freedTags_;
 
-Foam::DynamicList<MPI_Comm> Foam::PstreamGlobals::MPICommunicators_;
-Foam::DynamicList<MPI_Group> Foam::PstreamGlobals::MPIGroups_;
+Foam::DynamicList<AMPI_Comm> Foam::PstreamGlobals::MPICommunicators_;
+Foam::DynamicList<AMPI_Group> Foam::PstreamGlobals::MPIGroups_;
 
+// MPI type for AD
+MpiTypes* Foam::PstreamGlobals::mpiTypes_;
 
 void Foam::PstreamGlobals::checkCommunicator
 (
@@ -56,6 +60,17 @@ void Foam::PstreamGlobals::checkCommunicator
             << PstreamGlobals::MPICommunicators_.size()
             << ')' << abort(FatalError);
     }
+}
+
+// check if the input type is active, which will be used in Pstream functions
+bool Foam::PstreamGlobals::isTypeActive(const std::type_info& type)
+{
+    return      type == typeid(scalar*)
+            ||  type == typeid(const scalar*)
+            ||  type == typeid(Foam::Vector<scalar>*)
+            ||  type == typeid(const Foam::Vector<scalar>*)
+            ||  type == typeid(Foam::Tensor<scalar>*)
+            ||  type == typeid(const Foam::Tensor<scalar>*);
 }
 
 

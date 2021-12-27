@@ -68,7 +68,7 @@ Foam::PBiCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
     Field<Type> pA(nCells);
     Type* __restrict__ pAPtr = pA.begin();
 
-    Field<Type> pT(nCells, Zero);
+    Field<Type> pT(nCells, pTraits<Type>::zero);
     Type* __restrict__ pTPtr = pT.begin();
 
     Field<Type> wA(nCells);
@@ -194,8 +194,12 @@ Foam::PBiCICG<Type, DType, LUType>::solve(Field<Type>& psi) const
         );
     }
 
-    solverPerf.nIterations() =
-        pTraits<typename pTraits<Type>::labelType>::one*nIter;
+    // CoDiPack4OpenFOAM TODO This could be slow, we need to fix this!
+    solverPerf.nIterations() = pTraits<typename pTraits<Type>::labelType>::zero;
+    for(label i=0;i<nIter;i++)
+    {
+        solverPerf.nIterations() += pTraits<typename pTraits<Type>::labelType>::one;
+    }
 
     return solverPerf;
 }

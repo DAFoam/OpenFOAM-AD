@@ -55,7 +55,6 @@ Foam::bound(volScalarField& vsf, const dimensionedScalar& lowerBound)
 
         vsf.boundaryFieldRef() = max(vsf.boundaryField(), lowerBound.value());
     }
-
     return vsf;
 }
 

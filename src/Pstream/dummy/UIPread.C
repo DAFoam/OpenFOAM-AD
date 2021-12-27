@@ -81,6 +81,8 @@ Foam::label Foam::UIPstream::read
     const int fromProcNo,
     char* buf,
     const std::streamsize bufSize,
+    const word callerInfo,
+    const std::type_info& typeInfo,
     const int tag,
     const label communicator
 )

@@ -39,6 +39,18 @@ SourceFiles
 #include "DynamicList.H"
 #include <mpi.h>
 
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
+#ifdef CODI_AD_FORWARD
+using MpiTypes = CoDiMpiTypes<codi::RealForward>;
+#endif
+#ifdef CODI_AD_REVERSE
+using MpiTypes = CoDiMpiTypes<codi::RealReverse>;
+#endif
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -47,7 +59,7 @@ namespace PstreamGlobals
 {
 
 //- Outstanding non-blocking operations.
-extern DynamicList<MPI_Request> outstandingRequests_;
+extern DynamicList<AMPI_Request> outstandingRequests_;
 
 //- Max outstanding message tag operations.
 extern int nTags_;
@@ -56,15 +68,18 @@ extern int nTags_;
 extern DynamicList<int> freedTags_;
 
 // Current communicators. First element will be MPI_COMM_WORLD
-extern DynamicList<MPI_Comm> MPICommunicators_;
-extern DynamicList<MPI_Group> MPIGroups_;
+extern DynamicList<AMPI_Comm> MPICommunicators_;
+extern DynamicList<AMPI_Group> MPIGroups_;
 
+// MPI type for AD
+extern MpiTypes* mpiTypes_;
 
 void checkCommunicator(const label comm, const label toProcNo);
 
+// check whether the type is active
+bool isTypeActive(const std::type_info& type);
+
 };
-
-
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam

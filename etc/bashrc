@@ -41,7 +41,7 @@
 #------------------------------------------------------------------------------
 
 export WM_PROJECT=OpenFOAM
-export WM_PROJECT_VERSION=v1812
+export WM_PROJECT_VERSION=v1812-AD
 
 # [projectDir] - directory containing this OpenFOAM version.
 # \- When this file is located as $WM_PROJECT_DIR/etc/bashrc, the next lines
@@ -95,6 +95,9 @@ export WM_COMPILE_OPTION=Opt
 #   HPMPI | CRAY-MPICH | FJMPI | QSMPI | SGIMPI | INTELMPI | USERMPI
 export WM_MPLIB=SYSTEMOPENMPI
 
+# [WM_CODI_AD_MODE] - Automatic differentiation mode
+# = CODI_AD_FORWARD | CODI_AD_REVERSE
+export WM_CODI_AD_MODE=CODI_AD_FORWARD
 
 #------------------------------------------------------------------------------
 # (advanced / legacy)
@@ -150,6 +153,15 @@ then
 else
     echo "Error: did not locate installation path for $WM_PROJECT-$WM_PROJECT_VERSION" 1>&2
     echo "No directory: $WM_PROJECT_DIR" 1>&2
+fi
+
+# Set the AD postfix for libraries
+if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
+    export WM_CODI_AD_LIB_POSTFIX="ADR"
+elif [ "$WM_CODI_AD_MODE" = "CODI_AD_FORWARD" ]; then
+    export WM_CODI_AD_LIB_POSTFIX="ADF"
+else
+    echo "WM_CODI_AD_MODE not valid!!!! Options are: CODI_AD_FORWARD or CODI_AD_REVERSE"
 fi
 
 # Cleanup variables (done as final statement for a clean exit code)
