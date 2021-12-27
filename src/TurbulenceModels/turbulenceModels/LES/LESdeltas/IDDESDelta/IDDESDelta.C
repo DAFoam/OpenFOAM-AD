@@ -116,7 +116,6 @@ void Foam::LESModels::IDDESDelta::calcDelta()
         FatalErrorInFunction
             << "Case must be either 2D or 3D" << exit(FatalError);
     }
-
     delta_.primitiveFieldRef() =
         min
         (
@@ -131,7 +130,6 @@ void Foam::LESModels::IDDESDelta::calcDelta()
             ),
             hmax
         );
-
     // Handle coupled boundaries
     delta_.correctBoundaryConditions();
 }

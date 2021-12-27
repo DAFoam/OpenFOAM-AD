@@ -426,7 +426,7 @@ Foam::radiation::fvDOM::fvDOM(const volScalarField& T)
         (
             "tolerance",
             {{"convergence", 1712}},
-            0
+            scalar(0.0)
         )
     ),
     maxIter_(coeffs_.getOrDefault<label>("maxIter", 50)),
@@ -532,7 +532,7 @@ Foam::radiation::fvDOM::fvDOM
         (
             "tolerance",
             {{"convergence", 1712}},
-            0
+            scalar(0.0)
         )
     ),
     maxIter_(coeffs_.getOrDefault<label>("maxIter", 50)),
@@ -659,7 +659,7 @@ Foam::tmp<Foam::volScalarField> Foam::radiation::fvDOM::Rp() const
                 false
             ),
             (
-                4
+                scalar(4.0)
                *physicoChemical::sigma
                *(aLambda_[0] - absorptionEmission_->aDisp(0)())
                *blackBody_.deltaLambdaT(T_, absorptionEmission_->bands(0))
@@ -674,7 +674,7 @@ Foam::tmp<Foam::volScalarField> Foam::radiation::fvDOM::Rp() const
     {
         Rp +=
         (
-            4
+            scalar(4.0)
            *physicoChemical::sigma
            *(aLambda_[j] - absorptionEmission_->aDisp(j)())
            *blackBody_.deltaLambdaT(T_, absorptionEmission_->bands(j))

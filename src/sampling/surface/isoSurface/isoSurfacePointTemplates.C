@@ -484,7 +484,7 @@ Foam::label Foam::isoSurfacePoint::generateFaceTriPoints
             (
                 snappedPoint[pointi] != -1
               ? snappedPoints[snappedPoint[pointi]]
-              : Type(Zero)
+              : pTraits<Type>::zero
             ),
 
             pVals[nextPointi],
@@ -493,7 +493,7 @@ Foam::label Foam::isoSurfacePoint::generateFaceTriPoints
             (
                 snappedPoint[nextPointi] != -1
               ? snappedPoints[snappedPoint[nextPointi]]
-              : Type(Zero)
+              : pTraits<Type>::zero
             ),
 
             cVals[own],
@@ -502,7 +502,7 @@ Foam::label Foam::isoSurfacePoint::generateFaceTriPoints
             (
                 snappedCc[own] != -1
               ? snappedPoints[snappedCc[own]]
-              : Type(Zero)
+              : pTraits<Type>::zero
             ),
 
             neiVal,
@@ -598,7 +598,7 @@ void Foam::isoSurfacePoint::generateTriPoints
                 (
                     snappedCc[nei[facei]] != -1
                   ? snappedPoints[snappedCc[nei[facei]]]
-                  : Type(Zero)
+                  : pTraits<Type>::zero
                 ),
 
                 triPoints,
@@ -610,7 +610,7 @@ void Foam::isoSurfacePoint::generateTriPoints
 
     // Determine neighbouring snap status
     boolList neiSnapped(mesh_.nBoundaryFaces(), false);
-    List<Type> neiSnappedPoint(neiSnapped.size(), Type(Zero));
+    List<Type> neiSnappedPoint(neiSnapped.size(), pTraits<Type>::zero);
     for (const polyPatch& pp : patches)
     {
         if (pp.coupled())
@@ -693,8 +693,7 @@ void Foam::isoSurfacePoint::generateTriPoints
                             cVals.boundaryField()[patchi][i],
                             cCoords.boundaryField()[patchi][i],
                             false,
-                            Type(Zero),
-
+                            pTraits<Type>::zero,
                             triPoints,
                             triMeshCells
                         );
@@ -726,8 +725,7 @@ void Foam::isoSurfacePoint::generateTriPoints
                         cVals.boundaryField()[patchi][i],
                         cCoords.boundaryField()[patchi][i],
                         false,  // fc not snapped
-                        Type(Zero),
-
+                        pTraits<Type>::zero,
                         triPoints,
                         triMeshCells
                     );
@@ -755,7 +753,7 @@ Foam::isoSurfacePoint::interpolate
 )
 {
     // One value per point
-    auto tvalues = tmp<Field<Type>>::New(nPoints, Type(Zero));
+    auto tvalues = tmp<Field<Type>>::New(nPoints, pTraits<Type>::zero);
     auto& values = tvalues.ref();
 
 
@@ -794,7 +792,7 @@ Foam::isoSurfacePoint::interpolate
 
         // Note: zeroing should not be necessary if interpolation only done
         //       for newly introduced points (i.e. not in triPointMergeMap)
-        values[pointi] = Type(Zero);
+        values[pointi] = pTraits<Type>::zero;
         forAll(oldPoints, j)
         {
             values[pointi] = w[j]*unmergedValues[oldPoints[j]];

@@ -264,7 +264,7 @@ void Foam::refinementFeatures::read
                         0
                     )
                 );
-            distances_[featI] = scalarField(1, Zero);
+            distances_[featI] = scalarField(1, scalar(0.0));
         }
 
         if (!dryRun_)
@@ -650,7 +650,7 @@ void Foam::refinementFeatures::findNearestEdge
     nearInfo.setSize(samples.size());
     nearInfo = pointIndexHit();
     nearNormal.setSize(samples.size());
-    nearNormal = Zero;
+    nearNormal = pTraits<vector>::zero;
 
     forAll(edgeTrees_, featI)
     {
@@ -709,7 +709,7 @@ void Foam::refinementFeatures::findNearestRegionEdge
     nearInfo.setSize(samples.size());
     nearInfo = pointIndexHit();
     nearNormal.setSize(samples.size());
-    nearNormal = Zero;
+    nearNormal = pTraits<vector>::zero;
 
 
     const PtrList<indexedOctree<treeDataEdge>>& regionTrees =

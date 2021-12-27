@@ -51,13 +51,13 @@ namespace mathematical
     //- Group name for mathematical constants
     constexpr const char* const group = "mathematical";
 
-    constexpr scalar e(M_E);
-    constexpr scalar pi(M_PI);
-    constexpr scalar twoPi(2*M_PI);
-    constexpr scalar piByTwo(0.5*M_PI);
+    const scalar e(M_E);
+    const scalar pi(M_PI);
+    const scalar twoPi(2*M_PI);
+    const scalar piByTwo(0.5*M_PI);
 
     //- Euler's constant
-    constexpr scalar Eu(0.57721566490153286060651209);
+    const scalar Eu(0.57721566490153286060651209);
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -31,12 +31,14 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
+// CoDiPack4OpenFOAM TODO commented out for now
+/*
 template<class Cmpt>
 inline Foam::Tensor<Cmpt>::Tensor(const Foam::zero)
 :
     Tensor::msType(Zero)
 {}
-
+*/
 
 template<class Cmpt>
 template<class Cmpt2>

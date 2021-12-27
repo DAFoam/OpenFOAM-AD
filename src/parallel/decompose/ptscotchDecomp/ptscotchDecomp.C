@@ -275,7 +275,7 @@ Foam::label Foam::ptscotchDecomp::decompose
             {
                 velotab[i] = static_cast<SCOTCH_Num>
                 (
-                    ((cWeights[i]/minWeights - 1)*rangeScale) + 1
+                    ((cWeights[i]/minWeights - 1)*rangeScale).getValue() + 1
                 );
             }
         }

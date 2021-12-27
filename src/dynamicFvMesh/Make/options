@@ -4,6 +4,6 @@ EXE_INC = \
     -I$(LIB_SRC)/dynamicMesh/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lmeshTools \
-    -ldynamicMesh
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldynamicMesh$(WM_CODI_AD_LIB_POSTFIX)

@@ -89,7 +89,7 @@ Foam::label Foam::pointBoundaryMesh::findPatchID(const word& patchName) const
 
 void Foam::pointBoundaryMesh::calcGeometry()
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::pointBoundaryMesh::calcGeometry()", true);
 
     if
     (
@@ -135,7 +135,7 @@ void Foam::pointBoundaryMesh::calcGeometry()
 
 void Foam::pointBoundaryMesh::movePoints(const pointField& p)
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::pointBoundaryMesh::movePoints", true);
 
     if
     (
@@ -181,7 +181,7 @@ void Foam::pointBoundaryMesh::movePoints(const pointField& p)
 
 void Foam::pointBoundaryMesh::updateMesh()
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::pointBoundaryMesh::updateMesh()", false);
 
     if
     (

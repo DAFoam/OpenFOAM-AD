@@ -45,8 +45,8 @@ Foam::outletPhaseMeanVelocityFvPatchVectorField
     Umean_(0),
     alphaName_("none")
 {
-    refValue() = Zero;
-    refGrad() = Zero;
+    refValue() = pTraits<vector>::zero;
+    refGrad() = pTraits<vector>::zero;
     valueFraction() = 0.0;
 }
 
@@ -80,8 +80,8 @@ Foam::outletPhaseMeanVelocityFvPatchVectorField
 {
     patchType() = dict.getOrDefault<word>("patchType", word::null);
 
-    refValue() = Zero;
-    refGrad() = Zero;
+    refValue() = pTraits<vector>::zero;
+    refGrad() = pTraits<vector>::zero;
     valueFraction() = 0.0;
 
     if (dict.found("value"))
@@ -150,7 +150,7 @@ void Foam::outletPhaseMeanVelocityFvPatchVectorField::updateCoeffs()
     // such that the phase mean is Umean_
     if (Uzgmean >= Umean_)
     {
-        refValue() = Zero;
+        refValue() = pTraits<vector>::zero;
         valueFraction() = 1.0 - Umean_/Uzgmean;
     }
     else

@@ -5,4 +5,4 @@ dimFieldDecomposer.C
 fvFieldDecomposer.C
 pointFieldDecomposer.C
 
-LIB = $(FOAM_LIBBIN)/libdecompose
+LIB = $(FOAM_LIBBIN)/libdecompose$(WM_CODI_AD_LIB_POSTFIX)

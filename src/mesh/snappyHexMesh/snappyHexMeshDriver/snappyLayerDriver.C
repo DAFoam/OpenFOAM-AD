@@ -706,7 +706,7 @@ void Foam::snappyLayerDriver::handleFeatureAngle
 {
     const fvMesh& mesh = meshRefiner_.mesh();
 
-    const scalar minCos = Foam::cos(degToRad(minAngle));
+    const scalar minCos = cos(degToRad(minAngle));
 
     Info<< nl << "Handling feature edges (angle < " << minAngle
         << ") ..." << endl;
@@ -1758,7 +1758,7 @@ void Foam::snappyLayerDriver::calculateLayerThickness
             Info<< setf(ios_base::left) << setw(maxPatchNameLen)
                 << patches[patchi].name() << setprecision(3)
                 << " " << setw(8)
-                << returnReduce(patches[patchi].size(), sumOp<scalar>())
+                << returnReduce(patches[patchi].size(), sumOp<label>())
                 << " " << setw(6) << layerParams.numLayers()[patchi]
                 << " " << setw(8) << avgNearWallThickness
                 << "  " << setw(8) << avgThickness
@@ -3019,7 +3019,7 @@ void Foam::snappyLayerDriver::getLayerCellsFaces
     cellNLayers.setSize(mesh.nCells());
     cellNLayers = 0;
     faceRealThickness.setSize(mesh.nFaces());
-    faceRealThickness = 0;
+    faceRealThickness = scalar(0.0);
 
     // Mark all faces in the layer
     const labelListList& layerFaces = addLayer.layerFaces();
@@ -3393,9 +3393,9 @@ void Foam::snappyLayerDriver::mergePatchFacesUndo
     // Clip to 30 degrees. Not helpful!
     //scalar planarAngle = min(30.0, layerParams.featureAngle());
     scalar planarAngle = layerParams.mergePatchFacesAngle();
-    scalar minCos = Foam::cos(degToRad(planarAngle));
+    scalar minCos = cos(degToRad(planarAngle));
 
-    scalar concaveCos = Foam::cos(degToRad(layerParams.concaveAngle()));
+    scalar concaveCos = cos(degToRad(layerParams.concaveAngle()));
 
     Info<< nl
         << "Merging all faces of a cell" << nl

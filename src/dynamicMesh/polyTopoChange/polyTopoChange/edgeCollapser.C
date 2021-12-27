@@ -421,7 +421,7 @@ void Foam::edgeCollapser::faceCollapseAxisAndAspectRatio
 
         // Empirical correlation for high aspect ratio faces
 
-        aspectRatio = Foam::sqrt(0.35/detJ);
+        aspectRatio = sqrt(0.35/detJ);
     }
     else
     {
@@ -451,7 +451,7 @@ void Foam::edgeCollapser::faceCollapseAxisAndAspectRatio
             // the ratio of face-plane moments gives a good indication of the
             // aspect ratio.
 
-            aspectRatio = Foam::sqrt(eVals.y()/max(eVals.x(), SMALL));
+            aspectRatio = sqrt(eVals.y()/max(eVals.x(), SMALL));
         }
     }
 }
@@ -475,8 +475,8 @@ Foam::scalarField Foam::edgeCollapser::calcTargetFaceSizes() const
         const scalar cellOwnerVol = max(0.0, V[cellOwner[intFacei]]);
         const scalar cellNeighbourVol = max(0.0, V[cellNeighbour[intFacei]]);
 
-        scalar targetFaceSizeA = Foam::cbrt(cellOwnerVol);
-        scalar targetFaceSizeB = Foam::cbrt(cellNeighbourVol);
+        scalar targetFaceSizeA = pow(cellOwnerVol, scalar(1.0/3.0));
+        scalar targetFaceSizeB = pow(cellNeighbourVol, scalar(1.0/3.0));
 
         targetFaceSizes[intFacei] = 0.5*(targetFaceSizeA + targetFaceSizeB);
     }
@@ -510,7 +510,7 @@ Foam::scalarField Foam::edgeCollapser::calcTargetFaceSizes() const
                 const label extFacei = patchFacei + patch.start();
                 const scalar cellOwnerVol = max(0.0, V[cellOwner[extFacei]]);
 
-                targetFaceSizes[extFacei] = Foam::cbrt(cellOwnerVol);
+                targetFaceSizes[extFacei] = pow(cellOwnerVol, scalar(1.0/3.0));
             }
         }
     }
@@ -531,8 +531,8 @@ Foam::scalarField Foam::edgeCollapser::calcTargetFaceSizes() const
                 const scalar cellOwnerVol = max(0.0, V[cellOwner[localFacei]]);
                 const scalar cellNeighbourVol = neiCellVolumes[bFacei++];
 
-                scalar targetFaceSizeA = Foam::cbrt(cellOwnerVol);
-                scalar targetFaceSizeB = Foam::cbrt(cellNeighbourVol);
+                scalar targetFaceSizeA = pow(cellOwnerVol, scalar(1.0/3.0));
+                scalar targetFaceSizeB = pow(cellNeighbourVol, scalar(1.0/3.0));
 
                 targetFaceSizes[localFacei]
                     = 0.5*(targetFaceSizeA + targetFaceSizeB);

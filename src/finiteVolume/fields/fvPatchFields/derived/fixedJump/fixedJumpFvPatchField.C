@@ -38,8 +38,8 @@ Foam::fixedJumpFvPatchField<Type>::fixedJumpFvPatchField
 )
 :
     jumpCyclicFvPatchField<Type>(p, iF),
-    jump_(this->size(), Zero),
-    jump0_(this->size(), Zero),
+    jump_(this->size(), pTraits<Type>::zero),
+    jump0_(this->size(), pTraits<Type>::zero),
     minJump_(pTraits<Type>::min),
     relaxFactor_(-1),
     timeIndex_(-1)
@@ -74,8 +74,8 @@ Foam::fixedJumpFvPatchField<Type>::fixedJumpFvPatchField
 )
 :
     jumpCyclicFvPatchField<Type>(p, iF, dict, false), // Pass no valueRequired
-    jump_(p.size(), Zero),
-    jump0_(p.size(), Zero),
+    jump_(p.size(), pTraits<Type>::zero),
+    jump0_(p.size(), pTraits<Type>::zero),
     minJump_(dict.getOrDefault<Type>("minJump", pTraits<Type>::min)),
     relaxFactor_(dict.getOrDefault<scalar>("relax", -1)),
     timeIndex_(this->db().time().timeIndex())

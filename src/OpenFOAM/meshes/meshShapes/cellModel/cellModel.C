@@ -38,7 +38,7 @@ Foam::vector Foam::cellModel::centre
 ) const
 {
     // Estimate cell centre by averaging the cell points
-    vector cEst = Zero;
+    vector cEst = vector::zero;
     for (const label pointi : pointLabels)
     {
         cEst += points[pointi];
@@ -50,7 +50,7 @@ Foam::vector Foam::cellModel::centre
     // volume-weighted averaging their centres
 
     scalar sumV = 0;
-    vector sumVc = Zero;
+    vector sumVc = vector::zero;
 
     forAll(faces_, facei)
     {
@@ -81,7 +81,7 @@ Foam::scalar Foam::cellModel::mag
 ) const
 {
     // Estimate cell centre by averaging the cell points
-    vector cEst = Zero;
+    vector cEst = vector::zero;
     for (const label pointi : pointLabels)
     {
         cEst += points[pointi];

@@ -47,17 +47,17 @@ static scalar minimaxs(const scalar P)
 {
     // (DM:Eq. 32)
 
-    constexpr scalar a_0 = 3.31125922108741;
-    constexpr scalar a_1 = 11.6616720288968;
-    constexpr scalar a_2 = 4.28342155967104;
-    constexpr scalar a_3 = 0.213623493715853;
+    static const scalar a_0 = 3.31125922108741;
+    static const scalar a_1 = 11.6616720288968;
+    static const scalar a_2 = 4.28342155967104;
+    static const scalar a_3 = 0.213623493715853;
 
-    constexpr scalar b_0 = 6.61053765625462;
-    constexpr scalar b_1 = 6.40691597760039;
-    constexpr scalar b_2 = 1.27364489782223;
-    constexpr scalar b_3 = 0.03611708101884203;
+    static const scalar b_0 = 6.61053765625462;
+    static const scalar b_1 = 6.40691597760039;
+    static const scalar b_2 = 1.27364489782223;
+    static const scalar b_3 = 0.03611708101884203;
 
-    const scalar t = P < 0.5 ? sqrt(-2*log(P)) : sqrt(-2*log(1 - P));
+    const scalar t = P < 0.5 ? scalar(sqrt(-2*log(P))) : scalar(sqrt(-2*log(1 - P)));
 
     const scalar s =
         t
@@ -130,7 +130,7 @@ Foam::scalar Foam::Math::invIncGamma(const scalar a, const scalar P)
         {
             // (DM:Eq. 21)
             const scalar u =
-                (B*Q > 1e-8) ? pow(P*Ga*a, 1/a) : exp((-Q/a) - Eu);
+                (B*Q > 1e-8) ? scalar(pow(P*Ga*a, 1/a)) : scalar(exp((-Q/a) - Eu));
 
             return u/(1 - (u/(a + 1)));
         }
@@ -294,11 +294,11 @@ Foam::scalar Foam::Math::invIncGamma(const scalar a, const scalar P)
                 const scalar ap2 = a + 2;
                 const scalar v = log(P) + lgamma(ap1);
                 z = exp((v + w)/a);
-                s = log1p(z/ap1*(1 + z/ap2));
+                s = log(1+z/ap1*(1 + z/ap2));
                 z = exp((v + z - s)/a);
-                s = log1p(z/ap1*(1 + z/ap2));
+                s = log(1+z/ap1*(1 + z/ap2));
                 z = exp((v + z - s)/a);
-                s = log1p(z/ap1*(1 + z/ap2*(1 + z/(a + 3))));
+                s = log(1+z/ap1*(1 + z/ap2*(1 + z/(a + 3))));
                 z = exp((v + z - s)/a);
             }
 

@@ -129,7 +129,7 @@ void surfaceNoise::readSurfaceData
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "surfaceNoise::readSurfaceData", true);
 
         // Procedure:
         // 1. Master processor reads pressure data for all faces for all times
@@ -256,7 +256,7 @@ scalar surfaceNoise::writeSurfaceData
     {
         // Collect the surface data so that we can output the surfaces
 
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "surfaceNoise::writeSurfaceData", true);
 
         if (!Pstream::master())
         {
@@ -371,7 +371,7 @@ scalar surfaceNoise::surfaceAverage
     {
         // Collect the surface data so that we can output the surfaces
 
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "surfaceNoise::surfaceAverage", true);
 
         if (!Pstream::master())
         {

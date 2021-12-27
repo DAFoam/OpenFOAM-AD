@@ -216,7 +216,7 @@ Type Foam::interpolationTable<Type>::rateOfChange(scalar lookupValue) const
             {
                 // Adjust lookupValue to >= minLimit
                 scalar span = maxLimit-minLimit;
-                lookupValue = fmod(lookupValue - minLimit, span) + minLimit;
+                lookupValue = fmod((lookupValue-minLimit).getValue(), span.getValue()) + minLimit;
                 break;
             }
         }
@@ -253,7 +253,7 @@ Type Foam::interpolationTable<Type>::rateOfChange(scalar lookupValue) const
             {
                 // Adjust lookupValue <= maxLimit
                 scalar span = maxLimit-minLimit;
-                lookupValue = fmod(lookupValue - minLimit, span) + minLimit;
+                lookupValue = fmod((lookupValue-minLimit).getValue(), span.getValue()) + minLimit;
                 break;
             }
         }

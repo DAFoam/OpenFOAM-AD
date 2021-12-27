@@ -41,7 +41,7 @@ Foam::pressureControl::pressureControl
     refCell_(-1),
     refValue_(0),
     pMax_("pMax", dimPressure, GREAT),
-    pMin_("pMin", dimPressure, Zero),
+    pMin_("pMin", dimPressure, scalar(0.0)),
     limitMaxP_(false),
     limitMinP_(false)
 {

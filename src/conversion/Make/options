@@ -5,7 +5,7 @@ EXE_INC = \
     -I$(LIB_SRC)/meshTools/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lfiniteArea \
-    -lfileFormats \
-    -lmeshTools
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfiniteArea$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfileFormats$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX)

@@ -65,6 +65,8 @@ void Foam::LUscalarMatrix::solve
                         &(X[procOffsets_[slave]])
                     ),
                     (procOffsets_[slave+1]-procOffsets_[slave])*sizeof(Type),
+                    "Foam::LUscalarMatrix::solve",
+                    typeid(&(X[procOffsets_[slave]])),
                     Pstream::msgType(),
                     comm_
                 );
@@ -78,6 +80,8 @@ void Foam::LUscalarMatrix::solve
                 Pstream::masterNo(),
                 x.cdata_bytes(),
                 x.byteSize(),
+                "Foam::LUscalarMatrix::solve",
+                typeid(x.begin()),
                 Pstream::msgType(),
                 comm_
             );
@@ -99,7 +103,9 @@ void Foam::LUscalarMatrix::solve
                     (
                         &(X[procOffsets_[slave]])
                     ),
-                    (procOffsets_[slave+1]-procOffsets_[slave])*sizeof(Type),
+                    (procOffsets_[slave + 1]-procOffsets_[slave])*sizeof(Type),
+                    "Foam::LUscalarMatrix::solve",
+                    typeid(&(X[procOffsets_[slave]])),
                     Pstream::msgType(),
                     comm_
                 );
@@ -113,6 +119,8 @@ void Foam::LUscalarMatrix::solve
                 Pstream::masterNo(),
                 x.data_bytes(),
                 x.byteSize(),
+                "Foam::LUscalarMatrix::solve",
+                typeid(x.begin()),
                 Pstream::msgType(),
                 comm_
             );

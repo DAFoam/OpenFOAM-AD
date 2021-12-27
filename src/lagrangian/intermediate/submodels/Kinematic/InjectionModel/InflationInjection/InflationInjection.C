@@ -230,7 +230,7 @@ Foam::label Foam::InflationInjection<CloudType>::parcelsToInject
         1,
         (10*volumeAccumulator_)
        /CloudType::parcelType::volume(sizeDistribution_().minValue())
-    );
+    ).getValue();
 
     label iterationNo = 0;
 

@@ -782,7 +782,7 @@ void Foam::polyMeshFilter::printScalarFieldStats
     reduce(sum, sumOp<scalar>());
     reduce(min, minOp<scalar>());
     reduce(max, maxOp<scalar>());
-    reduce(validElements, sumOp<label>());
+    reduce(validElements, sumOp<scalar>());
     const label totFieldSize = returnReduce(fld.size(), sumOp<label>());
 
     Info<< incrIndent << indent << desc

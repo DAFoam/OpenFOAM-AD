@@ -226,7 +226,7 @@ void Foam::triad::operator+=(const triad& t2)
                     {
                         correspondance[i] = j;
                         mostAligned = maga;
-                        signd[i] = sign(a);
+                        signd[i] = static_cast<short>(sign(a).getValue());
                     }
                 }
             }

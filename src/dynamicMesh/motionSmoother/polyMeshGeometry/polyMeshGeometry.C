@@ -66,9 +66,9 @@ void Foam::polyMeshGeometry::updateFaceCentresAndAreas
         }
         else
         {
-            vector sumN = Zero;
-            scalar sumA = Zero;
-            vector sumAc = Zero;
+            vector sumN = vector::zero;
+            scalar sumA = scalar(0.0);
+            vector sumAc = vector::zero;
 
             point fCentre = p[f[0]];
             for (label pi = 1; pi < nPoints; ++pi)
@@ -108,8 +108,8 @@ void Foam::polyMeshGeometry::updateCellCentresAndVols
     const cellList& cells = mesh().cells();
 
     // Clear the fields for accumulation
-    UIndirectList<vector>(cellCentres_, changedCells) = Zero;
-    UIndirectList<scalar>(cellVolumes_, changedCells) = Zero;
+    UIndirectList<vector>(cellCentres_, changedCells) = vector::zero;
+    UIndirectList<scalar>(cellVolumes_, changedCells) = scalar(0.0);
 
 
     // Re-calculate the changed cell centres and volumes
@@ -118,7 +118,7 @@ void Foam::polyMeshGeometry::updateCellCentresAndVols
         const labelList& cFaces = cells[celli];
 
         // Estimate the cell centre and bounding box using the face centres
-        vector cEst(Zero);
+        vector cEst(vector::zero);
         boundBox bb(boundBox::invertedBox);
 
         for (const label facei : cFaces)
@@ -237,7 +237,7 @@ Foam::scalar Foam::polyMeshGeometry::checkNonOrtho
                     << " between cells " << mesh.faceOwner()[facei]
                     << " and " << nei
                     << ": Angle = "
-                    << radToDeg(::acos(dDotS))
+                    << radToDeg(acos(dDotS))
                     << " deg." << endl;
             }
 
@@ -254,7 +254,7 @@ Foam::scalar Foam::polyMeshGeometry::checkNonOrtho
                     << " between cells " << mesh.faceOwner()[facei]
                     << " and " << nei
                     << ": Angle = "
-                    << radToDeg(::acos(dDotS))
+                    << radToDeg(acos(dDotS))
                     << " deg." << endl;
             }
 
@@ -376,7 +376,7 @@ bool Foam::polyMeshGeometry::checkFaceDotProduct
     const polyBoundaryMesh& patches = mesh.boundaryMesh();
 
     // Severe nonorthogonality threshold
-    const scalar severeNonorthogonalityThreshold = ::cos(degToRad(orthWarn));
+    const scalar severeNonorthogonalityThreshold = cos(degToRad(orthWarn));
 
     // Calculate coupled cell centre
     pointField neiCc(mesh.nBoundaryFaces());
@@ -508,8 +508,8 @@ bool Foam::polyMeshGeometry::checkFaceDotProduct
         if (nDDotS > 0)
         {
             Info<< "Mesh non-orthogonality Max: "
-                << radToDeg(::acos(minDDotS))
-                << " average: " << radToDeg(::acos(sumDDotS/nDDotS))
+                << radToDeg(acos(minDDotS))
+                << " average: " << radToDeg(acos(sumDDotS/nDDotS))
                 << endl;
         }
     }
@@ -1433,7 +1433,7 @@ bool Foam::polyMeshGeometry::checkFaceAngles
             << abort(FatalError);
     }
 
-    const scalar maxSin = Foam::sin(degToRad(maxDeg));
+    const scalar maxSin = sin(degToRad(maxDeg));
 
     const faceList& fcs = mesh.faces();
 
@@ -1510,7 +1510,7 @@ bool Foam::polyMeshGeometry::checkFaceAngles
         if (maxEdgeSin > SMALL)
         {
             scalar maxConcaveDegr =
-                radToDeg(Foam::asin(Foam::min(1.0, maxEdgeSin)));
+                radToDeg(asin(min(1.0, maxEdgeSin)));
 
             Info<< "There are " << nConcave
                 << " faces with concave angles between consecutive"
@@ -1587,7 +1587,7 @@ bool Foam::polyMeshGeometry::checkFaceTwist
 
         if (f.size() > 3)
         {
-            vector nf(Zero);
+            vector nf(vector::zero);
 
             if (mesh.isInternalFace(facei))
             {
@@ -2007,7 +2007,7 @@ bool Foam::polyMeshGeometry::checkCellDeterminant
     {
         const cell& cFaces = cells[celli];
 
-        tensor areaSum(Zero);
+        tensor areaSum(tensor::zero);
         scalar magAreaSum = 0;
 
         for (const label facei : cFaces)

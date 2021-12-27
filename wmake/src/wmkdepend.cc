@@ -285,6 +285,8 @@ namespace Files
         visited.insert(fileName);
 
         // Report failures
+        // CoDiPack4OpenFOAM Always depress the "could not open" warning.
+        /*
         if (!infile && !optQuiet)
         {
             std::cerr
@@ -299,6 +301,7 @@ namespace Files
 
             std::cerr << '\n' << std::flush;
         }
+        */
 
         return infile;
     }

@@ -76,4 +76,4 @@ $(writers)/vtk/vtkSurfaceWriter.C
 $(writers)/x3d/x3dSurfaceWriter.C
 
 
-LIB = $(FOAM_LIBBIN)/libsurfMesh
+LIB = $(FOAM_LIBBIN)/libsurfMesh$(WM_CODI_AD_LIB_POSTFIX)

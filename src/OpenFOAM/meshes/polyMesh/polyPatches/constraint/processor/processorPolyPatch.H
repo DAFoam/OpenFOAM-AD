@@ -82,6 +82,15 @@ class processorPolyPatch
         //  (so edges()[i] == neighb.edges()[neighbEdges_[i]])
         mutable autoPtr<labelList> neighbEdgesPtr_;
 
+        //- Outstanding send request for faceCenter
+        mutable label outstandingRecvRequest_;
+
+        //- A combined neighbour vector field variables for faceCenters faceAreas and faceCellCenters
+        vectorField neighbFields_;
+
+        //- A combined neighbour scalar field variables for faceCenters faceAreas and faceCellCenters
+        scalarField neighbScalarFields_;
+
 protected:
 
     // Protected constructors

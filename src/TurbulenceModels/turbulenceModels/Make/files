@@ -1,5 +1,4 @@
 turbulenceModel.C
-
 LESdelta = LES/LESdeltas
 
 $(LESdelta)/LESdelta/LESdelta.C
@@ -19,10 +18,8 @@ $(LESfilters)/simpleFilter/simpleFilter.C
 $(LESfilters)/laplaceFilter/laplaceFilter.C
 $(LESfilters)/anisotropicFilter/anisotropicFilter.C
 
-
 /* Base class for DES models */
 DES/DESModel/DESModelBase.C
-
 
 /* Turbulence BCs */
 derivedFvPatchFields/fixedShearStress/fixedShearStressFvPatchVectorField.C
@@ -72,4 +69,4 @@ $(generalizedNewtonianViscosityModels)/HerschelBulkley/HerschelBulkley.C
 $(generalizedNewtonianViscosityModels)/powerLaw/powerLaw.C
 $(generalizedNewtonianViscosityModels)/strainRateFunction/strainRateFunction.C
 
-LIB = $(FOAM_LIBBIN)/libturbulenceModels
+LIB = $(FOAM_LIBBIN)/libturbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

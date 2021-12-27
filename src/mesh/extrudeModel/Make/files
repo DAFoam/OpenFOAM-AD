@@ -12,4 +12,4 @@ cyclicSector/cyclicSector.C
 wedge/wedge.C
 polyline/polyline.C
 
-LIB = $(FOAM_LIBBIN)/libextrudeModel
+LIB = $(FOAM_LIBBIN)/libextrudeModel$(WM_CODI_AD_LIB_POSTFIX)

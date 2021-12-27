@@ -48,6 +48,19 @@ License
 #define ScalarConvert ::strtold
 
 #include "Scalar.C"
+// Explicit instantiation of operator<< for double
+Foam::Ostream& Foam::operator<<(Foam::Ostream& os, const double s)
+{
+    os.write(static_cast<Foam::doubleScalar>(s));
+    os.check("Ostream& operator<<(Ostream&, const double&)");
+    return os;
+}
+Foam::Istream& Foam::operator>>(Foam::Istream& is, double& val){
+    Foam::doubleScalar d = val;
+    operator>>(is,d);
+    val = d.getValue();
+    return is;
+}
 
 #undef Scalar
 #undef ScalarVGREAT

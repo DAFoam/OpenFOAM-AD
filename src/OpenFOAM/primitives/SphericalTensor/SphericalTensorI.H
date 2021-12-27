@@ -33,7 +33,7 @@ License
 template<class Cmpt>
 inline Foam::SphericalTensor<Cmpt>::SphericalTensor(const Foam::zero)
 :
-    SphericalTensor::vsType(Zero)
+    SphericalTensor::vsType(Foam::SphericalTensor<Cmpt>::zero)
 {}
 
 

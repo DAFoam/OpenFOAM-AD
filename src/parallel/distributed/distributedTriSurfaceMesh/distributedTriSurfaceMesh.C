@@ -4656,7 +4656,7 @@ void Foam::distributedTriSurfaceMesh::distribute
     // Send all
     // ~~~~~~~~
 
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::distributedTriSurfaceMesh::distribute", false);
 
     forAll(faceSendMap, proci)
     {

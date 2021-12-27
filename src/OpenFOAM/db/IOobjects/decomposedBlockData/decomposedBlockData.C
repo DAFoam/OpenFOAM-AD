@@ -373,6 +373,8 @@ bool Foam::decomposedBlockData::readBlocks
         PstreamBuffers pBufs
         (
             UPstream::commsTypes::nonBlocking,
+	    "Foam::decomposedBlockData::readBlocks",
+	    false,
             UPstream::msgType(),
             comm
         );
@@ -501,6 +503,8 @@ Foam::autoPtr<Foam::ISstream> Foam::decomposedBlockData::readBlocks
         PstreamBuffers pBufs
         (
             UPstream::commsTypes::nonBlocking,
+	    "Foam::decomposedBlockData::readBlocks",
+	    false,
             UPstream::msgType(),
             comm
         );
@@ -609,6 +613,8 @@ void Foam::decomposedBlockData::gather
         data0Ptr,
         recvSizes,
         recvOffsets,
+        "Foam::decomposedBlockData::gather",
+        typeid(&data),
         comm
     );
 }
@@ -669,6 +675,8 @@ void Foam::decomposedBlockData::gatherSlaveData
         recvData.data(),
         sliceSizes,
         sliceOffsets,
+        "Foam::decomposedBlockData::gatherSlaveData",
+        typeid(data.begin()),
         comm
     );
 }
@@ -707,6 +715,8 @@ Foam::label Foam::decomposedBlockData::calcNumProcs
         List<int>(nProcs, Zero),
         reinterpret_cast<char*>(&n),
         sizeof(n),
+        "Foam::decomposedBlockData::calcNumProcs",
+        typeid(&nSendProcs),
         comm
     );
 
@@ -799,8 +809,10 @@ bool Foam::decomposedBlockData::writeBlocks
                 (
                     UPstream::commsTypes::scheduled,
                     proci,
-                    elems.data(),
-                    elems.size_bytes(),
+                    elems.begin(),
+                    elems.size(),
+                    "Foam::decomposedBlockData::writeBlocks",
+                    typeid(elems.begin()),
                     Pstream::msgType(),
                     comm
                 );
@@ -822,8 +834,10 @@ bool Foam::decomposedBlockData::writeBlocks
             (
                 UPstream::commsTypes::scheduled,
                 UPstream::masterNo(),
-                masterData.cdata(),
-                masterData.size_bytes(),
+                masterData.begin(),
+                masterData.byteSize(),
+                "Foam::decomposedBlockData::writeBlocks",
+                typeid(masterData.begin()),
                 Pstream::msgType(),
                 comm
             );

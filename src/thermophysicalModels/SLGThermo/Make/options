@@ -7,8 +7,8 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/reactionThermo/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lcompressibleTransportModels \
-    -lfluidThermophysicalModels \
-    -lthermophysicalProperties \
-    -lreactionThermophysicalModels
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfluidThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lthermophysicalProperties$(WM_CODI_AD_LIB_POSTFIX) \
+    -lreactionThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX)

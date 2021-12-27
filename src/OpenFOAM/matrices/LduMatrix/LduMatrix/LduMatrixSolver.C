@@ -133,7 +133,7 @@ Foam::LduMatrix<Type, DType, LUType>::solver::solver
     minIter_(0),
     maxIter_(defaultMaxIter_),
     tolerance_(1e-6*pTraits<Type>::one),
-    relTol_(Zero)
+    relTol_(pTraits<Type>::zero)
 {
     readControls();
 }

@@ -201,7 +201,7 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
     }
 
     // Recalculate new deltaTCoeff_ based on rounded steps
-    requiredDeltaTCoeff = Foam::exp(Foam::log(wantedDT/newDeltaT)/nSteps);
+    requiredDeltaTCoeff = codi::exp(codi::log(wantedDT/newDeltaT)/nSteps);
 
     // Calculate total time required with given dT increment
     // to reach specified dT value
@@ -403,11 +403,11 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
                 // Situations where we achieve wantedDT but fail to achieve
                 // multiple of writeInterval
                 scalar jumpError =
-                   remainder(Sn + presentTime, wantedDT) / wantedDT;
+                   remainder((Sn + presentTime).getValue(), wantedDT.getValue()) / wantedDT;
 
                 if (mag(jumpError) > ROOTSMALL)
                 {
-                    requiredSteps = label(timeToNextWrite/wantedDT);
+                    requiredSteps = label((timeToNextWrite/wantedDT).getValue());
                     firstDeltaRatio = timeToNextWrite/requiredSteps/deltaT0_;
                 }
                 if (debug)
@@ -585,7 +585,7 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
             // Note looser tolerance on the relative intervalError - SMALL is
             // too strict.
             scalar intervalError =
-                remainder(writeInterval, wantedDT)/writeInterval;
+                remainder(writeInterval.getValue(), wantedDT.getValue())/writeInterval;
             if
             (
                  mag(intervalError) > ROOTSMALL
@@ -606,8 +606,7 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                 )
                 {
                     // nSteps can be < 1 so make sure at least 1
-
-                    label nStepsToNextWrite = max(1, round(nSteps));
+                    label nStepsToNextWrite = max(1, round(nSteps.getValue()));
                     scalar newDeltaT = timeToNextWrite/nStepsToNextWrite;
 
                     // Backwards compatibility: clip deltaT to 0.2 .. 2
@@ -644,7 +643,7 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                     requiredDeltaTCoeff = seriesDTCoeff_;
                 }
                 // Avoid divide by zero if we need ratio = 1
-                if (1/Foam::log(requiredDeltaTCoeff) > scalar(labelMax))
+                if (1/codi::log(requiredDeltaTCoeff) > scalar(labelMax))
                 {
                     requiredDeltaTCoeff = deltaTCoeff_;
                 }
@@ -663,8 +662,8 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                     (
                         floor
                         (
-                            Foam::log(wantedDT/deltaT0_)
-                           /Foam::log(requiredDeltaTCoeff + SMALL)
+                            codi::log(wantedDT/deltaT0_)
+                           /codi::log(requiredDeltaTCoeff + SMALL)
                         )
                     );
                 }
@@ -674,8 +673,8 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                     (
                         ceil
                         (
-                            Foam::log(wantedDT/deltaT0_)
-                           /Foam::log(requiredDeltaTCoeff + SMALL)
+                            codi::log(wantedDT/deltaT0_)
+                           /codi::log(requiredDeltaTCoeff + SMALL)
                         )
                     );
                 }

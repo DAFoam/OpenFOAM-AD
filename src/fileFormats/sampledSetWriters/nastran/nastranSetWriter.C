@@ -90,9 +90,9 @@ void Foam::nastranSetWriter<Type>::write
         //os.unsetf(std::ios_base::right);
         os  << ',' << pointi+1
             << ','
-            << ',' << float(pt.x())
-            << ',' << float(pt.y())
-            << ',' << float(pt.z())
+            << ',' << float(pt.x().getValue())
+            << ',' << float(pt.y().getValue())
+            << ',' << float(pt.z().getValue())
             << nl;
     }
 
@@ -179,9 +179,9 @@ void Foam::nastranSetWriter<Type>::write
             //os.unsetf(std::ios_base::right);
             os  << ',' << globalPti++
                 << ','
-                << ',' << float(pt.x())
-                << ',' << float(pt.y())
-                << ',' << float(pt.z())
+                << ',' << float(pt.x().getValue())
+                << ',' << float(pt.y().getValue())
+                << ',' << float(pt.z().getValue())
                 << nl;
         }
     }

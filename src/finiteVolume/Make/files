@@ -526,4 +526,4 @@ lduPrimitiveMeshAssembly/lduPrimitiveMeshAssembly.C
 lduPrimitiveMeshAssembly/assemblyFaceAreaPairGAMGAgglomeration/assemblyFaceAreaPairGAMGAgglomeration.C
 
 
-LIB = $(FOAM_LIBBIN)/libfiniteVolume
+LIB = $(FOAM_LIBBIN)/libfiniteVolume$(WM_CODI_AD_LIB_POSTFIX)

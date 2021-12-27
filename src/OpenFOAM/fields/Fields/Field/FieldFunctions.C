@@ -392,7 +392,7 @@ Type sum(const UList<Type>& f)
 {
     typedef typename Foam::typeOfSolve<Type>::type solveType;
 
-    solveType Sum = Zero;
+    solveType Sum = pTraits<Type>::zero;
 
     if (f.size())
     {
@@ -433,7 +433,7 @@ Type maxMagSqr(const UList<Type>& f)
         return Max;
     }
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 TMP_UNARY_FUNCTION(Type, maxMagSqr)
@@ -481,7 +481,7 @@ sumProd(const UList<Type>& f1, const UList<Type>& f2)
 template<class Type>
 Type sumCmptProd(const UList<Type>& f1, const UList<Type>& f2)
 {
-    Type SumProd = Zero;
+    Type SumProd = pTraits<Type>::zero;
     if (f1.size() && (f1.size() == f2.size()))
     {
         TFOR_ALL_S_OP_FUNC_F_F
@@ -543,7 +543,7 @@ TMP_UNARY_FUNCTION(typename typeOfMag<Type>::type, sumMag)
 template<class Type>
 Type sumCmptMag(const UList<Type>& f)
 {
-    Type result = Zero;
+    Type result = pTraits<Type>::zero;
     if (f.size())
     {
         TFOR_ALL_S_OP_FUNC_F(Type, result, +=, cmptMag, Type, f)
@@ -566,7 +566,7 @@ Type average(const UList<Type>& f)
     WarningInFunction
         << "empty field, returning zero" << endl;
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 TMP_UNARY_FUNCTION(Type, average)
@@ -649,12 +649,25 @@ Type gAverage
     WarningInFunction
         << "empty field, returning zero." << endl;
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 TMP_UNARY_FUNCTION(Type, gAverage)
 
 #undef TMP_UNARY_FUNCTION
+
+// CodiPack4OpenFOAM these functions are for functions with const Type& 
+inline scalar max(const scalar& valA, const scalar& valB)
+{
+    if (valA > valB) return valA;
+    else return valB;
+}
+
+inline scalar min(const scalar& valA, const scalar& valB)
+{
+    if (valA < valB) return valA;
+    else return valB;
+}
 
 
 BINARY_FUNCTION(Type, Type, Type, max)

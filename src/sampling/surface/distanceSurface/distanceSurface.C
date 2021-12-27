@@ -276,7 +276,7 @@ Foam::distanceSurface::distanceSurface
     withSignDistance_
     (
         withZeroDistance_
-     || (distance_ < 0)
+     || (distance_ < scalar(0.0))
      || dict.getOrDefault<bool>("signed", true)
     ),
 

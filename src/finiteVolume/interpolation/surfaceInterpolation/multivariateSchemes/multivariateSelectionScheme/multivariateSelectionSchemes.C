@@ -30,7 +30,6 @@ License
 #include "surfaceFields.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 namespace Foam
 {
 
@@ -46,5 +45,4 @@ multivariateSurfaceInterpolationScheme<scalar>::addIstreamConstructorToTable
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam
-
 // ************************************************************************* //

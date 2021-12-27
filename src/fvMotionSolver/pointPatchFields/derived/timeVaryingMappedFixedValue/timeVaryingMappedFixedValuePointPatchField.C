@@ -48,10 +48,10 @@ timeVaryingMappedFixedValuePointPatchField
     sampleTimes_(0),
     startSampleTime_(-1),
     startSampledValues_(0),
-    startAverage_(Zero),
+    startAverage_(pTraits<Type>::zero),
     endSampleTime_(-1),
     endSampledValues_(0),
-    endAverage_(Zero),
+    endAverage_(pTraits<Type>::zero),
     offset_()
 {}
 
@@ -81,10 +81,10 @@ timeVaryingMappedFixedValuePointPatchField
     sampleTimes_(0),
     startSampleTime_(-1),
     startSampledValues_(0),
-    startAverage_(Zero),
+    startAverage_(pTraits<Type>::zero),
     endSampleTime_(-1),
     endSampledValues_(0),
-    endAverage_(Zero),
+    endAverage_(pTraits<Type>::zero),
     offset_
     (
         Function1<Type>::NewIfPresent("offset", dict, word::null, &this->db())
@@ -140,10 +140,10 @@ timeVaryingMappedFixedValuePointPatchField
     sampleTimes_(0),
     startSampleTime_(-1),
     startSampledValues_(0),
-    startAverage_(Zero),
+    startAverage_(pTraits<Type>::zero),
     endSampleTime_(-1),
     endSampledValues_(0),
-    endAverage_(Zero),
+    endAverage_(pTraits<Type>::zero),
     offset_(ptf.offset_.clone())
 {}
 

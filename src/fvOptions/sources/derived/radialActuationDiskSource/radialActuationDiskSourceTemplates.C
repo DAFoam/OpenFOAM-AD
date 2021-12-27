@@ -47,7 +47,7 @@ addRadialActuationDiskAxialInertialResistance
 {
     scalarField Tr(cells.size());
 
-    tensor E(Zero);
+    tensor E(tensor::zero);
     E.xx() = diskDir_.x();
     E.yy() = diskDir_.y();
     E.zz() = diskDir_.z();

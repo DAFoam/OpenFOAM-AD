@@ -1618,7 +1618,7 @@ bool Foam::meshRefinement::isNormalGap
             //}
 
             // Check average normal with respect to intersection locations
-            if (mag(avgNormal&d/magD) > Foam::cos(degToRad(45.0)))
+            if (mag(avgNormal&d/magD) > cos(degToRad(45.0)))
             {
                 return true;
             }
@@ -2093,7 +2093,7 @@ Foam::labelList Foam::meshRefinement::refineCandidates
         calcNeighbourData(neiLevel, neiCc);
 
 
-        const scalar planarCos = Foam::cos(degToRad(planarAngle));
+        const scalar planarCos = cos(degToRad(planarAngle));
 
 
         // Cells pierced by feature lines

@@ -85,7 +85,7 @@ Foam::label Foam::patchWave::getValues(const MeshWave<wallPoint>& waveInfo)
 
         if (cellInfo[celli].valid(waveInfo.data()))
         {
-            distance_[celli] = Foam::sqrt(dist);
+            distance_[celli] = sqrt(dist);
         }
         else
         {
@@ -117,7 +117,7 @@ Foam::label Foam::patchWave::getValues(const MeshWave<wallPoint>& waveInfo)
             {
                 // Adding SMALL to avoid problems with /0 in the turbulence
                 // models
-                patchField[patchFacei] = Foam::sqrt(dist) + SMALL;
+                patchField[patchFacei] = sqrt(dist) + SMALL;
             }
             else
             {

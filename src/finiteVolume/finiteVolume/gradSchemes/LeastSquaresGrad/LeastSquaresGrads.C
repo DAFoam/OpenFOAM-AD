@@ -31,13 +31,11 @@ License
 #include "centredCECCellToCellStencilObject.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 // makeLeastSquaresGradScheme
 // (
 //     faceCellsLeastSquares,
 //     centredCFCCellToCellStencilObject
 // )
-
 makeLeastSquaresGradScheme
 (
     pointCellsLeastSquares,
@@ -49,5 +47,4 @@ makeLeastSquaresGradScheme
     edgeCellsLeastSquares,
     centredCECCellToCellStencilObject
 )
-
 // ************************************************************************* //

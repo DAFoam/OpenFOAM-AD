@@ -31,7 +31,6 @@ License
 #include "Gamma.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 namespace Foam
 {
     makeLimitedMultivariateSurfaceInterpolationScheme
@@ -40,5 +39,4 @@ namespace Foam
         GammaLimiter
     )
 }
-
 // ************************************************************************* //

@@ -451,8 +451,10 @@ bool Foam::OFstreamCollator::write
                 (
                     UPstream::commsTypes::nonBlocking,
                     proci,
-                    slaveData[proci].data(),
-                    slaveData[proci].size_bytes(),
+                    reinterpret_cast<char*>(slaveData[proci].begin()),
+                    slaveData[proci].byteSize(),
+                    "Foam::OFstreamCollator::write",
+                    typeid(slaveData[proci].begin()),
                     Pstream::msgType(),
                     localComm_
                 );
@@ -466,8 +468,10 @@ bool Foam::OFstreamCollator::write
                 (
                     UPstream::commsTypes::nonBlocking,
                     0,
-                    slice.cdata(),
-                    slice.size_bytes(),
+                    reinterpret_cast<const char*>(slice.begin()),
+                    slice.byteSize(),
+                    "Foam::OFstreamCollator::write",
+                    typeid(slice.begin()),
                     Pstream::msgType(),
                     localComm_
                 )

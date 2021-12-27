@@ -1722,7 +1722,7 @@ Foam::cellCellStencils::inverseDistance::inverseDistance
         forAll(volCellTypes, celli)
         {
             // Round to integer
-            cellTypes_[celli] = volCellTypes[celli];
+            cellTypes_[celli] = volCellTypes[celli].getValue();
         }
     }
 
@@ -1857,11 +1857,11 @@ bool Foam::cellCellStencils::inverseDistance::update()
             }
             else if (mesh_.nGeometricD() == 2)
             {
-                nDivs = label(Foam::sqrt(scalar(mesh_.nCells())));
+                nDivs = label(sqrt(scalar(mesh_.nCells())).getValue());
             }
             else
             {
-                nDivs = label(Foam::cbrt(scalar(mesh_.nCells())));
+                nDivs = label(cbrt(scalar(mesh_.nCells())).getValue());
             }
 
             labelVector v(nDivs, nDivs, nDivs);
@@ -1929,7 +1929,7 @@ bool Foam::cellCellStencils::inverseDistance::update()
 
     const globalIndex globalCells(mesh_.nCells());
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::cellCellStencils::inverseDistance::update()", false);
 
     // Mark holes (in allCellTypes)
     for (label srcI = 0; srcI < meshParts.size()-1; srcI++)

@@ -262,7 +262,7 @@ void kEpsilon<BasicTurbulenceModel>::correct()
       - fvm::laplacian(alpha*rho*DepsilonEff(), epsilon_)
      ==
         C1_*alpha()*rho()*GbyNu*Cmu_*k_()
-      - fvm::SuSp(((2.0/3.0)*C1_ - C3_)*alpha()*rho()*divU, epsilon_)
+      - fvm::SuSp((scalar(2.0/3.0)*C1_ - C3_)*alpha()*rho()*divU, epsilon_)
       - fvm::Sp(C2_*alpha()*rho()*epsilon_()/k_(), epsilon_)
       + epsilonSource()
       + fvOptions(alpha, rho, epsilon_)

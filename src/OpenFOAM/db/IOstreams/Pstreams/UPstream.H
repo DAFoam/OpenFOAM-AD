@@ -296,6 +296,19 @@ public:
         //- Debugging: warn for use of any communicator differing from warnComm
         static label warnComm;
 
+        // CoDiPack4OpenFOAM. The following variables are created to enable parallel AD
+        //- Which procOneToOneList to use
+        static label procOneToOneCommListIndex;
+
+        //- a list to store the one-to-one communication in parallel cases
+        static List< List<int> > procOneToOneCommList;
+
+        //-  calculate the procOneToOneCommList
+        static void calcProcOneToOneCommList
+        (
+            List<DynamicList<label>> neighbProcList,
+            List<List<label>>& commList
+        );
 
     // Constructors
 
@@ -593,6 +606,9 @@ public:
             const UList<int>& recvSizes,
             const UList<int>& recvOffsets,
 
+            const word callerInfo,
+            const std::type_info& typeInfo,
+
             const label communicator = worldComm
         );
 
@@ -627,6 +643,8 @@ public:
             char* recvData,
             const UList<int>& recvSizes,
             const UList<int>& recvOffsets,
+            const word callerInfo,
+            const std::type_info& typeInfo,
             const label communicator = worldComm
         );
 
@@ -639,6 +657,8 @@ public:
 
             char* recvData,
             int recvSize,
+            const word callerInfo,
+            const std::type_info& typeInfo,
             const label communicator = worldComm
         );
 

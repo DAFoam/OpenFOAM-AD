@@ -417,7 +417,7 @@ void Foam::mapDistributeBase::distribute
 
         if (!is_contiguous<T>::value)
         {
-            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, tag, comm);
+            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::mapDistributeBase::distribute", false, tag);
 
             // Stream data into buffer
             for (const int domain : Pstream::allProcs(comm))
@@ -535,10 +535,11 @@ void Foam::mapDistributeBase::distribute
                     (
                         Pstream::commsTypes::nonBlocking,
                         domain,
-                        subField.cdata_bytes(),
-                        subField.size_bytes(),
-                        tag,
-                        comm
+                        reinterpret_cast<const char*>(subField.begin()),
+                        subField.byteSize(),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(subField.begin()),
+                        tag
                     );
                 }
             }
@@ -558,10 +559,11 @@ void Foam::mapDistributeBase::distribute
                     (
                         Pstream::commsTypes::nonBlocking,
                         domain,
-                        recvFields[domain].data_bytes(),
-                        recvFields[domain].size_bytes(),
-                        tag,
-                        comm
+                        reinterpret_cast<char*>(recvFields[domain].begin()),
+                        recvFields[domain].byteSize(),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(recvFields[domain].begin()),
+                        tag
                     );
                 }
             }
@@ -939,7 +941,7 @@ void Foam::mapDistributeBase::distribute
 
         if (!is_contiguous<T>::value)
         {
-            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, tag, comm);
+            PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::mapDistributeBase::distribute", false, tag);
 
             // Stream data into buffer
             for (const int domain : Pstream::allProcs(comm))
@@ -1060,10 +1062,11 @@ void Foam::mapDistributeBase::distribute
                     (
                         Pstream::commsTypes::nonBlocking,
                         domain,
-                        subField.cdata_bytes(),
-                        subField.size_bytes(),
-                        tag,
-                        comm
+                        reinterpret_cast<const char*>(subField.begin()),
+                        subField.size()*sizeof(T),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(subField.begin()),
+                        tag
                     );
                 }
             }
@@ -1083,10 +1086,11 @@ void Foam::mapDistributeBase::distribute
                     (
                         Pstream::commsTypes::nonBlocking,
                         domain,
-                        recvFields[domain].data_bytes(),
-                        recvFields[domain].size_bytes(),
-                        tag,
-                        comm
+                        reinterpret_cast<char*>(recvFields[domain].begin()),
+                        recvFields[domain].size()*sizeof(T),
+                        "Foam::mapDistributeBase::distribute",
+                        typeid(recvFields[domain].begin()),
+                        tag
                     );
                 }
             }

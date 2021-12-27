@@ -30,12 +30,14 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
+// CoDiPack4OpenFOAM TODO commented out for now
+/*
 template<class Cmpt>
 inline Foam::SymmTensor<Cmpt>::SymmTensor(const Foam::zero)
 :
     SymmTensor::vsType(Zero)
 {}
-
+*/
 
 template<class Cmpt>
 template<class Cmpt2>

@@ -89,7 +89,7 @@ Foam::regionModels::regionModel::mapRegionPatchField
     {
         const polyPatch& p = regionMesh().boundaryMesh()[regionPatchi];
 
-        return tmp<Field<Type>>::New(p.size(), Zero);
+        return tmp<Field<Type>>::New(p.size(), pTraits<Type>::zero);
     }
 }
 

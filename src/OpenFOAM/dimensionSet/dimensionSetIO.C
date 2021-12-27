@@ -248,10 +248,11 @@ void Foam::dimensionSet::tokeniser::putBack(const token& t)
 
 void Foam::dimensionSet::round(const scalar tol)
 {
-    scalar integralPart;
+    double integralPart;
     for (scalar& val : exponents_)
     {
-        const scalar fractionalPart = std::modf(val, &integralPart);
+        // CoDiPack4OpenFOAM
+        const scalar fractionalPart = std::modf(val.getValue(), &integralPart);
 
         if (mag(fractionalPart-1.0) <= tol)
         {
@@ -380,7 +381,7 @@ Foam::dimensionedScalar Foam::dimensionSet::parse
                     ds.dimensions().reset(pow(ds.dimensions(), expon.value()));
                     // Round to nearest integer if close to it
                     ds.dimensions().round(10*smallExponent);
-                    ds.value() = Foam::pow(ds.value(), expon.value());
+                    ds.value() = pow(ds.value(), expon.value());
                 }
                 else
                 {
@@ -596,7 +597,7 @@ Foam::Istream& Foam::dimensionSet::read
 
                 // Round to nearest integer if close to it
                 symbolSet.round(10*smallExponent);
-                multiplier *= Foam::pow(s.value(), exponent);
+                multiplier *= pow(s.value(), exponent);
             }
             else
             {
@@ -712,7 +713,7 @@ Foam::Ostream& Foam::dimensionSet::write
                 {
                     os  << '^' << exponents[i];
 
-                    multiplier *= Foam::pow(ds.value(), exponents[i]);
+                    multiplier *= pow(ds.value(), exponents[i]);
                 }
                 else
                 {

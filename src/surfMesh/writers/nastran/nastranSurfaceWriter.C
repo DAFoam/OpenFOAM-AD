@@ -314,7 +314,7 @@ void Foam::surfaceWriters::nastranWriter::writeGeometry
     labelList pidsUsed = labelHashSet(surf.zoneIds()).sortedToc();
     if (pidsUsed.empty())
     {
-        pidsUsed.resize(1, Zero); // fallback
+        pidsUsed.resize(1, 0); // fallback
     }
 
     for (auto pid : pidsUsed)

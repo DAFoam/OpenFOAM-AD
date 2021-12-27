@@ -332,7 +332,7 @@ Foam::tmp<Foam::scalarField> Foam::Function1Types::TableBase<Type>::x() const
 template<class Type>
 Foam::tmp<Foam::Field<Type>> Foam::Function1Types::TableBase<Type>::y() const
 {
-    auto tfld = tmp<Field<Type>>::New(table_.size(), Zero);
+    auto tfld = tmp<Field<Type>>::New(table_.size(), pTraits<Type>::zero);
     auto& fld = tfld.ref();
 
     forAll(table_, i)

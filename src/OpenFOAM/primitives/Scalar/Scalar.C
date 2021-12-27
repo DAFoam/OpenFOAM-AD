@@ -165,8 +165,8 @@ Istream& operator>>(Istream& is, Scalar& val)
         val =
         (
             (prefix == token::MINUS)
-          ? (0 - t.number())
-          : t.number()
+          ? (0 - t.number().getValue())
+          : t.number().getValue()
         );
     }
     else

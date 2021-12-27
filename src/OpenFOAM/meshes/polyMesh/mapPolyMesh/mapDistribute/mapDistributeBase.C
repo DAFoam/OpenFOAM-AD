@@ -466,6 +466,8 @@ void Foam::mapDistributeBase::exchangeAddressing
     (
         wantedRemoteElements,
         subMap_,
+	"Foam::mapDistributeBase::exchangeAddressing",
+	false,
         tag,
         comm_
     );
@@ -546,6 +548,8 @@ void Foam::mapDistributeBase::exchangeAddressing
     (
         wantedRemoteElements,
         subMap_,
+	"Foam::mapDistributeBase::exchangeAddressing",
+	false,
         tag,
         comm_
     );
@@ -960,10 +964,11 @@ void Foam::mapDistributeBase::compact
                 (
                     Pstream::commsTypes::nonBlocking,
                     domain,
-                    recvFields[domain].data_bytes(),
-                    recvFields[domain].size_bytes(),
-                    tag,
-                    comm_
+                    reinterpret_cast<char*>(recvFields[domain].begin()),
+                    recvFields[domain].size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(recvFields[domain].begin()),
+                    tag
                 );
             }
         }
@@ -994,10 +999,11 @@ void Foam::mapDistributeBase::compact
                 (
                     Pstream::commsTypes::nonBlocking,
                     domain,
-                    subField.cdata_bytes(),
-                    subField.size_bytes(),
-                    tag,
-                    comm_
+                    reinterpret_cast<const char*>(subField.begin()),
+                    subField.size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(subField.begin()),
+                    tag
                 );
             }
         }
@@ -1132,10 +1138,11 @@ void Foam::mapDistributeBase::compact
                 (
                     Pstream::commsTypes::nonBlocking,
                     domain,
-                    recvFields[domain].data_bytes(),
-                    recvFields[domain].size_bytes(),
-                    tag,
-                    comm_
+                    reinterpret_cast<char*>(recvFields[domain].begin()),
+                    recvFields[domain].size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(recvFields[domain].begin()),
+                    tag
                 );
             }
         }
@@ -1165,10 +1172,11 @@ void Foam::mapDistributeBase::compact
                 (
                     Pstream::commsTypes::nonBlocking,
                     domain,
-                    subField.cdata_bytes(),
-                    subField.size_bytes(),
-                    tag,
-                    comm_
+                    reinterpret_cast<const char*>(subField.begin()),
+                    subField.size()*sizeof(bool),
+                    "Foam::mapDistributeBase::compact",
+                    typeid(subField.begin()),
+                    tag
                 );
             }
         }

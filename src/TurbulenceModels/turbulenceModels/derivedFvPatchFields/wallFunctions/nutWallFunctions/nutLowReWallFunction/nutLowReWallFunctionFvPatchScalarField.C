@@ -38,7 +38,7 @@ License
 Foam::tmp<Foam::scalarField> Foam::nutLowReWallFunctionFvPatchScalarField::
 calcNut() const
 {
-    return tmp<scalarField>::New(patch().size(), Zero);
+    return tmp<scalarField>::New(patch().size(), scalar(0.0));
 }
 
 

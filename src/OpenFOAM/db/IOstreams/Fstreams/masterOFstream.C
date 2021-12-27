@@ -121,7 +121,7 @@ void Foam::masterOFstream::commit()
 
 
         // Different files
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::masterOFstream::~masterOFstream()", false);
 
         // Send my buffer to master
         if (!Pstream::master())

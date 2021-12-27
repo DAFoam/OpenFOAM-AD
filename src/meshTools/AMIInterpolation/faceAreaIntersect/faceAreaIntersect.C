@@ -274,7 +274,7 @@ void Foam::faceAreaIntersect::triangleIntersect
         }
         else
         {
-            plane pl0(tgt0, n0/Foam::sqrt(magSqrN0), false);
+            plane pl0(tgt0, n0/sqrt(magSqrN0), false);
             triSliceWithPlane(src, pl0, workTris1, nWorkTris1, t);
         }
     }
@@ -306,7 +306,7 @@ void Foam::faceAreaIntersect::triangleIntersect
         }
         else
         {
-            plane pl1(tgt1, n1/Foam::sqrt(magSqrN1), false);
+            plane pl1(tgt1, n1/sqrt(magSqrN1), false);
 
             nWorkTris2 = 0;
 
@@ -344,7 +344,7 @@ void Foam::faceAreaIntersect::triangleIntersect
         }
         else
         {
-            plane pl2(tgt2, n2/Foam::sqrt(magSqrN2), false);
+            plane pl2(tgt2, n2/sqrt(magSqrN2), false);
 
             nWorkTris1 = 0;
 

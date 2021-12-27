@@ -174,7 +174,7 @@ Foam::point Foam::cell::centre
 
     // Approximate cell centre as the area average of all face centres
 
-    vector ctr = Zero;
+    vector ctr = vector::zero;
     scalar sumArea = 0;
 
     const labelList& cFaces = *this;
@@ -192,7 +192,7 @@ Foam::point Foam::cell::centre
     // volume-weighted averaging their centres
 
     scalar sumV = 0;
-    vector sumVc = Zero;
+    vector sumVc = vector::zero;
 
     for (const label facei : cFaces)
     {
@@ -233,7 +233,7 @@ Foam::scalar Foam::cell::mag
 
     // Approximate cell centre as the average of all face centres
 
-    vector ctr = Zero;
+    vector ctr = vector::zero;
     for (const label facei : cFaces)
     {
         ctr += meshFaces[facei].centre(meshPoints);

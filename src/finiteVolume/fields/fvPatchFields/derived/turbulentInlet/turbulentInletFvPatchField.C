@@ -38,11 +38,12 @@ Foam::turbulentInletFvPatchField<Type>::turbulentInletFvPatchField
 :
     fixedValueFvPatchField<Type>(p, iF),
     ranGen_(label(0)),
-    fluctuationScale_(Zero),
+    fluctuationScale_(pTraits<Type>::zero),
     referenceField_(p.size()),
-    alpha_(0.1),
+    alpha_(scalar(0.1)),
     curTimeIndex_(-1)
-{}
+{
+}
 
 
 template<class Type>

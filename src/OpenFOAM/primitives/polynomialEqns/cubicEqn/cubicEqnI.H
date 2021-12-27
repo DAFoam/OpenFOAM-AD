@@ -30,12 +30,13 @@ License
 inline Foam::cubicEqn::cubicEqn()
 {}
 
-
+// CoDiPack4OpenFOAM TODO commented out for now
+/*
 inline Foam::cubicEqn::cubicEqn(const Foam::zero)
 :
     VectorSpace<cubicEqn, scalar, 4>(Foam::zero{})
 {}
-
+*/
 
 inline Foam::cubicEqn::cubicEqn
 (

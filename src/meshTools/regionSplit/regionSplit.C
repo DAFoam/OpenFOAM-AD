@@ -774,7 +774,9 @@ Foam::regionSplit::reduceRegionsImpl
     Pstream::exchange<labelList, label>
     (
         sendNonLocal,
-        recvNonLocal
+        recvNonLocal,
+	"Foam::regionSplit::reduceRegions",
+	false
     );
 
 
@@ -796,7 +798,9 @@ Foam::regionSplit::reduceRegionsImpl
         Pstream::exchange<labelList, label>
         (
             sendLocal,
-            recvNonLocal
+            recvNonLocal,
+	    "Foam::regionSplit::reduceRegions",
+	    false
         );
     }
 

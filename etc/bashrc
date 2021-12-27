@@ -97,6 +97,9 @@ export WM_COMPILE_OPTION=Opt
 # Can also use INTELMPI-xyz etc and define your own wmake rule
 export WM_MPLIB=SYSTEMOPENMPI
 
+# [WM_CODI_AD_MODE] - Automatic differentiation mode
+# = CODI_AD_FORWARD | CODI_AD_REVERSE
+export WM_CODI_AD_MODE=CODI_AD_FORWARD
 
 #------------------------------------------------------------------------------
 # (advanced / legacy)
@@ -190,6 +193,15 @@ then
 else
     echo "Error: did not locate installation path for $WM_PROJECT-$WM_PROJECT_VERSION" 1>&2
     echo "No directory: $WM_PROJECT_DIR" 1>&2
+fi
+
+# Set the AD postfix for libraries
+if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
+    export WM_CODI_AD_LIB_POSTFIX="ADR"
+elif [ "$WM_CODI_AD_MODE" = "CODI_AD_FORWARD" ]; then
+    export WM_CODI_AD_LIB_POSTFIX="ADF"
+else
+    echo "WM_CODI_AD_MODE not valid!!!! Options are: CODI_AD_FORWARD or CODI_AD_REVERSE"
 fi
 
 # Cleanup variables (done as final statement for a clean exit code)

@@ -72,8 +72,8 @@ Type Foam::face::average
 
     label nPoints = size();
 
-    point centrePoint = Zero;
-    Type cf = Zero;
+    point centrePoint = vector::zero;
+    Type cf = pTraits<Type>::zero;
 
     for (label pI=0; pI<nPoints; pI++)
     {
@@ -85,7 +85,7 @@ Type Foam::face::average
     cf /= nPoints;
 
     scalar sumA = 0;
-    Type sumAf = Zero;
+    Type sumAf = pTraits<Type>::zero;
 
     for (label pI=0; pI<nPoints; pI++)
     {

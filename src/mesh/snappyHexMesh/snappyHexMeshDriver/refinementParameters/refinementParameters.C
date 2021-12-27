@@ -148,7 +148,7 @@ Foam::refinementParameters::refinementParameters
     }
     else
     {
-        curvature_ = Foam::cos(degToRad(featAngle));
+        curvature_ = cos(degToRad(featAngle));
     }
 }
 

@@ -298,8 +298,7 @@ bool Foam::triangleFuncs::intersect
         }
     }
 
-    scalar tol = SMALL*Foam::sqrt(magArea);
-
+    scalar tol = SMALL*sqrt(magArea); 
     if (oppositeVertex == 0)
     {
         // 0 on opposite side. Cut edges 01 and 02

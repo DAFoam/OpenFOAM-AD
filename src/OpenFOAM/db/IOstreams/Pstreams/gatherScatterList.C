@@ -84,8 +84,10 @@ void Pstream::gatherList
                 (
                     UPstream::commsTypes::scheduled,
                     belowID,
-                    receivedValues.data_bytes(),
-                    receivedValues.size_bytes(),
+                    reinterpret_cast<char*>(receivedValues.begin()),
+                    receivedValues.byteSize(),
+                    "Pstream::gatherList",
+                    typeid(receivedValues.begin()),
                     tag,
                     comm
                 );
@@ -160,8 +162,10 @@ void Pstream::gatherList
                 (
                     UPstream::commsTypes::scheduled,
                     myComm.above(),
-                    sendingValues.cdata_bytes(),
-                    sendingValues.size_bytes(),
+                    reinterpret_cast<const char*>(sendingValues.begin()),
+                    sendingValues.byteSize(),
+                    "Pstream::gatherList",
+                    typeid(sendingValues.begin()),
                     tag,
                     comm
                 );
@@ -246,8 +250,10 @@ void Pstream::scatterList
                 (
                     UPstream::commsTypes::scheduled,
                     myComm.above(),
-                    receivedValues.data_bytes(),
-                    receivedValues.size_bytes(),
+                    reinterpret_cast<char*>(receivedValues.begin()),
+                    receivedValues.byteSize(),
+                    "Pstream::scatterList",
+                    typeid(receivedValues.begin()),
                     tag,
                     comm
                 );
@@ -302,8 +308,10 @@ void Pstream::scatterList
                 (
                     UPstream::commsTypes::scheduled,
                     belowID,
-                    sendingValues.cdata_bytes(),
-                    sendingValues.size_bytes(),
+                    reinterpret_cast<const char*>(sendingValues.begin()),
+                    sendingValues.byteSize(),
+                    "Pstream::scatterList",
+                    typeid(sendingValues.begin()),
                     tag,
                     comm
                 );

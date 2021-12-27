@@ -65,21 +65,24 @@ fi
 # OpenFOAM libraries
 src/Allwmake $targetType $*
 
-# OpenFOAM applications
-applications/Allwmake $targetType $*
+echo "========================================"
+echo "Compile OpenFOAM applications"
+echo
+#applications/Allwmake $targetType $*
 
+# Compile common applications
+if [ "$WM_CODI_AD_MODE" = "CODI_AD_REVERSE" ]; then
+ wmake applications/solvers/incompressible/DASimpleFoamReverseAD
+fi
 
 # Additional components/modules
-case "$FOAM_MODULE_PREFIX" in
-(false | none)
-    echo ========================================
-    echo "OpenFOAM modules disabled (prefix=${FOAM_MODULE_PREFIX})"
-    echo
-    ;;
-(*)
-    # Use wmake -all instead of Allwmake to allow for overrides
-    ( cd "$WM_PROJECT_DIR/modules" 2>/dev/null && wmake -all )
-esac
+#if [ -d "$WM_PROJECT_DIR/modules" ]
+#then
+#    echo "========================================"
+#    echo "Compile OpenFOAM modules"
+#    echo
+#    (cd $WM_PROJECT_DIR/modules 2>/dev/null && wmake -all)
+#fi
 
 # Count files in given directory. Ignore "Test-*" binaries.
 _foamCountDirEntries()

@@ -79,9 +79,9 @@ void Foam::vtkSetWriter<Type>::write
 
     for (const point& pt : points)
     {
-        os  << float(pt.x()) << ' '
-            << float(pt.y()) << ' '
-            << float(pt.z()) << nl;
+        os  << float(pt.x().getValue()) << ' '
+            << float(pt.y().getValue()) << ' '
+            << float(pt.z().getValue()) << nl;
     }
 
     os  << "POINT_DATA " << points.size() << nl
@@ -144,9 +144,9 @@ void Foam::vtkSetWriter<Type>::write
     {
         for (const point& pt : points)
         {
-            os  << float(pt.x()) << ' '
-                << float(pt.y()) << ' '
-                << float(pt.z()) << nl;
+            os  << float(pt.x().getValue()) << ' '
+                << float(pt.y().getValue()) << ' '
+                << float(pt.z().getValue()) << nl;
         }
     }
 

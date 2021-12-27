@@ -65,13 +65,13 @@ const Foam::labelVector Foam::labelVector::vsType::min
 template<>
 const Foam::labelVector Foam::labelVector::vsType::rootMax
 (
-    labelVector::uniform(sqrt(scalar(labelMax)))
+    labelVector::uniform(sqrt(scalar(labelMax)).getValue())
 );
 
 template<>
 const Foam::labelVector Foam::labelVector::vsType::rootMin
 (
-    labelVector::uniform(-sqrt(scalar(labelMax)))
+    labelVector::uniform(-sqrt(scalar(labelMax)).getValue())
 );
 
 

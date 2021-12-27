@@ -80,3 +80,7 @@ doc/Doxygen/DTAGS
 
 # Ignore the test directory
 /tutorialsTest
+
+# MacOS files
+.DS_Store
+._*

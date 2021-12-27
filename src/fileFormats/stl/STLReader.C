@@ -276,6 +276,8 @@ Foam::label Foam::fileFormats::STLReader::mergePointsMap
     labelList& pointMap
 ) const
 {
+    // CodiPack4OpenFOAM TODO need to fix this
+	/*
     return Foam::mergePoints
     (
         points_,
@@ -283,6 +285,9 @@ Foam::label Foam::fileFormats::STLReader::mergePointsMap
         false, // verbose
         pointMap
     );
+    */
+
+    return 1;
 }
 
 

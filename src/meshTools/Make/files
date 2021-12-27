@@ -333,4 +333,4 @@ regionModel/regionProperties/regionProperties.C
 
 tetOverlapVolume/tetOverlapVolume.C
 
-LIB = $(FOAM_LIBBIN)/libmeshTools
+LIB = $(FOAM_LIBBIN)/libmeshTools$(WM_CODI_AD_LIB_POSTFIX)

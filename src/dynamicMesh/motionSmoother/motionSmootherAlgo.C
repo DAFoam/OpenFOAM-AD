@@ -392,7 +392,7 @@ void Foam::motionSmootherAlgo::correct()
 {
     oldPoints_ = mesh_.points();
 
-    scale_ = 1.0;
+    scale_ = scalar(1.0);
 
     // No need to update twoDmotion corrector since only holds edge labels
     // which will remain the same as before. So unless the mesh was distorted
@@ -781,6 +781,7 @@ Foam::tmp<Foam::pointField> Foam::motionSmootherAlgo::curPoints() const
         }
     }
 
+    // CodiPack4OpenFOAM TODO Need to check if the modification is correct
     pointVectorField totalDisplacement
     (
         IOobject
@@ -792,10 +793,16 @@ Foam::tmp<Foam::pointField> Foam::motionSmootherAlgo::curPoints() const
             IOobject::NO_WRITE,
             false
         ),
-        scale_*displacement_,
+        displacement_,
         actualPatchFieldTypes,
         actualPatchTypes
     );
+    forAll(totalDisplacement, idxI) totalDisplacement[idxI] *= scale_[idxI];
+    forAll(totalDisplacement.boundaryField(), patchI)
+    {
+        totalDisplacement.boundaryFieldRef()[patchI] *= scale_.boundaryField()[patchI];
+    }
+
     correctBoundaryConditions(totalDisplacement);
 
     if (debug)
@@ -1013,7 +1020,7 @@ bool Foam::motionSmootherAlgo::scaleMesh
             mesh_,
             scale_,
             maxEqOp<scalar>(),
-            -GREAT              // null value
+            scalar(-GREAT)              // null value
         );
 
 

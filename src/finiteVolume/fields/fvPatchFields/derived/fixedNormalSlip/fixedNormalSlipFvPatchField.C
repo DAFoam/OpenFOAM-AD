@@ -39,7 +39,7 @@ Foam::fixedNormalSlipFvPatchField<Type>::fixedNormalSlipFvPatchField
 )
 :
     parent_bctype(p, iF),
-    fixedValue_(p.size(), Zero),
+    fixedValue_(p.size(), pTraits<Type>::zero),
     writeValue_(false)
 {}
 

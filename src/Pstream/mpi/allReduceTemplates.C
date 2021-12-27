@@ -36,8 +36,8 @@ void Foam::allReduce
 (
     Type& Value,
     int MPICount,
-    MPI_Datatype MPIType,
-    MPI_Op MPIOp,
+    AMPI_Datatype MPIType,
+    AMPI_Op AMPIOp,
     const BinaryOp& bop,
     const int tag,
     const label communicator
@@ -60,7 +60,7 @@ void Foam::allReduce
 
                 if
                 (
-                    MPI_Recv
+                    AMPI_Recv
                     (
                         &value,
                         MPICount,
@@ -68,7 +68,7 @@ void Foam::allReduce
                         proci,
                         tag,
                         PstreamGlobals::MPICommunicators_[communicator],
-                        MPI_STATUS_IGNORE
+                        AMPI_STATUS_IGNORE
                     )
                 )
                 {
@@ -84,7 +84,7 @@ void Foam::allReduce
         {
             if
             (
-                MPI_Send
+                AMPI_Send
                 (
                     &Value,
                     MPICount,
@@ -108,7 +108,7 @@ void Foam::allReduce
             {
                 if
                 (
-                    MPI_Send
+                    AMPI_Send
                     (
                         &Value,
                         MPICount,
@@ -129,7 +129,7 @@ void Foam::allReduce
         {
             if
             (
-                MPI_Recv
+                AMPI_Recv
                 (
                     &Value,
                     MPICount,
@@ -137,7 +137,7 @@ void Foam::allReduce
                     UPstream::masterNo(),
                     tag,
                     PstreamGlobals::MPICommunicators_[communicator],
-                    MPI_STATUS_IGNORE
+                    AMPI_STATUS_IGNORE
                 )
             )
             {
@@ -150,13 +150,13 @@ void Foam::allReduce
     else
     {
         Type sum;
-        MPI_Allreduce
+        AMPI_Allreduce
         (
             &Value,
             &sum,
             MPICount,
             MPIType,
-            MPIOp,
+            AMPIOp,
             PstreamGlobals::MPICommunicators_[communicator]
         );
         Value = sum;

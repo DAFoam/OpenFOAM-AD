@@ -6,5 +6,5 @@ EXE_INC = \
     -I$(LIB_SRC)/thermophysicalModels/reactionThermo/lnInclude \
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lcompressibleTransportModels
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX)

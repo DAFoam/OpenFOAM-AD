@@ -81,7 +81,7 @@ dimensionedScalar pow
     (
         "pow(" + ds.name() + ',' + expt.name() + ')',
         pow(ds.dimensions(), expt),
-        ::pow(ds.value(), expt.value())
+        pow(ds.value(), expt.value())
     );
 }
 
@@ -147,7 +147,7 @@ dimensionedScalar sqrt(const dimensionedScalar& ds)
     (
         "sqrt(" + ds.name() + ')',
         pow(ds.dimensions(), dimensionedScalar("0.5", dimless, 0.5)),
-        ::sqrt(ds.value())
+        sqrt(ds.value())
     );
 }
 
@@ -158,7 +158,7 @@ dimensionedScalar cbrt(const dimensionedScalar& ds)
     (
         "cbrt(" + ds.name() + ')',
         pow(ds.dimensions(), dimensionedScalar("(1|3)", dimless, 1.0/3.0)),
-        ::cbrt(ds.value())
+        pow(ds.value(), 1.0/3.0)
     );
 }
 
@@ -239,7 +239,6 @@ dimensionedScalar negPart(const dimensionedScalar& ds)
     );
 }
 
-
 #define transFunc(func)                                                        \
 dimensionedScalar func(const dimensionedScalar& ds)                            \
 {                                                                              \
@@ -254,7 +253,7 @@ dimensionedScalar func(const dimensionedScalar& ds)                            \
     (                                                                          \
         #func "(" + ds.name() + ')',                                           \
         dimless,                                                               \
-        ::func(ds.value())                                                     \
+        func(ds.value())                                                     \
     );                                                                         \
 }
 
@@ -283,7 +282,6 @@ transFunc(y1)
 
 #undef transFunc
 
-
 #define transFunc(func)                                                        \
 dimensionedScalar func(const int n, const dimensionedScalar& ds)               \
 {                                                                              \
@@ -298,7 +296,7 @@ dimensionedScalar func(const int n, const dimensionedScalar& ds)               \
     (                                                                          \
         #func "(" + name(n) + ',' + ds.name() + ')',                           \
         dimless,                                                               \
-        ::func(n, ds.value())                                                  \
+        func(n, ds.value())                                                  \
     );                                                                         \
 }
 
@@ -318,7 +316,7 @@ dimensionedScalar atan2
     (
         "atan2(" + x.name() + ',' + y.name() + ')',
         atan2(x.dimensions(), y.dimensions()),
-        ::atan2(x.value(), y.value())
+        atan2(x.value(), y.value())
     );
 }
 

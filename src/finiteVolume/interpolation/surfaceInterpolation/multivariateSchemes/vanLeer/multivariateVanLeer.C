@@ -31,7 +31,6 @@ License
 #include "vanLeer.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 namespace Foam
 {
     makeLimitedMultivariateSurfaceInterpolationScheme
@@ -40,5 +39,4 @@ namespace Foam
         vanLeerLimiter
     )
 }
-
 // ************************************************************************* //

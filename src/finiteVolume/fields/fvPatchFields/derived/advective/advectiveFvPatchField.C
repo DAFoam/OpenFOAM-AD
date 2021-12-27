@@ -48,11 +48,14 @@ Foam::advectiveFvPatchField<Type>::advectiveFvPatchField
     mixedFvPatchField<Type>(p, iF),
     phiName_("phi"),
     rhoName_("rho"),
-    fieldInf_(Zero),
+    fieldInf_(pTraits<Type>::zero),
     lInf_(-GREAT)
 {
-    this->refValue() = Zero;
-    this->refGrad() = Zero;
+    forAll(this->refValue(), idxI)
+    {
+	this->refValue()[idxI] = pTraits<Type>::zero;
+    }
+    this->refGrad() = pTraits<Type>::zero;
     this->valueFraction() = 0.0;
 }
 
@@ -85,7 +88,7 @@ Foam::advectiveFvPatchField<Type>::advectiveFvPatchField
     mixedFvPatchField<Type>(p, iF),
     phiName_(dict.getOrDefault<word>("phi", "phi")),
     rhoName_(dict.getOrDefault<word>("rho", "rho")),
-    fieldInf_(Zero),
+    fieldInf_(pTraits<Type>::zero),
     lInf_(-GREAT)
 {
     if (dict.found("value"))
@@ -101,7 +104,7 @@ Foam::advectiveFvPatchField<Type>::advectiveFvPatchField
     }
 
     this->refValue() = *this;
-    this->refGrad() = Zero;
+    this->refGrad() = pTraits<Type>::zero;
     this->valueFraction() = 0.0;
 
     if (dict.readIfPresent("lInf", lInf_))

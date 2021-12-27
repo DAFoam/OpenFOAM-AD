@@ -5,7 +5,7 @@ EXE_INC = \
     -I$(LIB_SRC)/mesh/blockMesh/lnInclude
 
 LIB_LIBS = \
-    -lfileFormats \
-    -lsurfMesh \
-    -lmeshTools \
-    -lblockMesh
+    -lfileFormats$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsurfMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lblockMesh$(WM_CODI_AD_LIB_POSTFIX)

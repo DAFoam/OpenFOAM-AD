@@ -40,6 +40,11 @@ SourceFiles
 #include "UPstream.H"
 
 #include <mpi.h>
+// MediPack
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/externals/codiMpiTypes.hpp>
+using namespace medi;
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -51,8 +56,8 @@ void allReduce
 (
     Type& Value,
     int count,
-    MPI_Datatype MPIType,
-    MPI_Op op,
+    AMPI_Datatype MPIType,
+    AMPI_Op op,
     const BinaryOp& bop,
     const int tag,
     const label communicator

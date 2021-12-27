@@ -263,7 +263,7 @@ void Foam::polyBoundaryMesh::clearAddressing()
 
 void Foam::polyBoundaryMesh::calcGeometry()
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::calcGeometry()", false);
 
     if
     (
@@ -271,17 +271,63 @@ void Foam::polyBoundaryMesh::calcGeometry()
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
-        forAll(*this, patchi)
-        {
-            operator[](patchi).initGeometry(pBufs);
-        }
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with MeDiPack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write with blocking mode
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack.
 
-        pBufs.finishedSends();
+        // Refer to the communication used in the evaluate function from
+        // src/OpenFOAM/fields/GeometricFields/GeometricField/GeometricBoundaryField.C
+
+        label nProcs = Pstream::nProcs();
+        label myProc = Pstream::myProcNo();
+        // calculate neighbProcList
+        List<DynamicList<label> > neighbProcList(nProcs);
+        DynamicList<label> myList;
+        forAll(mesh_.boundaryMesh(),patchI)
+        {
+            if (isType<processorPolyPatch>(mesh_.boundaryMesh()[patchI]) && mesh_.boundaryMesh()[patchI].size() > 0)
+            {
+                const processorPolyPatch& pp = refCast<const processorPolyPatch>(mesh_.boundaryMesh()[patchI]);
+                myList.append(pp.neighbProcNo());
+            }
+        }
+        // now gather all the info
+        // assign values for the listlists
+        neighbProcList[myProc] = myList;
+        // gather all info to the master proc
+        Pstream::gatherList(neighbProcList);
+        // scatter all info to every procs
+        Pstream::scatterList(neighbProcList);
+
+        // now calculate oneToOneList.
+        // NOTE: this should be the first call to compute oneToOneList
+        // we should not need to re-compute it.
+        Pstream::calcProcOneToOneCommList(neighbProcList, Pstream::procOneToOneCommList);
+
+        // loop over all oneToOneList
+        forAll(Pstream::procOneToOneCommList, idxI)
+        {
+            // set the index for procOneToOneCommListIndex such that the 
+            // initGeometry function knows which oneToOneList to use
+            Pstream::procOneToOneCommListIndex = idxI;
+
+            forAll(*this, patchi)
+            {
+                operator[](patchi).initGeometry(pBufs);
+            }
+
+        }
 
         forAll(*this, patchi)
         {
             operator[](patchi).calcGeometry(pBufs);
         }
+
     }
     else if (Pstream::defaultCommsType == Pstream::commsTypes::scheduled)
     {
@@ -1116,7 +1162,7 @@ bool Foam::polyBoundaryMesh::checkDefinition(const bool report) const
 
 void Foam::polyBoundaryMesh::movePoints(const pointField& p)
 {
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::movePoints", false);
 
     if
     (
@@ -1124,12 +1170,52 @@ void Foam::polyBoundaryMesh::movePoints(const pointField& p)
      || Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
     )
     {
-        forAll(*this, patchi)
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with MeDiPack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write with blocking mode
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack.
+
+        // Refer to the communication used in the evaluate function from
+        // src/OpenFOAM/fields/GeometricFields/GeometricField/GeometricBoundaryField.C
+
+        if (Pstream::procOneToOneCommList.size() == 0)
         {
-            operator[](patchi).initMovePoints(pBufs, p);
+            // procOneToOneCommList should have been initialized in polyBoundaryMesh::calcGeometry.
+            // If not, return an error
+            FatalErrorInFunction
+                << "movePoints"
+                << "procOneToOneCommList not initialized!"
+                << exit(FatalError);
         }
 
-        pBufs.finishedSends();
+        // loop over all oneToOneList
+        forAll(Pstream::procOneToOneCommList, idxI)
+        {
+
+            // set the index for procOneToOneCommListIndex such that the 
+            // initMovePoints function knows which oneToOneList to use
+            Pstream::procOneToOneCommListIndex = idxI;
+
+            if(idxI == 0)
+            {
+                forAll(*this, patchi)
+                {
+                    operator[](patchi).initMovePoints(pBufs, p);
+                }
+            }
+            else
+            {
+                forAll(*this, patchi)
+                {
+                    operator[](patchi).initGeometry(pBufs);
+                }
+            }
+
+        }
 
         forAll(*this, patchi)
         {
@@ -1166,7 +1252,7 @@ void Foam::polyBoundaryMesh::updateMesh()
     patchIDPtr_.clear();
     groupIDsPtr_.clear();
 
-    PstreamBuffers pBufs(Pstream::defaultCommsType);
+    PstreamBuffers pBufs(Pstream::defaultCommsType, "Foam::polyBoundaryMesh::updateMesh()", false);
 
     if
     (

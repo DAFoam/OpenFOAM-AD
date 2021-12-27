@@ -120,7 +120,7 @@ inline Foam::vector Foam::triangle<Point, PointRef>::unitNormal() const
 {
     const vector n(areaNormal());
     const scalar s(Foam::mag(n));
-    return s < ROOTVSMALL ? Zero : n/s;
+    return s < ROOTVSMALL ? vector::zero : n/s;
 }
 
 
@@ -175,7 +175,7 @@ inline Foam::scalar Foam::triangle<Point, PointRef>::circumRadius() const
     }
 
     const scalar a = (d1 + d2)*(d2 + d3)*(d3 + d1) / denom;
-    return 0.5*Foam::sqrt(min(GREAT, max(0, a)));
+    return 0.5*sqrt(min(GREAT, max(0, a)));
 }
 
 
@@ -190,7 +190,7 @@ inline Foam::scalar Foam::triangle<Point, PointRef>::quality() const
         return SMALL;
     }
 
-    return mag()/(Foam::sqr(c)*3.0*sqrt(3.0)/4.0);
+    return mag()/(Foam::sqr(c)*3.0*std::sqrt(3.0)/4.0);
 }
 
 
@@ -393,10 +393,10 @@ inline Foam::pointHit Foam::triangle<Point, PointRef>::ray
         (
             Foam::min
             (
-                Foam::mag(E0),
-                Foam::mag(E1)
+                Foam::mag(E0).getValue(),
+                Foam::mag(E1).getValue()
             ),
-            Foam::mag(c_ - b_)
+            Foam::mag(c_ - b_).getValue()
         )*intersection::planarTol();
 
     bool eligible =
@@ -453,7 +453,7 @@ inline Foam::pointHit Foam::triangle<Point, PointRef>::intersection
     const scalar det = edge1 & pVec;
 
     // Initialise to miss
-    pointHit intersection(false, Zero, GREAT, false);
+    pointHit intersection(false, vector::zero, GREAT, false);
 
     if (alg == intersection::VISIBLE)
     {

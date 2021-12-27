@@ -10,4 +10,4 @@ regionModelFunctionObject/regionModelFunctionObject/regionModelFunctionObject.C
 regionModelFunctionObject/regionModelFunctionObject/regionModelFunctionObjectNew.C
 regionModelFunctionObject/regionModelFunctionObject/regionModelFunctionObjectList.C
 
-LIB = $(FOAM_LIBBIN)/libregionModels
+LIB = $(FOAM_LIBBIN)/libregionModels$(WM_CODI_AD_LIB_POSTFIX)

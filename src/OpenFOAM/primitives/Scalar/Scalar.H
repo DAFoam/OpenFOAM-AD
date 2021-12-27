@@ -181,21 +181,23 @@ Ostream& operator<<(Ostream& os, const Scalar val);
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // Standard C++ transcendental functions
-transFunc(sqrt)
+//CoDiPack4OpenFOAM NOTE Need to comment these functions out since they cause seg fault in codi
+// NOTE If a function is commented out, we need to add it in scalarField.C
+// transFunc(sqrt)
 
-transFunc(cbrt)
-transFunc(exp)
-transFunc(log)
-transFunc(log10)
-transFunc(sin)
-transFunc(cos)
-transFunc(tan)
-transFunc(asin)
-transFunc(acos)
-transFunc(atan)
-transFunc(sinh)
-transFunc(cosh)
-transFunc(tanh)
+//transFunc(cbrt)
+//transFunc(exp)
+//transFunc(log)
+//transFunc(log10)
+//transFunc(sin)
+//transFunc(cos)
+//transFunc(tan)
+//transFunc(asin)
+//transFunc(acos)
+//transFunc(atan)
+//transFunc(sinh)
+//transFunc(cosh)
+//transFunc(tanh)
 transFunc(asinh)
 transFunc(acosh)
 transFunc(atanh)
@@ -416,11 +418,11 @@ inline Scalar sqrtSumSqr(const Scalar a, const Scalar b)
 
     if (maga > magb)
     {
-        return maga*sqrt(1.0 + sqr(magb/maga));
+        return maga*sqrt(Scalar(1.0) + sqr(magb/maga));
     }
     else
     {
-        return magb < ScalarVSMALL ? 0.0 : magb*sqrt(1.0 + sqr(maga/magb));
+        return magb < ScalarVSMALL ? Scalar(0.0) : magb*sqrt(Scalar(1.0) + sqr(maga/magb));
     }
 }
 
@@ -458,7 +460,7 @@ struct compareOp<Scalar>
 
     Scalar operator()(const Scalar& a, const Scalar& b) const
     {
-        return (mag(a - b) <= tolerance) ? 0 : (a - b);
+        return (mag(a - b) <= tolerance) ? Scalar(0) : Scalar(a - b);
     }
 };
 

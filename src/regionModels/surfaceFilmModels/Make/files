@@ -81,4 +81,4 @@ $(PATCHFIELDS)/inclinedFilmNusseltInletVelocity/inclinedFilmNusseltInletVelocity
 FUNCTIONOBJECTS=functionObjects
 $(FUNCTIONOBJECTS)/filmFlux/filmFlux.C
 
-LIB = $(FOAM_LIBBIN)/libsurfaceFilmModels
+LIB = $(FOAM_LIBBIN)/libsurfaceFilmModels$(WM_CODI_AD_LIB_POSTFIX)

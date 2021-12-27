@@ -140,4 +140,4 @@ pointPatchDist/pointPatchDist.C
 
 zoneSubSet/zoneSubSet.C
 
-LIB = $(FOAM_LIBBIN)/libdynamicMesh
+LIB = $(FOAM_LIBBIN)/libdynamicMesh$(WM_CODI_AD_LIB_POSTFIX)

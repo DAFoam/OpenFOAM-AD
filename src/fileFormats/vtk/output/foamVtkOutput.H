@@ -325,6 +325,22 @@ namespace legacy
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+//- Template specialization for symmTensor ordering
+template<>
+inline void write(vtk::formatter& fmt, const symmTensor& val)
+{
+    // symmTensor ( XX, XY, XZ, YY, YZ, ZZ )
+    // VTK order  ( XX, YY, ZZ, XY, YZ, XZ ) -> (0, 3, 5, 1, 4, 2)
+
+    fmt.write(component(val, 0).getValue()); // XX
+    fmt.write(component(val, 3).getValue()); // YY
+    fmt.write(component(val, 5).getValue()); // ZZ
+    fmt.write(component(val, 1).getValue()); // XY
+    fmt.write(component(val, 4).getValue()); // YZ
+    fmt.write(component(val, 2).getValue()); // XZ
+}
+
+
 } // End namespace vtk
 } // End namespace Foam
 

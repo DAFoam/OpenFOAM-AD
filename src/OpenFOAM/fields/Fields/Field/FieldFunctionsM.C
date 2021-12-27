@@ -31,6 +31,16 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// CodiPack4OpenFOAM NOTE we need to add Foam:: for Func to prevent
+// calling Func from system header
+
+// assign zeros to a field
+#define ASSIGN_ZERO_FIELD(Field, Zero) \
+forAll(Field, idxI)                    \
+{                                      \
+    Field[idxI] = Zero;                \
+}
+
 #define UNARY_FUNCTION(ReturnType, Type, Func)                                 \
                                                                                \
 TEMPLATE                                                                       \
@@ -43,7 +53,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> Func(const UList<Type>& f)                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f.size());                         \
-    Func(tres.ref(), f);                                                       \
+    Foam::Func(tres.ref(), f);                                                       \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -51,7 +61,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> Func(const tmp<Field<Type>>& tf)                        \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type>::New(tf);                           \
-    Func(tres.ref(), tf());                                                    \
+    Foam::Func(tres.ref(), tf());                                                    \
     tf.clear();                                                                \
     return tres;                                                               \
 }
@@ -71,7 +81,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> operator Op(const UList<Type>& f)                       \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f.size());                         \
-    OpFunc(tres.ref(), f);                                                     \
+    Foam::OpFunc(tres.ref(), f);                                                     \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -79,7 +89,7 @@ TEMPLATE                                                                       \
 tmp<Field<ReturnType>> operator Op(const tmp<Field<Type>>& tf)                 \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type>::New(tf);                           \
-    OpFunc(tres.ref(), tf());                                                  \
+    Foam::OpFunc(tres.ref(), tf());                                                  \
     tf.clear();                                                                \
     return tres;                                                               \
 }
@@ -99,7 +109,7 @@ void Func                                                                      \
 {                                                                              \
     TFOR_ALL_F_OP_FUNC_F_F                                                     \
     (                                                                          \
-        ReturnType, res, =, ::Foam::Func, Type1, f1, Type2, f2                 \
+        ReturnType, res, =, Foam::Func, Type1, f1, Type2, f2                   \
     )                                                                          \
 }                                                                              \
                                                                                \
@@ -111,7 +121,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f1.size());                        \
-    Func(tres.ref(), f1, f2);                                                  \
+    Foam::Func(tres.ref(), f1, f2);                                                  \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -123,7 +133,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type2>::New(tf2);                         \
-    Func(tres.ref(), f1, tf2());                                               \
+    Foam::Func(tres.ref(), f1, tf2());                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -136,7 +146,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type1>::New(tf1);                         \
-    Func(tres.ref(), tf1(), f2);                                               \
+    Foam::Func(tres.ref(), tf1(), f2);                                               \
     tf1.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -149,7 +159,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmpTmp<ReturnType, Type1, Type1, Type2>::New(tf1, tf2);   \
-    Func(tres.ref(), tf1(), tf2());                                            \
+    Foam::Func(tres.ref(), tf1(), tf2());                                            \
     tf1.clear();                                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
@@ -182,7 +192,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f2.size());                        \
-    Func(tres.ref(), s1, f2);                                                  \
+    Foam::Func(tres.ref(), s1, f2);                                                  \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -194,7 +204,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type2>::New(tf2);                         \
-    Func(tres.ref(), s1, tf2());                                               \
+    Foam::Func(tres.ref(), s1, tf2());                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
 }
@@ -224,7 +234,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f1.size());                        \
-    Func(tres.ref(), f1, s2);                                                  \
+    Foam::Func(tres.ref(), f1, s2);                                                  \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -236,7 +246,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type1>::New(tf1);                         \
-    Func(tres.ref(), tf1(), s2);                                               \
+    Foam::Func(tres.ref(), tf1(), s2);                                               \
     tf1.clear();                                                               \
     return tres;                                                               \
 }
@@ -270,7 +280,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f1.size());                        \
-    OpFunc(tres.ref(), f1, f2);                                                \
+    Foam::OpFunc(tres.ref(), f1, f2);                                                \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -282,7 +292,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type2>::New(tf2);                         \
-    OpFunc(tres.ref(), f1, tf2());                                             \
+    Foam::OpFunc(tres.ref(), f1, tf2());                                             \
     tf2.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -295,7 +305,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type1>::New(tf1);                         \
-    OpFunc(tres.ref(), tf1(), f2);                                             \
+    Foam::OpFunc(tres.ref(), tf1(), f2);                                             \
     tf1.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -308,7 +318,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmpTmp<ReturnType, Type1, Type1, Type2>::New(tf1, tf2);   \
-    OpFunc(tres.ref(), tf1(), tf2());                                          \
+    Foam::OpFunc(tres.ref(), tf1(), tf2());                                          \
     tf1.clear();                                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
@@ -338,7 +348,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f2.size());                        \
-    OpFunc(tres.ref(), s1, f2);                                                \
+    Foam::OpFunc(tres.ref(), s1, f2);                                                \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -350,7 +360,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type2>::New(tf2);                         \
-    OpFunc(tres.ref(), s1, tf2());                                             \
+    Foam::OpFunc(tres.ref(), s1, tf2());                                             \
     tf2.clear();                                                               \
     return tres;                                                               \
 }
@@ -377,7 +387,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f1.size());                        \
-    OpFunc(tres.ref(), f1, s2);                                                \
+    Foam::OpFunc(tres.ref(), f1, s2);                                                \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -389,7 +399,7 @@ tmp<Field<ReturnType>> operator Op                                             \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type1>::New(tf1);                         \
-    OpFunc(tres.ref(), tf1(), s2);                                             \
+    Foam::OpFunc(tres.ref(), tf1(), s2);                                             \
     tf1.clear();                                                               \
     return tres;                                                               \
 }

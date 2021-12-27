@@ -123,8 +123,10 @@ void Foam::processorCyclicPointPatchField<Type>::initSwapAddSeparated
             (
                 commsType,
                 procPatch_.neighbProcNo(),
-                receiveBuf_.data_bytes(),
-                receiveBuf_.size_bytes(),
+                reinterpret_cast<char*>(receiveBuf_.begin()),
+                receiveBuf_.byteSize(),
+                "Foam::processorCyclicPointPatchField<Type>::initSwapAddSeparated",
+                typeid(receiveBuf_.begin()),
                 procPatch_.tag(),
                 procPatch_.comm()
             );
@@ -133,8 +135,10 @@ void Foam::processorCyclicPointPatchField<Type>::initSwapAddSeparated
         (
             commsType,
             procPatch_.neighbProcNo(),
-            pf.cdata_bytes(),
-            pf.size_bytes(),
+            reinterpret_cast<const char*>(pf.begin()),
+            pf.byteSize(),
+            "Foam::processorCyclicPointPatchField<Type>::initSwapAddSeparated",
+            typeid(pf.begin()),
             procPatch_.tag(),
             procPatch_.comm()
         );
@@ -159,8 +163,10 @@ void Foam::processorCyclicPointPatchField<Type>::swapAddSeparated
             (
                 commsType,
                 procPatch_.neighbProcNo(),
-                receiveBuf_.data_bytes(),
-                receiveBuf_.size_bytes(),
+                reinterpret_cast<char*>(receiveBuf_.begin()),
+                receiveBuf_.byteSize(),
+                "Foam::processorCyclicPointPatchField<Type>::swapAddSeparated",
+                typeid(receiveBuf_.begin()),
                 procPatch_.tag(),
                 procPatch_.comm()
             );

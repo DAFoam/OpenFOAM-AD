@@ -131,7 +131,7 @@ void Foam::moleculeCloud::buildCellOccupancy()
 
 void Foam::moleculeCloud::calculatePairForce()
 {
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::moleculeCloud::calculatePairForce()", false);
 
     // Start sending referred data
     label startOfRequests = Pstream::nRequests();
@@ -356,7 +356,7 @@ void Foam::moleculeCloud::removeHighEnergyOverlaps()
 
     buildCellOccupancy();
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::moleculeCloud::removeHighEnergyOverlaps()", false);
 
     // Start sending referred data
     label startOfRequests = Pstream::nRequests();
@@ -674,9 +674,9 @@ void Foam::moleculeCloud::initialiseMolecules
 
                 point latticeAnchor
                 (
-                    label(latticeMid.x() + 0.5*sign(latticeMid.x())),
-                    label(latticeMid.y() + 0.5*sign(latticeMid.y())),
-                    label(latticeMid.z() + 0.5*sign(latticeMid.z()))
+                    label((latticeMid.x() + 0.5*sign(latticeMid.x())).getValue()),
+                    label((latticeMid.y() + 0.5*sign(latticeMid.y())).getValue()),
+                    label((latticeMid.z() + 0.5*sign(latticeMid.z())).getValue())
                 );
 
                 anchor += (R & (latticeCellShape & latticeAnchor));

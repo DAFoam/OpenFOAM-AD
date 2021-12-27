@@ -46,7 +46,7 @@ namespace Foam
     defineTypeNameAndDebug(edgeIntersections, 0);
 }
 
-Foam::scalar Foam::edgeIntersections::alignedCos_ = Foam::cos(degToRad(89.0));
+Foam::scalar Foam::edgeIntersections::alignedCos_ = cos(degToRad(89.0));
 
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //

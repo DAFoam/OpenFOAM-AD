@@ -232,7 +232,7 @@ bool Foam::hierarchGeomDecomp::findBinary
     {
         scalar weightedSize = returnReduce
         (
-            sortedWeightedSizes[mid] - sortedWeightedSizes[minIndex],
+            scalar(sortedWeightedSizes[mid] - sortedWeightedSizes[minIndex]),
             sumOp<scalar>()
         );
 
@@ -332,13 +332,12 @@ Foam::label Foam::hierarchGeomDecomp::sortComponent
         ),
         minOp<scalar>()
     );
-
     scalar maxCoord = returnReduce
     (
         (
             sortedCoord.size()
           ? sortedCoord.last()
-          : -GREAT
+          : scalar(-GREAT)
         ),
         maxOp<scalar>()
     );
@@ -517,7 +516,7 @@ Foam::label Foam::hierarchGeomDecomp::sortComponent
 
     // Now evaluate local cumulative weights, based on the sorting.
     // Make one bigger than the nodes.
-    scalarField sortedWeightedSizes(current.size()+1, Zero);
+    scalarField sortedWeightedSizes(current.size()+1, pTraits<scalar>::zero);
     calculateSortedWeightedSizes
     (
         current,
@@ -536,13 +535,12 @@ Foam::label Foam::hierarchGeomDecomp::sortComponent
         ),
         minOp<scalar>()
     );
-
     scalar maxCoord = returnReduce
     (
         (
             sortedCoord.size()
           ? sortedCoord.last()
-          : -GREAT
+          : scalar(-GREAT)
         ),
         maxOp<scalar>()
     );
@@ -692,7 +690,7 @@ Foam::labelList Foam::hierarchGeomDecomp::decompose
 ) const
 {
     // construct a list for the final result
-    labelList finalDecomp(points.size(), Zero);
+    labelList finalDecomp(points.size(), pTraits<label>::zero);
 
     // Start off with every point sorted onto itself.
     labelList slice(identity(points.size()));
@@ -734,7 +732,7 @@ Foam::labelList Foam::hierarchGeomDecomp::decompose
 ) const
 {
     // Construct a list for the final result
-    labelList finalDecomp(points.size(), Zero);
+    labelList finalDecomp(points.size(), pTraits<label>::zero);
 
     // Start off with every point sorted onto itself.
     labelList slice(identity(points.size()));

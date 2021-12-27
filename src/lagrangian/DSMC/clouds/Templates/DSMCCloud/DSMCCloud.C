@@ -144,7 +144,7 @@ void Foam::DSMCCloud<ParcelType>::initialise
                 scalar particlesRequired = numberDensity*tetVolume;
 
                 // Only integer numbers of particles can be inserted
-                label nParticlesToInsert = label(particlesRequired);
+                label nParticlesToInsert = label(particlesRequired.getValue());
 
                 // Add another particle with a probability proportional to the
                 // remainder of taking the integer part of particlesRequired
@@ -246,8 +246,8 @@ void Foam::DSMCCloud<ParcelType>::collisions()
                 const ParcelType& p = *cellParcels[i];
                 vector relPos = p.position() - cC;
 
-                label subCell =
-                    pos0(relPos.x()) + 2*pos0(relPos.y()) + 4*pos0(relPos.z());
+                label subCell =(
+                    pos0(relPos.x()) + 2*pos0(relPos.y()) + 4*pos0(relPos.z())).getValue();
 
                 subCells[subCell].append(i);
                 whichSubCell[i] = subCell;
@@ -262,7 +262,7 @@ void Foam::DSMCCloud<ParcelType>::collisions()
               + 0.5*nC*(nC - 1)*nParticle_*sigmaTcRMax*deltaT
                /mesh_.cellVolumes()[celli];
 
-            label nCandidates(selectedPairs);
+            label nCandidates(selectedPairs.getValue());
             collisionSelectionRemainder_[celli] = selectedPairs - nCandidates;
             collisionCandidates += nCandidates;
 

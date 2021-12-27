@@ -55,7 +55,7 @@ Foam::PatchInjection<CloudType>::PatchInjection
     duration_(this->coeffDict().getScalar("duration")),
     parcelsPerSecond_
     (
-        this->coeffDict().getScalar("parcelsPerSecond")
+        this->coeffDict().getScalar("parcelsPerSecond").getValue()
     ),
     velocityType_
     (

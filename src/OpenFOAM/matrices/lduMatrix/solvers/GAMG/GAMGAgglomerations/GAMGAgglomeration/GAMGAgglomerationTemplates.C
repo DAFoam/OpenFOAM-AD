@@ -83,7 +83,10 @@ void Foam::GAMGAgglomeration::restrictField
     const labelList& fineToCoarse
 ) const
 {
-    cf = Zero;
+    forAll(cf, idxI)
+    {
+        cf[idxI] = pTraits<Type>::zero;
+    }
 
     forAll(ff, i)
     {
@@ -155,7 +158,10 @@ void Foam::GAMGAgglomeration::restrictFaceField
             << abort(FatalError);
     }
 
-    cf = Zero;
+    forAll(cf, idxI)
+    {
+        cf[idxI] = pTraits<Type>::zero;
+    }
 
     forAll(fineToCoarse, ffacei)
     {

@@ -32,7 +32,6 @@ License
 #include "OFstream.H"
 
 // * * * * * * * * * * * * * * Static Data Members * * * * * * * * * * * * * //
-
 Foam::label Foam::turbulentDFSEMInletFvPatchVectorField::seedIterMax_ = 1000;
 
 // * * * * * * * * * * * * * Private Member Functions  * * * * * * * * * * * //
@@ -207,7 +206,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::initialiseEddyBox()
     const scalarField L(L_->value(db().time().timeOutputValue())/Lref_);
 
     // (PCF:Eq. 14)
-    const scalarField cellDx(max(Foam::sqrt(magSf), 2/patch().deltaCoeffs()));
+    const scalarField cellDx(max(sqrt(magSf), 2/patch().deltaCoeffs()));
 
     // Inialise eddy box extents
     forAll(*this, faceI)
@@ -567,7 +566,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::calcOverlappingProcEddies
 
     mapDistribute map(segmentI, std::move(sendMap), std::move(constructMap));
 
-    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+    PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::turbulentDFSEMInletFvPatchVectorField::calcOverlappingProcEddies", false);
 
     for (const int domain : Pstream::allProcs())
     {
@@ -977,7 +976,7 @@ void Foam::turbulentDFSEMInletFvPatchVectorField::updateCoeffs()
 
         // Apply second part of normalisation coefficient
         const scalar c =
-            scale_*Foam::pow(10*v0_, m_)/Foam::sqrt(scalar(nEddy_));
+            scale_*pow(10*v0_, m_)/sqrt(scalar(nEddy_));
 
         // In parallel, need to collect all eddies that will interact with
         // local faces
@@ -1092,6 +1091,5 @@ namespace Foam
        turbulentDFSEMInletFvPatchVectorField
    );
 }
-
 
 // ************************************************************************* //

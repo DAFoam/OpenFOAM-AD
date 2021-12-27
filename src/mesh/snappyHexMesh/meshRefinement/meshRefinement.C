@@ -627,7 +627,7 @@ void Foam::meshRefinement::testSyncPointList
         mesh,
         maxFld,
         maxEqOp<scalar>(),
-        -GREAT
+        scalar(-GREAT)
     );
     forAll(minFld, pointi)
     {

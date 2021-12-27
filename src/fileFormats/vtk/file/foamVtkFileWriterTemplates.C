@@ -42,6 +42,7 @@ void Foam::vtk::fileWriter::beginDataArray
         (
             std::is_same<label, typename pTraits<Type>::cmptType>::value
          || std::is_floating_point<typename pTraits<Type>::cmptType>::value
+         || std::is_same<typename pTraits<Type>::cmptType,scalar>::value
         ),
         "Label and Floating-point vector space only"
     );

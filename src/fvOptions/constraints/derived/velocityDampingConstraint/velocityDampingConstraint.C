@@ -69,7 +69,7 @@ void Foam::fv::velocityDampingConstraint::addDamping(fvMatrix<vector>& eqn)
         const scalar magU = mag(U[cellI]);
         if (magU > UMax_)
         {
-            const scalar scale = sqr(Foam::cbrt(vol[cellI]));
+            const scalar scale = sqr(cbrt(vol[cellI]));
 
             diag[cellI] += scale*(magU-UMax_);
 

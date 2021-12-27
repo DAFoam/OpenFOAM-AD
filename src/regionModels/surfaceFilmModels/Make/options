@@ -11,13 +11,13 @@ EXE_INC = \
     -I$(LIB_SRC)/regionModels/regionModel/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lmeshTools \
-    -lcompressibleTransportModels \
-    -lfluidThermophysicalModels \
-    -lspecie \
-    -lthermophysicalProperties \
-    -lreactionThermophysicalModels \
-    -lSLGThermo \
-    -ldistributionModels \
-    -lregionModels
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lfluidThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lspecie$(WM_CODI_AD_LIB_POSTFIX) \
+    -lthermophysicalProperties$(WM_CODI_AD_LIB_POSTFIX) \
+    -lreactionThermophysicalModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lSLGThermo$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldistributionModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lregionModels$(WM_CODI_AD_LIB_POSTFIX)

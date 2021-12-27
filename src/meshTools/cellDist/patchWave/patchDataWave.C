@@ -103,7 +103,7 @@ Foam::label Foam::patchDataWave<TransferType, TrackingData>::getValues
 
         if (cellInfo[celli].valid(waveInfo.data()))
         {
-            distance_[celli] = Foam::sqrt(dist);
+            distance_[celli] = sqrt(dist);
 
             cellData_[celli] = cellInfo[celli].data();
         }
@@ -151,7 +151,7 @@ Foam::label Foam::patchDataWave<TransferType, TrackingData>::getValues
             {
                 // Adding SMALL to avoid problems with /0 in the turbulence
                 // models
-                patchField[patchFacei] = Foam::sqrt(dist) + SMALL;
+                patchField[patchFacei] = sqrt(dist) + SMALL;
 
                 patchDataField[patchFacei] = faceInfo[meshFacei].data();
             }

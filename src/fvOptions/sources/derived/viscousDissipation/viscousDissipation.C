@@ -97,7 +97,7 @@ Foam::fv::viscousDissipation::viscousDissipation
         coeffs_.getOrDefault
         (
             "rhoInf",
-            dimensionedScalar(dimDensity, 0)
+            dimensionedScalar(dimDensity, scalar(0))
         )
     )
 {

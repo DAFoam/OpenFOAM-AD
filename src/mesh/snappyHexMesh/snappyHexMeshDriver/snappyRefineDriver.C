@@ -1320,7 +1320,7 @@ Foam::label Foam::snappyRefineDriver::refinementInterfaceRefine
                 //    }
                 //}
 
-                const scalar oppositeCos = Foam::cos(degToRad(135.0));
+                const scalar oppositeCos = cos(degToRad(135.0));
 
                 for (const label celli : transitionCells)
                 {
@@ -3091,8 +3091,8 @@ void Foam::snappyRefineDriver::mergePatchFaces
     {
         meshRefiner_.mergePatchFacesUndo
         (
-            Foam::cos(degToRad(45.0)),
-            Foam::cos(degToRad(45.0)),
+            cos(degToRad(45.0)),
+            cos(degToRad(45.0)),
             meshRefiner_.meshedPatches(),
             motionDict,
             labelList(mesh.nFaces(), -1),
@@ -3104,8 +3104,8 @@ void Foam::snappyRefineDriver::mergePatchFaces
         // Still merge refined boundary faces if all four are on same patch
         meshRefiner_.mergePatchFaces
         (
-            Foam::cos(degToRad(45.0)),
-            Foam::cos(degToRad(45.0)),
+            cos(degToRad(45.0)),
+            cos(degToRad(45.0)),
             4,          // only merge faces split into 4
             meshRefiner_.meshedPatches(),
             meshRefinement::FaceMergeType::GEOMETRIC // no merge across patches
@@ -3117,7 +3117,7 @@ void Foam::snappyRefineDriver::mergePatchFaces
         meshRefiner_.checkData();
     }
 
-    meshRefiner_.mergeEdgesUndo(Foam::cos(degToRad(45.0)), motionDict);
+    meshRefiner_.mergeEdgesUndo(cos(degToRad(45.0)), motionDict);
 
     if (debug)
     {

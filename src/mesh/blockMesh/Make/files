@@ -45,4 +45,4 @@ PDRblockMesh/PDRblockCreate.C
 PDRblockMesh/PDRblockLocation.C
 PDRblockMesh/PDRblockOuter.C
 
-LIB = $(FOAM_LIBBIN)/libblockMesh
+LIB = $(FOAM_LIBBIN)/libblockMesh$(WM_CODI_AD_LIB_POSTFIX)

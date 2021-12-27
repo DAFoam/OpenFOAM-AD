@@ -69,6 +69,8 @@ class Pstream
             const UList<Container>& sendBufs,
             const labelUList& recvSizes,
             List<Container>& recvBufs,
+            const word callerInfo,
+            const label typeActive,
             const int tag,
             const label comm,
             const bool block
@@ -84,6 +86,8 @@ class Pstream
             const UList<const char*>& sendBufs,
             const labelUList& recvSizes,    // number of T, not number of char
             List<char*>& recvBufs,
+            const word callerInfo,
+            const label typeActive,
             const int tag,
             const label comm,
             const bool block
@@ -348,6 +352,8 @@ public:
                 const UList<Container>& sendData,
                 const labelUList& recvSizes,
                 List<Container>& recvData,
+                const word callerInfo,
+                const label typeActive,
                 const int tag = UPstream::msgType(),
                 const label comm = UPstream::worldComm,
                 const bool block = true
@@ -372,6 +378,8 @@ public:
             (
                 const UList<Container>& sendData,
                 List<Container>& recvData,
+                const word callerInfo,
+                const label typeActive,
                 const int tag = UPstream::msgType(),
                 const label comm = UPstream::worldComm,
                 const bool block = true

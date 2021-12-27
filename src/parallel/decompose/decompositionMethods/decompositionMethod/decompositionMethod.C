@@ -523,7 +523,7 @@ void Foam::decompositionMethod::calcCellCells
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Number of faces per coarse cell
-    labelList nFacesPerCell(nLocalCoarse, Zero);
+    labelList nFacesPerCell(nLocalCoarse, 0);
 
     for (label facei = 0; facei < mesh.nInternalFaces(); ++facei)
     {
@@ -722,7 +722,7 @@ void Foam::decompositionMethod::calcCellCells
     // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
     // Number of faces per coarse cell
-    labelList nFacesPerCell(nLocalCoarse, Zero);
+    labelList nFacesPerCell(nLocalCoarse, 0);
 
     for (label facei = 0; facei < mesh.nInternalFaces(); ++facei)
     {
@@ -974,7 +974,7 @@ Foam::labelList Foam::decompositionMethod::decompose
     // If we average the region centre instead, cyclics could cause
     // the average domain centre to be outside of domain.
 
-    scalarField regionWeights(localRegion.nLocalRegions(), Zero);
+    scalarField regionWeights(localRegion.nLocalRegions(), scalar(0));
 
     pointField regionCentres(localRegion.nLocalRegions(), point::max);
 

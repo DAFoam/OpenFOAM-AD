@@ -151,7 +151,7 @@ void Foam::medialAxisMeshMover::update(const dictionary& coeffDict)
     // Note: parameter name changed
     // "minMedianAxisAngle" -> "minMedialAxisAngle" (DEC-2013)
     // but not previously reported.
-    scalar minMedialAxisAngle(Zero);
+    scalar minMedialAxisAngle(0.0);
     if
     (
        !coeffDict.readCompat
@@ -513,7 +513,7 @@ void Foam::medialAxisMeshMover::update(const dictionary& coeffDict)
                         << " if angle to nearest layer patch > "
                         << slipFeatureAngle << " degrees." << endl;
 
-                    scalar slipFeatureAngleCos = Foam::cos
+                    scalar slipFeatureAngleCos = cos
                     (
                         degToRad(slipFeatureAngle)
                     );
@@ -615,7 +615,7 @@ void Foam::medialAxisMeshMover::update(const dictionary& coeffDict)
         {
             if (pointMedialDist[pointI].valid(dummyTrackData))
             {
-                medialDist_[pointI] = Foam::sqrt
+                medialDist_[pointI] = sqrt
                 (
                     pointMedialDist[pointI].distSqr()
                 );
@@ -676,7 +676,7 @@ void Foam::medialAxisMeshMover::update(const dictionary& coeffDict)
             }
             else
             {
-                medialRatio_[pointI] = mDist / (Foam::sqrt(wDist2) + mDist);
+                medialRatio_[pointI] = mDist / (sqrt(wDist2) + mDist);
             }
         }
     }
@@ -998,7 +998,7 @@ void Foam::medialAxisMeshMover::findIsolatedRegions
 
     Info<< typeName << " : Removing isolated regions ..." << nl
         << indent << "- if partially extruded faces make angle < "
-        << Foam::radToDeg(Foam::acos(minCosLayerTermination)) <<  nl;
+        << radToDeg(acos(minCosLayerTermination)) <<  nl;
     if (detectExtrusionIsland)
     {
         Info<< indent << "- if exclusively surrounded by non-extruded points"
@@ -1399,7 +1399,7 @@ void Foam::medialAxisMeshMover::calculateDisplacement
         "layerTerminationAngle",
         0.5*featureAngle
     );
-    scalar minCosLayerTermination = Foam::cos(degToRad(layerTerminationAngle));
+    scalar minCosLayerTermination = cos(degToRad(layerTerminationAngle));
 
     //- Smoothing wanted patch thickness
     const label nSmoothPatchThickness =

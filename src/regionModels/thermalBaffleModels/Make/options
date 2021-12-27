@@ -12,12 +12,12 @@ EXE_INC = \
     -I$(LIB_SRC)/mesh/extrudeModel/lnInclude
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lmeshTools \
-    -lcompressibleTransportModels \
-    -lregionModels \
-    -lsolidThermo \
-    -lturbulenceModels \
-    -lcompressibleTurbulenceModels \
-    -lradiationModels \
-    -ldynamicMesh
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lmeshTools$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTransportModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lregionModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsolidThermo$(WM_CODI_AD_LIB_POSTFIX) \
+    -lturbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lcompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -lradiationModels$(WM_CODI_AD_LIB_POSTFIX) \
+    -ldynamicMesh$(WM_CODI_AD_LIB_POSTFIX)

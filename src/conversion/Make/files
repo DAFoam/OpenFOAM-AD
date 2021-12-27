@@ -18,4 +18,4 @@ polyDualMesh/polyDualMesh.C
 
 vtk/output/foamVtkSurfaceFieldWriter.C
 
-LIB = $(FOAM_LIBBIN)/libconversion
+LIB = $(FOAM_LIBBIN)/libconversion$(WM_CODI_AD_LIB_POSTFIX)

@@ -69,8 +69,8 @@ freestreamPressureFvPatchScalarField
         fvPatchScalarField::operator=(freestreamValue());
     }
 
-    refGrad() = Zero;
-    valueFraction() = 0;
+    refGrad() = pTraits<scalar>::zero;
+    valueFraction() = scalar(0.0);
 }
 
 

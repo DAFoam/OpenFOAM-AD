@@ -82,4 +82,4 @@ meshToMesh0/calculateMeshToMesh0Weights.C
 
 functions/Function1/makeFunction1s.C
 
-LIB = $(FOAM_LIBBIN)/libsampling
+LIB = $(FOAM_LIBBIN)/libsampling$(WM_CODI_AD_LIB_POSTFIX)

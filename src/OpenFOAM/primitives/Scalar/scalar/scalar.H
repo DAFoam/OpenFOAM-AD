@@ -52,14 +52,15 @@ SourceFiles
 
 namespace Foam
 {
-    constexpr scalar GREAT = floatScalarGREAT;
-    constexpr scalar ROOTGREAT = floatScalarROOTGREAT;
-    constexpr scalar VGREAT = floatScalarVGREAT;
-    constexpr scalar ROOTVGREAT = floatScalarROOTVGREAT;
-    constexpr scalar SMALL = floatScalarSMALL;
-    constexpr scalar ROOTSMALL = floatScalarROOTSMALL;
-    constexpr scalar VSMALL = floatScalarVSMALL;
-    constexpr scalar ROOTVSMALL = floatScalarROOTVSMALL;
+    typedef floatScalar scalar;
+    static const scalar GREAT = floatScalarGREAT;
+    static const scalar ROOTGREAT = floatScalarROOTGREAT;
+    static const scalar VGREAT = floatScalarVGREAT;
+    static const scalar ROOTVGREAT = floatScalarROOTVGREAT;
+    static const scalar SMALL = floatScalarSMALL;
+    static const scalar ROOTSMALL = floatScalarROOTSMALL;
+    static const scalar VSMALL = floatScalarVSMALL;
+    static const scalar ROOTVSMALL = floatScalarROOTVSMALL;
 
     #ifdef COMPAT_OPENFOAM_ORG
     //! \cond compat_openfoam_org
@@ -120,14 +121,15 @@ namespace Foam
 
 namespace Foam
 {
-    constexpr scalar GREAT = doubleScalarGREAT;
-    constexpr scalar ROOTGREAT = doubleScalarROOTGREAT;
-    constexpr scalar VGREAT = doubleScalarVGREAT;
-    constexpr scalar ROOTVGREAT = doubleScalarROOTVGREAT;
-    constexpr scalar SMALL = doubleScalarSMALL;
-    constexpr scalar ROOTSMALL = doubleScalarROOTSMALL;
-    constexpr scalar VSMALL = doubleScalarVSMALL;
-    constexpr scalar ROOTVSMALL = doubleScalarROOTVSMALL;
+    typedef doubleScalar scalar;
+    static const scalar GREAT = doubleScalarGREAT;
+    static const scalar ROOTGREAT = doubleScalarROOTGREAT;
+    static const scalar VGREAT = doubleScalarVGREAT;
+    static const scalar ROOTVGREAT = doubleScalarROOTVGREAT;
+    static const scalar SMALL = doubleScalarSMALL;
+    static const scalar ROOTSMALL = doubleScalarROOTSMALL;
+    static const scalar VSMALL = doubleScalarVSMALL;
+    static const scalar ROOTVSMALL = doubleScalarROOTVSMALL;
 
     #ifdef COMPAT_OPENFOAM_ORG
     //! \cond compat_openfoam_org

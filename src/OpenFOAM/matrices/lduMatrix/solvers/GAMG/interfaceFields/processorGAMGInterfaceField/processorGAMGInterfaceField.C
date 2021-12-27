@@ -114,8 +114,10 @@ void Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate
         (
             Pstream::commsTypes::nonBlocking,
             procInterface_.neighbProcNo(),
-            scalarReceiveBuf_.data_bytes(),
-            scalarReceiveBuf_.size_bytes(),
+            reinterpret_cast<char*>(scalarReceiveBuf_.begin()),
+            scalarReceiveBuf_.byteSize(),
+            "Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate",
+            typeid(scalarReceiveBuf_.begin()),
             procInterface_.tag(),
             comm()
         );
@@ -125,8 +127,10 @@ void Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate
         (
             Pstream::commsTypes::nonBlocking,
             procInterface_.neighbProcNo(),
-            scalarSendBuf_.cdata_bytes(),
-            scalarSendBuf_.size_bytes(),
+            reinterpret_cast<const char*>(scalarSendBuf_.begin()),
+            scalarSendBuf_.byteSize(),
+            "Foam::processorGAMGInterfaceField::initInterfaceMatrixUpdate",
+            typeid(scalarSendBuf_.begin()),
             procInterface_.tag(),
             comm()
         );

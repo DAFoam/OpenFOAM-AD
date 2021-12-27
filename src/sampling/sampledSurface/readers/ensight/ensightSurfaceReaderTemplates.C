@@ -142,7 +142,7 @@ Foam::tmp<Foam::Field<Type>> Foam::ensightSurfaceReader::readField
         }
     }
 
-    auto tfield = tmp<Field<Type>>::New(n, Zero);
+    auto tfield = tmp<Field<Type>>::New(n, pTraits<Type>::zero);
     auto& field = tfield.ref();
 
     for (direction cmpti=0; cmpti < pTraits<Type>::nComponents; ++cmpti)

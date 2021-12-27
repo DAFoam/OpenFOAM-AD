@@ -19,4 +19,4 @@ wallFunctions = turbulentTransportModels/derivedFvPatchFields/wallFunctions
 $(wallFunctions)/alphatWallFunctions/alphatJayatillekeWallFunction/alphatJayatillekeWallFunctionFvPatchScalarField.C
 
 
-LIB = $(FOAM_LIBBIN)/libincompressibleTurbulenceModels
+LIB = $(FOAM_LIBBIN)/libincompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

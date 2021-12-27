@@ -52,7 +52,7 @@ Foam::Function1Types::Constant<Type>::Constant
 )
 :
     Function1<Type>(entryName, dict, obrPtr),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {
     const entry* eptr = dict.findEntry(entryName, keyType::LITERAL);
 
@@ -109,6 +109,23 @@ Foam::tmp<Foam::Field<Type>> Foam::Function1Types::Constant<Type>::value
 ) const
 {
     return tmp<Field<Type>>::New(x.size(), value_);
+}
+
+// CoDiPack4OpenFOAM Check this all return types except label
+template <typename R, typename T>
+typename std::enable_if<!std::is_same<R, Foam::tmp<Foam::Field<Foam::label>>>::value, R>::type
+    passive_if_label(const T& t) {
+        return t;
+}
+// if return type label
+template <typename R, typename T>
+typename std::enable_if<std::is_same<R, Foam::tmp<Foam::Field<Foam::label>>>::value, R>::type
+    passive_if_label(const T& t) {
+        Foam::Field<Foam::label> lField(t.size());
+        forAll(lField,i){
+            lField[i] = t[i].getValue();
+        }
+        return lField;
 }
 
 

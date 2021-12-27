@@ -33,7 +33,7 @@ License
 
 Foam::TimeState::TimeState()
 :
-    dimensionedScalar(Time::timeName(0), dimTime, 0),
+    dimensionedScalar(Time::timeName(0), dimTime, scalar(0.0)),
     timeIndex_(0),
     writeTimeIndex_(0),
     deltaT_(0),

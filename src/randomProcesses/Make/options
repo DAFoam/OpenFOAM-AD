@@ -5,7 +5,7 @@ EXE_INC = \
     -I$(FFTW_INC_DIR)
 
 LIB_LIBS = \
-    -lfiniteVolume \
-    -lsurfMesh \
-    -lsampling \
+    -lfiniteVolume$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsurfMesh$(WM_CODI_AD_LIB_POSTFIX) \
+    -lsampling$(WM_CODI_AD_LIB_POSTFIX) \
     -L$(FFTW_LIB_DIR) -lfftw3

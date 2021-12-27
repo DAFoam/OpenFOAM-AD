@@ -37,7 +37,7 @@ Foam::fixedJumpAMIFvPatchField<Type>::fixedJumpAMIFvPatchField
 )
 :
     jumpCyclicAMIFvPatchField<Type>(p, iF),
-    jump_(this->size(), Zero)
+    jump_(this->size(), pTraits<Type>::zero)
 {}
 
 
@@ -64,7 +64,7 @@ Foam::fixedJumpAMIFvPatchField<Type>::fixedJumpAMIFvPatchField
 )
 :
     jumpCyclicAMIFvPatchField<Type>(p, iF),
-    jump_(p.size(), Zero)
+    jump_(p.size(), pTraits<Type>::zero)
 {
     if (this->cyclicAMIPatch().owner())
     {
@@ -130,7 +130,7 @@ Foam::tmp<Foam::Field<Type>> Foam::fixedJumpAMIFvPatchField<Type>::jump() const
             return this->cyclicAMIPatch().interpolate
             (
                 nbrPatch.jump(),
-                Field<Type>(this->size(), Zero)
+                Field<Type>(this->size(), pTraits<Type>::zero)
             );
         }
         else

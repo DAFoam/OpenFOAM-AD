@@ -275,7 +275,7 @@ Foam::Ostream& Foam::ensightFile::write(const floatScalar val)
 
 Foam::Ostream& Foam::ensightFile::write(const doubleScalar val)
 {
-    float fvalue(narrowFloat(val));
+    float fvalue(narrowFloat(val.getValue()));
 
     return write(fvalue);
 }

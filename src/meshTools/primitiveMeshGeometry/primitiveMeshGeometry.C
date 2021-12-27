@@ -65,9 +65,9 @@ void Foam::primitiveMeshGeometry::updateFaceCentresAndAreas
         }
         else
         {
-            vector sumN = Zero;
+            vector sumN = vector::zero;
             scalar sumA = 0.0;
-            vector sumAc = Zero;
+            vector sumAc = vector::zero;
 
             point fCentre = p[f[0]];
             for (label pi = 1; pi < nPoints; pi++)
@@ -104,7 +104,7 @@ void Foam::primitiveMeshGeometry::updateCellCentresAndVols
 )
 {
     // Clear the fields for accumulation
-    UIndirectList<vector>(cellCentres_, changedCells) = Zero;
+    UIndirectList<vector>(cellCentres_, changedCells) = vector::zero;
     UIndirectList<scalar>(cellVolumes_, changedCells) = 0.0;
 
     const labelList& own = mesh_.faceOwner();
@@ -113,7 +113,7 @@ void Foam::primitiveMeshGeometry::updateCellCentresAndVols
     // first estimate the approximate cell centre as the average of face centres
 
     vectorField cEst(mesh_.nCells());
-    UIndirectList<vector>(cEst, changedCells) = Zero;
+    UIndirectList<vector>(cEst, changedCells) = vector::zero;
     scalarField nCellFaces(mesh_.nCells());
     UIndirectList<scalar>(nCellFaces, changedCells) = 0.0;
 
@@ -272,7 +272,7 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
     const labelList& nei = mesh.faceNeighbour();
 
     // Severe nonorthogonality threshold
-    const scalar severeNonorthogonalityThreshold = ::cos(degToRad(orthWarn));
+    const scalar severeNonorthogonalityThreshold = cos(degToRad(orthWarn));
 
     scalar minDDotS = GREAT;
 
@@ -303,7 +303,7 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
                         Pout<< "Severe non-orthogonality for face " << facei
                             << " between cells " << own[facei]
                             << " and " << nei[facei]
-                            << ": Angle = " << radToDeg(::acos(dDotS))
+                            << ": Angle = " << radToDeg(acos(dDotS))
                             << " deg." << endl;
                     }
 
@@ -324,7 +324,7 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
                             << facei
                             << " between cells " << own[facei] << " and "
                             << nei[facei]
-                            << ": Angle = " << radToDeg(::acos(dDotS))
+                            << ": Angle = " << radToDeg(acos(dDotS))
                             << " deg." << endl;
                     }
 
@@ -370,8 +370,8 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
         if (neiSize > 0)
         {
             Info<< "Mesh non-orthogonality Max: "
-                << radToDeg(::acos(minDDotS))
-                << " average: " << radToDeg(::acos(sumDDotS/neiSize))
+                << radToDeg(acos(minDDotS))
+                << " average: " << radToDeg(acos(sumDDotS/neiSize))
                 << endl;
         }
     }
@@ -745,7 +745,7 @@ bool Foam::primitiveMeshGeometry::checkFaceAngles
             << abort(FatalError);
     }
 
-    const scalar maxSin = Foam::sin(degToRad(maxDeg));
+    const scalar maxSin = sin(degToRad(maxDeg));
 
     const faceList& fcs = mesh.faces();
 
@@ -824,7 +824,7 @@ bool Foam::primitiveMeshGeometry::checkFaceAngles
         if (maxEdgeSin > SMALL)
         {
             scalar maxConcaveDegr =
-                radToDeg(Foam::asin(Foam::min(1.0, maxEdgeSin)));
+                radToDeg(asin(min(1.0, maxEdgeSin)));
 
             Info<< "There are " << nConcave
                 << " faces with concave angles between consecutive"
@@ -1170,7 +1170,7 @@ bool Foam::primitiveMeshGeometry::checkCellDeterminant
     {
         const cell& cFaces = cells[affectedCells[i]];
 
-        tensor areaSum(Zero);
+        tensor areaSum(tensor::zero);
         scalar magAreaSum = 0;
 
         forAll(cFaces, cFacei)

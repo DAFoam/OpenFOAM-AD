@@ -209,12 +209,129 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                 << exit(FatalError);
         }
 
-        UOPstream toNeighbProc(neighbProcNo(), pBufs);
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with MeDiPack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write with blocking mode
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack.
 
-        toNeighbProc
-            << faceCentres()
-            << faceAreas()
-            << faceCellCentres();
+        // Refers to the communication used in the initEvaluate function from
+        // src/finiteVolume/fields/fvPatchFields/constraint/processor/processorFvPatchField.C
+
+        if
+        (
+            Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
+         && !Pstream::floatTransfer
+        )
+        {
+
+            const List<label>& oneToOneList = Pstream::procOneToOneCommList[Pstream::procOneToOneCommListIndex];
+
+            for(label idxI=0; idxI<oneToOneList.size(); idxI+=2)
+            {
+                label procA = oneToOneList[idxI];
+                label procB = oneToOneList[idxI+1];
+                if
+                ( 
+                    (myProcNo_ == procA && neighbProcNo_ == procB) 
+                 || (myProcNo_ == procB && neighbProcNo_ == procA)
+                )
+                {
+
+                    scalar dummyActiveType = 1.0;
+        
+                    vectorField faceCentresField = faceCentres();
+                    vectorField faceAreasField = faceAreas();
+                    vectorField faceCellCentresField = faceCellCentres();
+                    scalarField myScalarFields(this->size()*9);
+                    label counterI = 0;
+                    forAll(faceCentresField, idxI)
+                    {
+                        for (label i=0;i<3;i++)
+                        {
+                            myScalarFields[counterI] = faceCentresField[idxI][i];
+                            counterI++;
+                            myScalarFields[counterI] = faceAreasField[idxI][i];
+                            counterI++;
+                            myScalarFields[counterI] = faceCellCentresField[idxI][i];
+                            counterI++;
+                        }
+                    }
+
+                    if(myProcNo_ == procA)
+                    {
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(myScalarFields.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+    
+                        neighbScalarFields_.clear();
+                        neighbScalarFields_.setSize(this->size()*9);
+
+                        UIPstream::read
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(neighbScalarFields_.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+                    }
+                    else
+                    {
+                        
+                        neighbScalarFields_.clear();
+                        neighbScalarFields_.setSize(this->size()*9);
+
+                        UIPstream::read
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(neighbScalarFields_.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(myScalarFields.begin()),
+                            9*this->size()*sizeof(scalar),
+                            "Foam::processorPolyPatch::initGeometry",
+                            typeid(&dummyActiveType),
+                            this->tag(),
+                            this->comm()
+                        );
+                    }
+        
+                }
+            }
+
+        }
+        else
+        {
+            FatalErrorInFunction
+            << "Only support nonBlocking! " 
+            << abort(FatalError);
+        }
+
     }
 }
 
@@ -223,13 +340,50 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
 {
     if (Pstream::parRun())
     {
+        // CoDiPack4OpenFOAM. We have hacked this function 
+        // The original communication was done through PstreamBuffers.
+        // However, it will return seg fault when using reverse-mode AD
+        // with MeDiPack. So we have to change the communication to use
+        // UIPstream::read and UOPstream::write with blocking mode
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack.
+        
+        if
+        (
+            Pstream::defaultCommsType == Pstream::commsTypes::nonBlocking
+         && !Pstream::floatTransfer
+        )
         {
-            UIPstream fromNeighbProc(neighbProcNo(), pBufs);
 
-            fromNeighbProc
-                >> neighbFaceCentres_
-                >> neighbFaceAreas_
-                >> neighbFaceCellCentres_;
+            if (neighbScalarFields_.size() == 0)
+            {
+                FatalErrorInFunction
+                    << "neighbScalarFields_ is not initialized in initGeometry!" 
+                    << abort(FatalError);
+            }
+
+            neighbFaceCentres_.clear();
+            neighbFaceAreas_.clear();
+            neighbFaceCellCentres_.clear();
+            neighbFaceCentres_.setSize(this->size());
+            neighbFaceAreas_.setSize(this->size());
+            neighbFaceCellCentres_.setSize(this->size());
+
+            label counterI = 0;
+            forAll(neighbFaceCentres_, idxI)
+            {
+                for (label i=0;i<3;i++)
+                {
+                    neighbFaceCentres_[idxI][i] = neighbScalarFields_[counterI];
+                    counterI++;
+                    neighbFaceAreas_[idxI][i] = neighbScalarFields_[counterI];
+                    counterI++;
+                    neighbFaceCellCentres_[idxI][i] = neighbScalarFields_[counterI];
+                    counterI++;
+                }
+            }
+
         }
 
         // My normals
@@ -260,6 +414,7 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
             }
             else if (mag(magSf - nbrMagSf) > matchTolerance()*sqr(tols[facei]))
             {
+
                 fileName nm
                 (
                     boundaryMesh().mesh().time().path()
@@ -312,13 +467,15 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
                     << " in the patch dictionary in the boundary file."
                     << endl
                     << "Rerun with processor debug flag set for"
-                    << " more information." << exit(FatalError);
+                    << " more information."  << exit(FatalError);
+
             }
             else
             {
                 faceNormals[facei] = faceAreas()[facei]/magSf;
                 nbrFaceNormals[facei] = neighbFaceAreas_[facei]/nbrMagSf;
             }
+
         }
 
         calcTransformTensors

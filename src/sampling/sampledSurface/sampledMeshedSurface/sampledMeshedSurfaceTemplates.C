@@ -71,7 +71,7 @@ Foam::sampledMeshedSurface::sampleOnFaces
 
     const polyBoundaryMesh& pbm = mesh().boundaryMesh();
 
-    Field<Type> bVals(mesh().nBoundaryFaces(), Zero);
+    Field<Type> bVals(mesh().nBoundaryFaces(), pTraits<Type>::zero);
 
     const auto& bField = sampler.psi().boundaryField();
 

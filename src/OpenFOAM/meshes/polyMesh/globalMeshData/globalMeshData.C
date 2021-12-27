@@ -87,7 +87,7 @@ void Foam::globalMeshData::initProcAddr()
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::globalMeshData::initProcAddr()", false);
 
         // Send indices of my processor patches to my neighbours
         for (const label patchi : processorPatches_)

@@ -102,7 +102,8 @@ public:
         inline quadraticEqn();
 
         //- Construct initialized to zero
-        inline quadraticEqn(const Foam::zero);
+        // CodiPack4OpenFOAM TODO commented out for now
+        //inline quadraticEqn(const Foam::zero);
 
         //- Construct from components
         inline quadraticEqn(const scalar a, const scalar b, const scalar c);

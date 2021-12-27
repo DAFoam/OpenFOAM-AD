@@ -31,7 +31,7 @@ License
 template<class Cmpt>
 inline Foam::Vector<Cmpt>::Vector(const Foam::zero)
 :
-    Vector::vsType(Zero)
+    Vector::vsType(Vector<Cmpt>::zero)
 {}
 
 
@@ -126,7 +126,7 @@ inline Foam::Vector<Cmpt>& Foam::Vector<Cmpt>::normalise()
 
     if (s < ROOTVSMALL)
     {
-        *this = Zero;
+        *this = Vector<Cmpt>::zero;
     }
     else
     {

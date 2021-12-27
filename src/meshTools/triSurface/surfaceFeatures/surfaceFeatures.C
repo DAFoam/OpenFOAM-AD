@@ -198,7 +198,7 @@ void Foam::surfaceFeatures::setFromStatus
         }
     }
 
-    const scalar minCos = Foam::cos(degToRad(180.0 - includedAngle));
+    const scalar minCos = cos(degToRad(180.0 - includedAngle));
 
     calcFeatPoints(edgeStat, minCos);
 }
@@ -558,7 +558,7 @@ Foam::surfaceFeatures::surfaceFeatures::checkFlatRegionEdge
 
         if (includedAngle >= 0)
         {
-            scalar minCos = Foam::cos(degToRad(180.0 - includedAngle));
+            scalar minCos = cos(degToRad(180.0 - includedAngle));
 
             forAll(eFaces, i)
             {
@@ -880,7 +880,7 @@ void Foam::surfaceFeatures::findFeatures
     const bool geometricTestOnly
 )
 {
-    scalar minCos = Foam::cos(degToRad(180.0 - includedAngle));
+    scalar minCos = cos(degToRad(180.0 - includedAngle));
 
     // Per edge whether is feature edge.
     List<edgeStatus> edgeStat(surf_.nEdges(), NONE);

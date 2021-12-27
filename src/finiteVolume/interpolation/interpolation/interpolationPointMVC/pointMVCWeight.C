@@ -59,7 +59,7 @@ void Foam::pointMVCWeight::calcWeights
     {
         label jPlus1 = f.fcIndex(j);
         scalar l = mag(u[j] - u[jPlus1]);
-        theta[j] = 2.0*Foam::asin(l/2.0);
+        theta[j] = 2.0*asin(l/2.0);
     }
 
     scalar sumWeight = 0;
@@ -70,7 +70,7 @@ void Foam::pointMVCWeight::calcWeights
         weights[pid] =
             1.0
           / dist[pid]
-          * (Foam::tan(theta[jMin1]/2.0) + Foam::tan(theta[j]/2.0));
+          * (tan(theta[jMin1]/2.0) + tan(theta[j]/2.0));
         sumWeight += weights[pid];
     }
 
@@ -135,7 +135,7 @@ void Foam::pointMVCWeight::calcWeights
             //    << " temp:" << temp << endl;
 
             scalar l = min(mag(u[j] - u[jPlus1]), 2.0);
-            scalar angle = 2.0*Foam::asin(l/2.0);
+            scalar angle = 2.0*asin(l/2.0);
 
             //Pout<< "    j:" << j << " l:" << l << " angle:" << angle << endl;
 
@@ -163,7 +163,7 @@ void Foam::pointMVCWeight::calcWeights
 
             scalar l = min(mag(n0 - n1), 2.0);
             //Pout<< "    l:" << l << endl;
-            alpha(j) = 2.0*Foam::asin(l/2.0);
+            alpha(j) = 2.0*asin(l/2.0);
 
             vector temp = n0^n1;
             if ((temp&v) < 0.0)
@@ -173,7 +173,7 @@ void Foam::pointMVCWeight::calcWeights
 
             l = min(mag(u[j] - v), 2.0);
             //Pout<< "    l:" << l << endl;
-            theta(j) = 2.0*Foam::asin(l/2.0);
+            theta(j) = 2.0*asin(l/2.0);
         }
 
 
@@ -201,8 +201,8 @@ void Foam::pointMVCWeight::calcWeights
             label jMin1 = f.rcIndex(j);
             sum +=
                 1.0
-              / Foam::tan(theta[j])
-              * (Foam::tan(alpha[j]/2.0) + Foam::tan(alpha[jMin1]/2.0));
+              / tan(theta[j])
+              * (tan(alpha[j]/2.0) + tan(alpha[jMin1]/2.0));
         }
 
         // The special case when x lies on the polygon, handle it using 2D mvc.
@@ -224,8 +224,8 @@ void Foam::pointMVCWeight::calcWeights
                 vNorm
               / sum
               / dist[pid]
-              / Foam::sin(theta[j])
-              * (Foam::tan(alpha[j]/2.0) + Foam::tan(alpha[jMin1]/2.0));
+              / sin(theta[j])
+              * (tan(alpha[j]/2.0) + tan(alpha[jMin1]/2.0));
         }
     }
 

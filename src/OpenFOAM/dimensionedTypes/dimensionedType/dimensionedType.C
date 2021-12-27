@@ -114,7 +114,7 @@ Foam::dimensioned<Type>::dimensioned()
 :
     name_("0"),
     dimensions_(),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {}
 
 
@@ -123,7 +123,7 @@ Foam::dimensioned<Type>::dimensioned(const dimensionSet& dims)
 :
     name_("0"),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {}
 
 
@@ -136,7 +136,7 @@ Foam::dimensioned<Type>::dimensioned
 :
     name_("0"),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {}
 
 
@@ -276,7 +276,7 @@ Foam::dimensioned<Type>::dimensioned
 :
     name_(name),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {
     // mandatory, checkDims
     readEntry(entryName, dict);
@@ -334,7 +334,7 @@ Foam::dimensioned<Type>::dimensioned
 :
     name_(name),
     dimensions_(dims),
-    value_(Zero)
+    value_(pTraits<Type>::zero)
 {
     // checkDims
     initialize(is, true);

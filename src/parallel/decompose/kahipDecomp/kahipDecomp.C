@@ -158,7 +158,7 @@ Foam::label Foam::kahipDecomp::decomposeSerial
         {
             cellWeights[i] = static_cast<int>
             (
-                cWeights[i]/minWeights
+                (cWeights[i]/minWeights).getValue()
             );
         }
     }

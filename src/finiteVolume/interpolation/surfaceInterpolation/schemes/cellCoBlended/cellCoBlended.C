@@ -29,10 +29,8 @@ License
 #include "cellCoBlended.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 namespace Foam
 {
     makeSurfaceInterpolationScheme(cellCoBlended);
 }
-
 // ************************************************************************* //

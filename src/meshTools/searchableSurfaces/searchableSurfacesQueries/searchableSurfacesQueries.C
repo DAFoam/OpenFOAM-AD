@@ -564,7 +564,7 @@ void Foam::searchableSurfacesQueries::findNearest
                             scalar magD = mag(d);
                             if (magD > SMALL)
                             {
-                                scalar maxDist = Foam::sqrt(distSqr[i]);
+                                scalar maxDist = sqrt(distSqr[i]);
                                 if (magD > maxDist)
                                 {
                                     // Clip

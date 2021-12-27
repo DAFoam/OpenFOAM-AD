@@ -198,12 +198,17 @@ void Foam::UList<T>::operator=(const Foam::zero)
 template<class T>
 std::streamsize Foam::UList<T>::byteSize() const
 {
+    // CodiPack4OpenFOAM TODO We had to comment out the contiguous check because
+    // the codi datatype is not primative type of c++ and the std::is_arithmetic
+    // call (contiguous) will return false
+    /*
     if (!is_contiguous<T>::value)
     {
         FatalErrorInFunction
             << "Invalid for non-contiguous data types"
             << abort(FatalError);
     }
+    */
     return this->size_bytes();
 }
 

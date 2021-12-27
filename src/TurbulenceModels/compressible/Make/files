@@ -20,4 +20,4 @@ $(BCs)/lumpedMassWallTemperature/lumpedMassWallTemperatureFvPatchScalarField.C
 $(BCs)/wallFunctions/alphatWallFunctions/alphatWallFunction/alphatWallFunctionFvPatchScalarField.C
 $(BCs)/wallFunctions/alphatWallFunctions/alphatJayatillekeWallFunction/alphatJayatillekeWallFunctionFvPatchScalarField.C
 
-LIB = $(FOAM_LIBBIN)/libcompressibleTurbulenceModels
+LIB = $(FOAM_LIBBIN)/libcompressibleTurbulenceModels$(WM_CODI_AD_LIB_POSTFIX)

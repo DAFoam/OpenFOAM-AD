@@ -33,7 +33,7 @@ License
 #include "surfaceFields.H"
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
+/*
 Foam::plenumPressureFvPatchScalarField::plenumPressureFvPatchScalarField
 (
     const fvPatch& p,
@@ -323,5 +323,5 @@ namespace Foam
         plenumPressureFvPatchScalarField
     );
 }
-
+*/
 // ************************************************************************* //

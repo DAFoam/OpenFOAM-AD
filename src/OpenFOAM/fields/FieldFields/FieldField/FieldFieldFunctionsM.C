@@ -30,6 +30,11 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// CodiPack4OpenFOAM NOTE we need to add Foam:: for Func to prevent
+// calling Func from system header
+// NOTE: Here Foam::Func(res[i], f[i]) calls function defined in FieldFunctionsM.C
+// because res[i] is a Field, e.g., res is a boundaryFields
+
 #define UNARY_FUNCTION(ReturnType, Type, Func)                                 \
                                                                                \
 TEMPLATE                                                                       \
@@ -41,7 +46,7 @@ void Func                                                                      \
 {                                                                              \
     forAll(res, i)                                                             \
     {                                                                          \
-        Func(res[i], f[i]);                                                    \
+        Foam::Func(res[i], f[i]);                                              \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -55,7 +60,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         FieldField<Field, ReturnType>::NewCalculatedType(f)                    \
     );                                                                         \
-    Func(tres.ref(), f);                                                       \
+    Foam::Func(tres.ref(), f);                                                       \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -66,7 +71,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
 )                                                                              \
 {                                                                              \
     tmp<FieldField<Field, ReturnType>> tres(New(tf));                          \
-    Func(tres.ref(), tf());                                                    \
+    Foam::Func(tres.ref(), tf());                                                    \
     tf.clear();                                                                \
     return tres;                                                               \
 }
@@ -85,7 +90,7 @@ void OpFunc                                                                    \
 {                                                                              \
     forAll(res, i)                                                             \
     {                                                                          \
-        OpFunc(res[i], f[i]);                                                  \
+        Foam::OpFunc(res[i], f[i]);                                            \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -99,7 +104,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         FieldField<Field, Type>::NewCalculatedType(f)                          \
     );                                                                         \
-    OpFunc(tres.ref(), f);                                                     \
+    Foam::OpFunc(tres.ref(), f);                                                     \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -110,7 +115,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
 )                                                                              \
 {                                                                              \
     tmp<FieldField<Field, ReturnType>> tres(New(tf));                          \
-    OpFunc(tres.ref(), tf());                                                  \
+    Foam::OpFunc(tres.ref(), tf());                                                  \
     tf.clear();                                                                \
     return tres;                                                               \
 }
@@ -130,7 +135,7 @@ void Func                                                                      \
 {                                                                              \
     forAll(f, i)                                                               \
     {                                                                          \
-        Func(f[i], f1[i], f2[i]);                                              \
+        Foam::Func(f[i], f1[i], f2[i]);                                        \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -145,7 +150,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         FieldField<Field, Type1>::NewCalculatedType(f1)                        \
     );                                                                         \
-    Func(tres.ref(), f1, f2);                                                  \
+    Foam::Func(tres.ref(), f1, f2);                                                  \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -160,7 +165,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type2>::New(tf2)                 \
     );                                                                         \
-    Func(tres.ref(), f1, tf2());                                               \
+    Foam::Func(tres.ref(), f1, tf2());                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -176,7 +181,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type1>::New(tf1)                 \
     );                                                                         \
-    Func(tres.ref(), tf1(), f2);                                               \
+    Foam::Func(tres.ref(), tf1(), f2);                                               \
     tf1.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -193,7 +198,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
         reuseTmpTmpFieldField<Field, ReturnType, Type1, Type1, Type2>::        \
             New(tf1, tf2)                                                      \
     );                                                                         \
-    Func(tres.ref(), tf1(), tf2());                                            \
+    Foam::Func(tres.ref(), tf1(), tf2());                                            \
     tf1.clear();                                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
@@ -214,7 +219,7 @@ void Func                                                                      \
 {                                                                              \
     forAll(f, i)                                                               \
     {                                                                          \
-        Func(f[i], s, f2[i]);                                                  \
+        Foam::Func(f[i], s, f2[i]);                                            \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -229,7 +234,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         FieldField<Field, Type2>::NewCalculatedType(f2)                        \
     );                                                                         \
-    Func(tres.ref(), s, f2);                                                   \
+    Foam::Func(tres.ref(), s, f2);                                                   \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -244,7 +249,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type2>::New(tf2)                 \
     );                                                                         \
-    Func(tres.ref(), s, tf2());                                                \
+    Foam::Func(tres.ref(), s, tf2());                                                \
     tf2.clear();                                                               \
     return tres;                                                               \
 }
@@ -262,7 +267,7 @@ void Func                                                                      \
 {                                                                              \
     forAll(f, i)                                                               \
     {                                                                          \
-        Func(f[i], f1[i], s);                                                  \
+        Foam::Func(f[i], f1[i], s);                                            \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -277,7 +282,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         FieldField<Field, Type1>::NewCalculatedType(f1)                        \
     );                                                                         \
-    Func(tres.ref(), f1, s);                                                   \
+    Foam::Func(tres.ref(), f1, s);                                                   \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -292,7 +297,7 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type1>::New(tf1)                 \
     );                                                                         \
-    Func(tres.ref(), tf1(), s);                                                \
+    Foam::Func(tres.ref(), tf1(), s);                                                \
     tf1.clear();                                                               \
     return tres;                                                               \
 }
@@ -317,7 +322,7 @@ void OpFunc                                                                    \
 {                                                                              \
     forAll(f, i)                                                               \
     {                                                                          \
-        OpFunc(f[i], f1[i], f2[i]);                                            \
+        Foam::OpFunc(f[i], f1[i], f2[i]);                                      \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -332,7 +337,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         FieldField<Field, ReturnType>::NewCalculatedType(f1)                   \
     );                                                                         \
-    OpFunc(tres.ref(), f1, f2);                                                \
+    Foam::OpFunc(tres.ref(), f1, f2);                                                \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -347,7 +352,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type2>::New(tf2)                 \
     );                                                                         \
-    OpFunc(tres.ref(), f1, tf2());                                             \
+    Foam::OpFunc(tres.ref(), f1, tf2());                                             \
     tf2.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -363,7 +368,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type1>::New(tf1)                 \
     );                                                                         \
-    OpFunc(tres.ref(), tf1(), f2);                                             \
+    Foam::OpFunc(tres.ref(), tf1(), f2);                                             \
     tf1.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -380,7 +385,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
         reuseTmpTmpFieldField<Field, ReturnType, Type1, Type1, Type2>::        \
             New(tf1, tf2)                                                      \
     );                                                                         \
-    OpFunc(tres.ref(), tf1(), tf2());                                          \
+    Foam::OpFunc(tres.ref(), tf1(), tf2());                                          \
     tf1.clear();                                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
@@ -401,7 +406,7 @@ void OpFunc                                                                    \
 {                                                                              \
     forAll(f, i)                                                               \
     {                                                                          \
-        OpFunc(f[i], s, f2[i]);                                                \
+        Foam::OpFunc(f[i], s, f2[i]);                                          \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -416,7 +421,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         FieldField<Field, Type2>::NewCalculatedType(f2)                        \
     );                                                                         \
-    OpFunc(tres.ref(), s, f2);                                                 \
+    Foam::OpFunc(tres.ref(), s, f2);                                                 \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -431,7 +436,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type2>::New(tf2)                 \
     );                                                                         \
-    OpFunc(tres.ref(), s, tf2());                                              \
+    Foam::OpFunc(tres.ref(), s, tf2());                                              \
     tf2.clear();                                                               \
     return tres;                                                               \
 }
@@ -449,7 +454,7 @@ void OpFunc                                                                    \
 {                                                                              \
     forAll(f, i)                                                               \
     {                                                                          \
-        OpFunc(f[i], f1[i], s);                                                \
+        Foam::OpFunc(f[i], f1[i], s);                                          \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -464,7 +469,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         FieldField<Field, Type1>::NewCalculatedType(f1)                        \
     );                                                                         \
-    OpFunc(tres.ref(), f1, s);                                                 \
+    Foam::OpFunc(tres.ref(), f1, s);                                                 \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -479,7 +484,7 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
     (                                                                          \
         reuseTmpFieldField<Field, ReturnType, Type1>::New(tf1)                 \
     );                                                                         \
-    OpFunc(tres.ref(), tf1(), s);                                              \
+    Foam::OpFunc(tres.ref(), tf1(), s);                                              \
     tf1.clear();                                                               \
     return tres;                                                               \
 }

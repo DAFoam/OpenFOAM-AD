@@ -283,7 +283,7 @@ void Foam::faceCollapser::setRefinement
 
                 point newPoint
                 (
-                    pA + Foam::sqrt(w / (dist[fpB] - dist[fpA]))*(pB - pA)
+                    pA + sqrt(w / (dist[fpB] - dist[fpA]))*(pB - pA)
                 );
 
                 Pout<< "Adapting position of vertex " << f[fp] << " on face "
@@ -336,7 +336,7 @@ void Foam::faceCollapser::setRefinement
 
                 point newPoint
                 (
-                    pA + Foam::sqrt(w / (dist[fpB] - dist[fpA]))*(pB - pA)
+                    pA + sqrt(w / (dist[fpB] - dist[fpA]))*(pB - pA)
                 );
 
                 Pout<< "Adapting position of vertex " << f[fp] << " on face "

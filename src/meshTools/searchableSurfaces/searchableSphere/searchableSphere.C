@@ -749,7 +749,7 @@ void Foam::searchableSphere::findLineAll
 
     if (magSqrDir > ROOTVSMALL)
     {
-        dir /= Foam::sqrt(magSqrDir);
+        dir /= sqrt(magSqrDir);
 
         const scalar v = -(relStart & dir);
 
@@ -757,7 +757,7 @@ void Foam::searchableSphere::findLineAll
 
         if (disc >= 0)
         {
-            const scalar d = Foam::sqrt(disc);
+            const scalar d = sqrt(disc);
 
             const scalar nearParam = v - d;
             const scalar farParam = v + d;

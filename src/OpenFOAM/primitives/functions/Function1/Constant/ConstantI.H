@@ -43,6 +43,20 @@ inline Type Foam::Function1Types::Constant<Type>::value(const scalar) const
     return value_;
 }
 
+// CoDiPack4OpenFOAM check this
+// all return types except label
+template <typename R, typename T>
+typename std::enable_if<!std::is_same<R, Foam::label>::value, R>::type
+    passive_if_label_scalar(const T& t) {
+        return t;
+}
+// if return type label
+template <typename R, typename T>
+typename std::enable_if<std::is_same<R, Foam::label>::value, R>::type
+    passive_if_label_scalar(const T& t) {
+        return t.getValue();
+}
+
 
 template<class Type>
 inline Type Foam::Function1Types::Constant<Type>::integrate
@@ -51,7 +65,8 @@ inline Type Foam::Function1Types::Constant<Type>::integrate
     const scalar x2
 ) const
 {
-    return Type((x2 - x1)*value_);
+    // CoDiPack4OpenFOAM check this
+    return passive_if_label_scalar<Type>((x2 - x1)*value_);
 }
 
 

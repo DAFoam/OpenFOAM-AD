@@ -51,7 +51,7 @@ tmp<scalarField> nutkFilmWallFunctionFvPatchScalarField::calcUTau
     const scalarField& magGradU
 ) const
 {
-    tmp<scalarField> tuTau(new scalarField(patch().size(), Zero));
+    tmp<scalarField> tuTau(new scalarField(patch().size(), pTraits<scalar>::zero));
     scalarField& uTau = tuTau.ref();
 
     const auto* filmModelPtr = db().time().findObject

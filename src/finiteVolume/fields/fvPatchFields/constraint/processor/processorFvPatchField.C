@@ -217,48 +217,101 @@ void Foam::processorFvPatchField<Type>::initEvaluate
 {
     if (Pstream::parRun())
     {
-        this->patchInternalField(sendBuf_);
 
+        // CoDiPack4OpenFOAM. We have hacked this function to use blocking comm
+        // The original communication was done through nonBlocking comm.
+        // NOTE: the nonBlocking mode will NOT work because it will miss data
+        // transfer between procs. The exact reason is unknown.. but likely related
+        // to MeDiPack
+
+        // This function will be called to extract field data between procs
+        // i.e., when calling U.correctBoundaryConditions
+
+        label neighbProcNo = this->neighbProcNo();
+        label myProcNo = this->myProcNo();
         if
         (
             commsType == Pstream::commsTypes::nonBlocking
          && !Pstream::floatTransfer
         )
         {
-            if (!is_contiguous<Type>::value)
+            const List<label>& oneToOneList = Pstream::procOneToOneCommList[Pstream::procOneToOneCommListIndex];
+
+            for(label idxI=0; idxI<oneToOneList.size(); idxI+=2)
             {
-                FatalErrorInFunction
-                    << "Invalid for non-contiguous data types"
-                    << abort(FatalError);
+                label procA = oneToOneList[idxI];
+                label procB = oneToOneList[idxI+1];
+                if
+                ( 
+                    (myProcNo == procA && neighbProcNo == procB) 
+                 || (myProcNo == procB && neighbProcNo == procA)
+                )
+                {
+
+                    scalar dummyActiveType = 1.0;
+                    this->patchInternalField(sendBuf_);
+                    this->setSize(sendBuf_.size()); 
+                    if(myProcNo == procA)
+                    {
+                        UOPstream::write
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(sendBuf_.cdata_bytes()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );
+    
+                        UIPstream::read
+                        (
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(this->data_bytes()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );
+                    }
+                    else
+                    {
+                        UIPstream::read
+                        (   
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<char*>(this->data_bytes()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );
+                        UOPstream::write
+                        (   
+                            Pstream::commsTypes::blocking,
+                            this->neighbProcNo(),
+                            reinterpret_cast<const char*>(sendBuf_.cdata_bytes()),
+                            this->size()*sizeof(Type),
+                            "Foam::processorFvPatchField<Type>::initEvaluate",
+                            typeid(&dummyActiveType),
+                            procPatch_.tag(),
+                            procPatch_.comm()
+                        );                        
+                    }
+        
+                }
             }
 
-            // Receive straight into *this
-            this->setSize(sendBuf_.size());
-            outstandingRecvRequest_ = UPstream::nRequests();
-            UIPstream::read
-            (
-                Pstream::commsTypes::nonBlocking,
-                procPatch_.neighbProcNo(),
-                this->data_bytes(),
-                this->size_bytes(),
-                procPatch_.tag(),
-                procPatch_.comm()
-            );
-
-            outstandingSendRequest_ = UPstream::nRequests();
-            UOPstream::write
-            (
-                Pstream::commsTypes::nonBlocking,
-                procPatch_.neighbProcNo(),
-                sendBuf_.cdata_bytes(),
-                sendBuf_.size_bytes(),
-                procPatch_.tag(),
-                procPatch_.comm()
-            );
         }
         else
         {
-            procPatch_.compressedSend(commsType, sendBuf_);
+            FatalErrorInFunction
+            << "Only support nonBlocking! " 
+            << abort(FatalError);
         }
     }
 }
@@ -272,30 +325,6 @@ void Foam::processorFvPatchField<Type>::evaluate
 {
     if (Pstream::parRun())
     {
-        if
-        (
-            commsType == Pstream::commsTypes::nonBlocking
-         && !Pstream::floatTransfer
-        )
-        {
-            // Fast path. Received into *this
-
-            if
-            (
-                outstandingRecvRequest_ >= 0
-             && outstandingRecvRequest_ < Pstream::nRequests()
-            )
-            {
-                UPstream::waitRequest(outstandingRecvRequest_);
-            }
-            outstandingSendRequest_ = -1;
-            outstandingRecvRequest_ = -1;
-        }
-        else
-        {
-            procPatch_.compressedReceive<Type>(commsType, *this);
-        }
-
         if (doTransform())
         {
             transform(*this, procPatch_.forwardT(), *this);
@@ -360,8 +389,10 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
         (
             Pstream::commsTypes::nonBlocking,
             procPatch_.neighbProcNo(),
-            scalarReceiveBuf_.data_bytes(),
-            scalarReceiveBuf_.size_bytes(),
+            reinterpret_cast<char*>(scalarReceiveBuf_.data_bytes()),
+            scalarReceiveBuf_.byteSize(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
+            typeid(scalarReceiveBuf_.data_bytes()),
             procPatch_.tag(),
             procPatch_.comm()
         );
@@ -371,8 +402,10 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
         (
             Pstream::commsTypes::nonBlocking,
             procPatch_.neighbProcNo(),
-            scalarSendBuf_.cdata_bytes(),
-            scalarSendBuf_.size_bytes(),
+            reinterpret_cast<const char*>(scalarSendBuf_.cdata_bytes()),
+            scalarSendBuf_.byteSize(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
+            typeid(scalarSendBuf_.cdata_bytes()),
             procPatch_.tag(),
             procPatch_.comm()
         );
@@ -510,8 +543,10 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
         (
             Pstream::commsTypes::nonBlocking,
             procPatch_.neighbProcNo(),
-            receiveBuf_.data_bytes(),
-            receiveBuf_.size_bytes(),
+            reinterpret_cast<char*>(receiveBuf_.data_bytes()),
+            receiveBuf_.byteSize(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
+            typeid(receiveBuf_.data_bytes()),
             procPatch_.tag(),
             procPatch_.comm()
         );
@@ -521,8 +556,10 @@ void Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate
         (
             Pstream::commsTypes::nonBlocking,
             procPatch_.neighbProcNo(),
-            sendBuf_.cdata_bytes(),
-            sendBuf_.size_bytes(),
+            reinterpret_cast<const char*>(sendBuf_.cdata_bytes()),
+            sendBuf_.byteSize(),
+            "Foam::processorFvPatchField<Type>::initInterfaceMatrixUpdate",
+            typeid(sendBuf_.cdata_bytes()),
             procPatch_.tag(),
             procPatch_.comm()
         );

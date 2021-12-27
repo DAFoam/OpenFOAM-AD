@@ -186,7 +186,7 @@ Foam::ConeNozzleInjection<CloudType>::ConeNozzleInjection
     tetPti_(-1),
     directionVsTime_(nullptr),
     direction_(Zero),
-    parcelsPerSecond_(this->coeffDict().getScalar("parcelsPerSecond")),
+    parcelsPerSecond_(this->coeffDict().getScalar("parcelsPerSecond").getValue()),
     flowRateProfile_
     (
         Function1<scalar>::New
@@ -479,7 +479,7 @@ void Foam::ConeNozzleInjection<CloudType>::setProperties
         {
             scalar pAmbient = this->owner().pAmbient();
             scalar rho = parcel.rho();
-            scalar UMag = ::sqrt(2.0*(Pinj_->value(t) - pAmbient)/rho);
+            scalar UMag = sqrt(2.0*(Pinj_->value(t) - pAmbient)/rho);
             parcel.U() = UMag*dirVec;
             break;
         }

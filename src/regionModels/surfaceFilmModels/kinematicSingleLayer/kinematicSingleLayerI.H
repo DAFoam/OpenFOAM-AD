@@ -250,7 +250,7 @@ inline tmp<volScalarField> kinematicSingleLayer::gNormClipped() const
     );
 
     volScalarField& gNormClipped = tgNormClipped.ref();
-    gNormClipped.min(0.0);
+    gNormClipped.min(scalar(0.0));
 
     return tgNormClipped;
 }

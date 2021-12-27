@@ -44,7 +44,7 @@ Type Foam::mappedPatchFieldBase<Type>::getAverage
         return dict.get<Type>("average");
     }
 
-    return Zero;
+    return pTraits<Type>::zero;
 }
 
 
@@ -441,7 +441,7 @@ Foam::mappedPatchFieldBase<Type>::mappedPatchFieldBase
     patchField_(patchField),
     fieldName_(patchField_.internalField().name()),
     setAverage_(false),
-    average_(Zero),
+    average_(pTraits<Type>::zero),
     interpolationScheme_(interpolationCell<Type>::typeName)
 {}
 

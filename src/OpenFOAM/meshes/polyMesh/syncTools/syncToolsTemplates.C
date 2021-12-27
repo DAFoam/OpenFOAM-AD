@@ -127,7 +127,7 @@ void Foam::syncTools::syncPointMap
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::syncTools::syncPointMap", false);
 
         // Send
         for (const polyPatch& pp : patches)
@@ -381,7 +381,7 @@ void Foam::syncTools::syncEdgeMap
 
     if (Pstream::parRun())
     {
-        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking);
+        PstreamBuffers pBufs(Pstream::commsTypes::nonBlocking, "Foam::syncTools::syncEdgeMap", false);
 
         // Send
         for (const polyPatch& pp : patches)

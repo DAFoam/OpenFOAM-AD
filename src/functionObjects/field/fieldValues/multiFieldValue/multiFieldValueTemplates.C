@@ -43,7 +43,7 @@ bool Foam::functionObjects::fieldValues::multiFieldValue::applyOperation
         return false;
     }
 
-    Type result = Zero;
+    Type result = pTraits<Type>::zero;
 
     Field<Type> values(names.size());
     forAll(values, i)

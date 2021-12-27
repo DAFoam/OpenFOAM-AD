@@ -2,12 +2,12 @@ EXE_INC = \
     -I$(OBJECTS_DIR)
 
 LIB_LIBS = \
-    $(FOAM_LIBBIN)/libOSspecific.o
+    $(FOAM_LIBBIN)/libOSspecific$(WM_CODI_AD_LIB_POSTFIX).o
 
 ifeq (libo,$(FOAM_LINK_DUMMY_PSTREAM))
-    LIB_LIBS += $(FOAM_LIBBIN)/dummy/libPstream.o
+    LIB_LIBS += $(FOAM_LIBBIN)/dummy/libPstream$(WM_CODI_AD_LIB_POSTFIX).o
 else
-    LIB_LIBS += -L$(FOAM_LIBBIN)/dummy -lPstream
+    LIB_LIBS += -L$(FOAM_LIBBIN)/dummy -lPstream$(WM_CODI_AD_LIB_POSTFIX)
 endif
 
 /* libz */

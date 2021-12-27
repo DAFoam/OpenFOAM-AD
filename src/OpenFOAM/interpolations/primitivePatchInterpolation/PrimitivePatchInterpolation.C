@@ -191,7 +191,7 @@ tmp<Field<Type>> PrimitivePatchInterpolation<Patch>::faceToPointInterpolate
     (
         new Field<Type>
         (
-            patch_.nPoints(), Zero
+            patch_.nPoints(), pTraits<Type>::zero
         )
     );
 
@@ -248,7 +248,7 @@ tmp<Field<Type>> PrimitivePatchInterpolation<Patch>::pointToFaceInterpolate
         new Field<Type>
         (
             patch_.size(),
-            Zero
+            pTraits<Type>::zero
         )
     );
 
@@ -301,7 +301,7 @@ tmp<Field<Type>> PrimitivePatchInterpolation<Patch>::faceToEdgeInterpolate
             << abort(FatalError);
     }
 
-    auto tresult = tmp<Field<Type>>::New(patch_.nEdges(), Zero);
+    auto tresult = tmp<Field<Type>>::New(patch_.nEdges(), pTraits<Type>::zero);
     auto& result = tresult.ref();
 
     const edgeList& edges = patch_.edges();

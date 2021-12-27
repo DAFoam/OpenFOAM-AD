@@ -31,7 +31,6 @@ License
 #include "limitedLinear.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
 namespace Foam
 {
     makeLimitedMultivariateSurfaceInterpolationScheme
@@ -58,5 +57,4 @@ namespace Foam
         magSqr
     )
 }
-
 // ************************************************************************* //

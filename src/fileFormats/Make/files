@@ -86,4 +86,4 @@ $(setWriters)/csv/csvSetWriterRunTime.C
 $(setWriters)/nastran/nastranSetWriterRunTime.C
 $(setWriters)/gltf/gltfSetWriterRunTime.C
 
-LIB = $(FOAM_LIBBIN)/libfileFormats
+LIB = $(FOAM_LIBBIN)/libfileFormats$(WM_CODI_AD_LIB_POSTFIX)
