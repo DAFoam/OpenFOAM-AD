@@ -8,7 +8,7 @@ This repository contains the OpenFOAM source codes differentiated by automatic d
 Download
 --------
 
-We only differentiate certain versions of OpenFOAM releases. So check the branches (e.g., openfoam-v1812-ad) on this repo; **the main branch does not contain any AD codes**.
+We only differentiate certain versions of OpenFOAM releases. So check the branches (e.g., v1812-ad) on this repo; **the main branch does not contain any AD codes**.
 
 Installation
 ------------
