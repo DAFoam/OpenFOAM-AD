@@ -47,6 +47,8 @@ case "$WM_COMPILER" in
     ;;
 esac
 
+exit 1
+
 wmake $targetType OpenFOAM
 
 wmake $targetType fileFormats

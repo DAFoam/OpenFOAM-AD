@@ -55,14 +55,15 @@ namespace Foam
 
 // Largest and smallest scalar values allowed in certain parts of the code.
 // See std::numeric_limits max(), min(), epsilon()
-constexpr doubleScalar doubleScalarGREAT = 1.0e+15;
-constexpr doubleScalar doubleScalarROOTGREAT = 3.0e+8;
-constexpr doubleScalar doubleScalarVGREAT = 1.0e+300;
-constexpr doubleScalar doubleScalarROOTVGREAT = 1.0e+150;
-constexpr doubleScalar doubleScalarSMALL = 1.0e-15;
-constexpr doubleScalar doubleScalarROOTSMALL = 3.0e-8;
-constexpr doubleScalar doubleScalarVSMALL = 1.0e-300;
-constexpr doubleScalar doubleScalarROOTVSMALL = 1.0e-150;
+// codi: replaced doubleScalar with double
+constexpr double doubleScalarGREAT = 1.0e+15;
+constexpr double doubleScalarROOTGREAT = 3.0e+8;
+constexpr double doubleScalarVGREAT = 1.0e+300;
+constexpr double doubleScalarROOTVGREAT = 1.0e+150;
+constexpr double doubleScalarSMALL = 1.0e-15;
+constexpr double doubleScalarROOTSMALL = 3.0e-8;
+constexpr double doubleScalarVSMALL = 1.0e-300;
+constexpr double doubleScalarROOTVSMALL = 1.0e-150;
 
 
 #define Scalar doubleScalar
@@ -75,25 +76,33 @@ constexpr doubleScalar doubleScalarROOTVSMALL = 1.0e-150;
 
 inline Scalar mag(const Scalar s)
 {
-    return ::fabs(s);
+    // codi: using ADL to auto-select func namespace
+    using std::fabs;
+    return fabs(s);
 }
 
 inline Scalar hypot(const Scalar x, const Scalar y)
 {
-    return ::hypot(x, y);
+    // codi: using ADL to auto-select func namespace
+    using std::hypot;
+    return hypot(x, y);
 }
 
 inline Scalar atan2(const Scalar y, const Scalar x)
 {
-    return ::atan2(y, x);
+    // codi: using ADL to auto-select func namespace
+    using std::atan2;
+    return atan2(y, x);
 }
 
 
 // Normal (double-precision) transcendental functions
+// codi: using ADL to auto-select func namespace
 #define transFunc(func)                                         \
 inline Scalar func(const Scalar s)                              \
 {                                                               \
-    return ::func(s);                                           \
+    using std::func;                                            \
+    return func(s);                                             \
 }
 
 // Normal (double-precision) bessel functions.
@@ -128,15 +137,15 @@ inline Scalar func(const Scalar s)                              \
     #define besselFunc(func)                                    \
     inline Scalar func(const Scalar s)                          \
     {                                                           \
-        return ::func(s);                                       \
+        return ::func(s.getValue());                            \
     }
     #define besselFunc2(func)                                   \
     inline Scalar func(const int n, const Scalar s)             \
     {                                                           \
-        return ::func(n, s);                                    \
+        return ::func(n, s.getValue());                         \
     }
 #endif
-
+// codi: using passive model for besselFunc
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 

@@ -100,22 +100,26 @@ public:
     // Constructors
 
         //- Default construct, as zero-initialized
-        inline constexpr complex() noexcept;
+        // codi: remove constexpr
+        inline complex() noexcept;
 
         //- Construct zero-initialized from zero class
-        inline constexpr complex(const Foam::zero) noexcept;
+        inline complex(const Foam::zero) noexcept;
 
         //- Construct from real component
-        inline explicit constexpr complex(const scalar r) noexcept;
+        inline explicit complex(const scalar r) noexcept;
 
         //- Construct from real and imaginary parts
-        inline constexpr complex(const scalar r, const scalar i) noexcept;
+        inline complex(const scalar r, const scalar i) noexcept;
 
         //- Implicit construct from std::complex
         inline complex(const std::complex<float>& c);
 
         //- Implicit construct from std::complex
         inline complex(const std::complex<double>& c);
+
+        //- codi: Construct from std::complex
+        inline complex(const std::complex<scalar>& c);
 
         //- Construct from Istream
         explicit complex(Istream& is);
@@ -126,10 +130,10 @@ public:
     // STL getter/setter
 
         //- Real part of complex number - STL naming
-        constexpr scalar real() const noexcept { return re; }
+        scalar real() const noexcept { return re; }
 
         //- Imaginary part of complex number - STL naming
-        constexpr scalar imag() const noexcept { return im; }
+        scalar imag() const noexcept { return im; }
 
         //- Set real part of complex number - STL naming
         void real(scalar val) noexcept { re = val; }

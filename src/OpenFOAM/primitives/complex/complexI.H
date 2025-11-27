@@ -28,31 +28,39 @@ License
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
 
-inline constexpr Foam::complex::complex() noexcept
+// codi: remove constexpr
+inline Foam::complex::complex() noexcept
 :
     re(0),
     im(0)
 {}
 
 
-inline constexpr Foam::complex::complex(const Foam::zero) noexcept
+inline Foam::complex::complex(const Foam::zero) noexcept
 :
     re(0),
     im(0)
 {}
 
 
-inline constexpr Foam::complex::complex(const scalar r) noexcept
+inline Foam::complex::complex(const scalar r) noexcept
 :
     re(r),
     im(0)
 {}
 
 
-inline constexpr Foam::complex::complex(const scalar r, const scalar i) noexcept
+inline Foam::complex::complex(const scalar r, const scalar i) noexcept
 :
     re(r),
     im(i)
+{}
+
+// codi: add a new complex type that uses complex scalar as input
+inline Foam::complex::complex(const std::complex<scalar>& c)
+:
+    re(c.real()),
+    im(c.imag())
 {}
 
 
@@ -381,10 +389,15 @@ inline complex operator/(const scalar s, const complex& c)
 // Complex transcendental functions
 namespace Foam
 {
-    #define transFunc(func)                                                   \
-    inline complex func(const complex& c)                                     \
-    {                                                                         \
-        return std:: func (static_cast<std::complex<scalar>>(c));             \
+    // codi: change the complex datatype to codi compatible
+    #define transFunc(func)                                               \
+    inline complex func(const complex& c)                                 \
+    {                                                                     \
+        using std::func;                                                  \
+        std::complex<scalar> tmp = func(                                  \
+            static_cast<std::complex<scalar>>(c)                          \
+        );                                                                \
+        return complex(tmp);                                              \
     }
 
 transFunc(sqrt)
@@ -405,30 +418,41 @@ transFunc(acosh)
 transFunc(atanh)
 
 // Special treatment for pow()
+// codi: change the datatype to codi compatible
 inline complex pow(const complex& x, const complex& y)
 {
-    return std::pow
-    (
+    using std::pow;
+
+    std::complex<scalar> tmp = pow(
         static_cast<std::complex<scalar>>(x),
         static_cast<std::complex<scalar>>(y)
     );
+
+    return complex(tmp);
 }
 
 
 // Combinations of complex and integral/float
+// codi: change the datatype to codi compatible
 #define powFuncs(type2)                                                       \
     inline complex pow(const complex& x, const type2 y)                       \
     {                                                                         \
-        return std::pow(static_cast<std::complex<scalar>>(x), y);             \
+        using std::pow;                                                       \
+        std::complex<scalar> tmp = pow(                                       \
+            static_cast<std::complex<scalar>>(x),                             \
+            static_cast<double>(y)                                            \
+        );                                                                    \
+        return complex(tmp);                                                  \
     }                                                                         \
                                                                               \
     inline complex pow(const type2 x, const complex& y)                       \
     {                                                                         \
-        return std::pow                                                       \
-        (                                                                     \
-            static_cast<std::complex<scalar>>(x),                             \
+        using std::pow;                                                       \
+        std::complex<scalar> tmp = pow(                                       \
+            static_cast<std::complex<scalar>>(static_cast<scalar>(x)),        \
             static_cast<std::complex<scalar>>(y)                              \
         );                                                                    \
+        return complex(tmp);                                                  \
     }
 
 powFuncs(int)
@@ -464,9 +488,16 @@ inline complex pow6(const complex& c)
 }
 
 
+//inline complex pow025(const complex& c)
+// codi: change the datatype to codi compatible
 inline complex pow025(const complex& c)
 {
-    return sqrt(sqrt(c));
+    using std::sqrt;
+
+    std::complex<scalar> z   = static_cast<std::complex<scalar>>(c);
+    std::complex<scalar> tmp = sqrt(sqrt(z));
+
+    return complex(tmp);
 }
 
 } // End namespace Foam

@@ -202,9 +202,10 @@ transFunc(atanh)
 
 // Standard ANSI-C (but not in <cmath>) transcendental functions
 
+// codi: comment out lgamma for now
 transFunc(erf)
 transFunc(erfc)
-transFunc(lgamma)
+//transFunc(lgamma)
 transFunc(tgamma)
 
 besselFunc(j0)
@@ -223,7 +224,8 @@ inline Scalar& setComponent(Scalar& val, const direction) noexcept
 
 
 //- Return scalar value (has no components)
-inline constexpr Scalar component(const Scalar val, const direction) noexcept
+// codi: remove constexpr
+inline Scalar component(const Scalar val, const direction) noexcept
 {
     return val;
 }
@@ -320,7 +322,8 @@ inline Scalar minMod(const Scalar s1, const Scalar s2)
 //- Linear interpolation of scalars a and b by factor t
 //  Explicit form (not fused multiply add etc) for exact values at end points.
 //  Unlike std::lerp (C++20) there are no isfinite() checks etc.
-inline constexpr Scalar lerp(const Scalar a, const Scalar b, const Scalar t)
+// codi: remove constexpr
+inline Scalar lerp(const Scalar a, const Scalar b, const Scalar t)
 {
     return (Scalar{1}-t)*a + t*b;
 }
@@ -441,11 +444,11 @@ inline Scalar sqrtSumSqr(const Scalar a, const Scalar b)
 
     if (maga > magb)
     {
-        return maga*sqrt(1.0 + sqr(magb/maga));
+        return maga*sqrt(Scalar(1.0) + sqr(magb/maga));
     }
     else
     {
-        return magb < ScalarVSMALL ? 0.0 : magb*sqrt(1.0 + sqr(maga/magb));
+        return magb < ScalarVSMALL ? Scalar(0.0) : magb*sqrt(1.0 + sqr(maga/magb));
     }
 }
 
@@ -483,7 +486,7 @@ struct compareOp<Scalar>
 
     Scalar operator()(const Scalar& a, const Scalar& b) const
     {
-        return (mag(a - b) <= tolerance) ? 0 : (a - b);
+        return (mag(a - b) <= tolerance) ? Scalar(0) : Scalar(a - b);
     }
 };
 

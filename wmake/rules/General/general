@@ -7,8 +7,10 @@ RANLIB     = ranlib
 CPP        = cpp
 LD         = ld
 
+# codi: add the define CODI_ADR or CODI_ADF here
 GFLAGS     = -D$(WM_VERSION) \
-             -DWM_$(WM_PRECISION_OPTION) -DWM_LABEL_SIZE=$(WM_LABEL_SIZE)
+             -DWM_$(WM_PRECISION_OPTION) -DWM_LABEL_SIZE=$(WM_LABEL_SIZE) \
+             -DCODI_$(WM_AD_MODE)
 GINC       =
 GLIBS      = -lm
 GLIB_LIBS  =

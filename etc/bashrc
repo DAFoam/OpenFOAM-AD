@@ -107,6 +107,8 @@ export WM_COMPILE_OPTION=Opt
 # Can also use INTELMPI-xyz etc and define your own wmake rule
 export WM_MPLIB=SYSTEMOPENMPI
 
+# codi: AD mode. Must be either ADF (forward mode AD) or ADR (reverse mode AD)
+export WM_AD_MODE=ADR
 
 #------------------------------------------------------------------------------
 # (advanced / legacy)

@@ -13,8 +13,9 @@ c++DBUG    :=
 c++OPT     := -O2
 ptFLAGS    := -DNoRepository -ftemplate-depth-100
 
+# codi: suppress old-style warning
 c++WARN     = \
-    -Wall -Wextra -Wold-style-cast \
+    -Wall -Wextra -Wno-old-style-cast \
     -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof \
     -Wno-attributes -Wno-unknown-pragmas
 

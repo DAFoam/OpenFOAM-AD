@@ -62,8 +62,18 @@ class zero_one {};
 
 // The base implementation is a pass-through to the base class.
 // Accordingly it inherits all static methods (eg, typeName etc).
+//
+// codi: For CoDiPack AD type compatibility, we use SFINAE to only
+// inherit from Base when Base is a class type. For primitive types
+// like double/float/int, specialized pTraits are defined elsewhere
+// (e.g., in doubleScalar.H, floatScalar.H) which provide the necessary
+// typedefs (cmptType, magType, etc.) and static members.
+template<class Base, class = void>
+class pTraits;
+
+// codi: Specialization for class/struct types - inherits from Base
 template<class Base>
-class pTraits
+class pTraits<Base, std::enable_if_t<std::is_class_v<Base>>>
 :
     public Base
 {
@@ -82,6 +92,61 @@ public:
         :
             Base(is)
         {}
+};
+
+// codi: Specialization for non-class types (primitives like double, int, etc.)
+// This provides basic functionality for primitive types.
+// Note: Full specializations in doubleScalar.H/floatScalar.H may override this.
+template<class Base>
+class pTraits<Base, std::enable_if_t<!std::is_class_v<Base>>>
+{
+    Base p_;
+
+public:
+
+    // Typedefs - required by OpenFOAM's type system
+    
+        //- Component type
+        typedef Base cmptType;
+
+        //- Magnitude type
+        typedef Base magType;
+
+        //- Equivalent type of labels used for valid component indexing
+        typedef int labelType;
+
+
+    // Member Constants
+
+        //- Dimensionality of space
+        static constexpr direction dim = 3;
+
+        //- Rank of primitive is 0
+        static constexpr direction rank = 0;
+
+        //- Number of components in primitive is 1
+        static constexpr direction nComponents = 1;
+
+
+    // Constructors
+
+        //- Copy construct from primitive
+        explicit pTraits(const Base& val)
+        :
+            p_(val)
+        {}
+
+        //- Construct from Istream
+        explicit pTraits(Istream& is);
+
+
+    // Member Functions
+
+        //- Return the value
+        operator Base() const noexcept { return p_; }
+
+        //- Access the value
+        operator Base&() noexcept { return p_; }
 };
 
 

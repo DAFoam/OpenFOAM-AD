@@ -84,9 +84,11 @@ LIB_LIBS        =
 LIBO_LIBS       =
 
 # Project include/libraries
+# codi: Added include path for codipack and medipack
 PROJECT_INC     = \
     -I$(LIB_SRC)/$(WM_PROJECT)/lnInclude \
-    -I$(LIB_SRC)/OSspecific/$(WM_OSTYPE)/lnInclude
+    -I$(LIB_SRC)/OSspecific/$(WM_OSTYPE)/lnInclude \
+    -I$(LIB_SRC)/codipack/include
 
 PROJECT_LIBS    = -l$(WM_PROJECT) -ldl
 

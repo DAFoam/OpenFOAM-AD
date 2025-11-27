@@ -114,9 +114,10 @@ esac
 #------------------------------------------------------------------------------
 
 # wmake configuration
+# codi: append AD mode to create unique build/lib folders for ADR and ADF
 export WM_DIR="$WM_PROJECT_DIR/wmake"
 export WM_LABEL_OPTION="Int$WM_LABEL_SIZE"
-export WM_OPTIONS="$WM_ARCH$WM_COMPILER$WM_PRECISION_OPTION$WM_LABEL_OPTION$WM_COMPILE_OPTION"
+export WM_OPTIONS="$WM_ARCH$WM_COMPILER$WM_PRECISION_OPTION$WM_LABEL_OPTION$WM_COMPILE_OPTION$WM_AD_MODE"
 
 # Base executables/libraries
 export FOAM_APPBIN="$WM_PROJECT_DIR/platforms/$WM_OPTIONS/bin"

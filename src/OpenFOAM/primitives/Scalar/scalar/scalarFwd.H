@@ -36,6 +36,9 @@ SourceFiles
 #ifndef Foam_scalarFwd_H
 #define Foam_scalarFwd_H
 
+// codi: add CoDiPack header
+#include "codi.hpp"
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -45,8 +48,17 @@ namespace Foam
 typedef float floatScalar;
 
 //- A typedef for double
-typedef double doubleScalar;
+// codi: comment out this
+// typedef double doubleScalar;
 
+// codi: replace doubleScalar with the codi's data type
+#ifdef CODI_ADF
+typedef codi::RealForward doubleScalar; // forward mode AD
+#elif defined(CODI_ADR)
+typedef codi::RealReverse doubleScalar; // reverse mode AD
+#else
+#error "WM_AD_MODE must be defined as ADF or ADR in etc/bashrc!"
+#endif
 
 #if defined(WM_SP)
 

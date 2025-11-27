@@ -94,7 +94,7 @@ inline Foam::scalar Foam::Vector<Cmpt>::magSqr() const
 template<class Cmpt>
 inline Foam::scalar Foam::Vector<Cmpt>::mag() const
 {
-    return ::sqrt(this->magSqr());
+    return sqrt(this->magSqr());
 }
 
 
@@ -113,7 +113,7 @@ inline Foam::scalar Foam::Vector<Cmpt>::distSqr(const Vector<Cmpt>& v2) const
 template<class Cmpt>
 inline Foam::scalar Foam::Vector<Cmpt>::dist(const Vector<Cmpt>& v2) const
 {
-    return ::sqrt(this->distSqr(v2));
+    return sqrt(this->distSqr(v2));
 }
 
 

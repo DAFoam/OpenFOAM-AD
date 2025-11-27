@@ -123,14 +123,15 @@ namespace Foam
 
 namespace Foam
 {
-    constexpr scalar GREAT = doubleScalarGREAT;
-    constexpr scalar ROOTGREAT = doubleScalarROOTGREAT;
-    constexpr scalar VGREAT = doubleScalarVGREAT;
-    constexpr scalar ROOTVGREAT = doubleScalarROOTVGREAT;
-    constexpr scalar SMALL = doubleScalarSMALL;
-    constexpr scalar ROOTSMALL = doubleScalarROOTSMALL;
-    constexpr scalar VSMALL = doubleScalarVSMALL;
-    constexpr scalar ROOTVSMALL = doubleScalarROOTVSMALL;
+    // codi: make the data type static
+    static const scalar GREAT = doubleScalarGREAT;
+    static const scalar ROOTGREAT = doubleScalarROOTGREAT;
+    static const scalar VGREAT = doubleScalarVGREAT;
+    static const scalar ROOTVGREAT = doubleScalarROOTVGREAT;
+    static const scalar SMALL = doubleScalarSMALL;
+    static const scalar ROOTSMALL = doubleScalarROOTSMALL;
+    static const scalar VSMALL = doubleScalarVSMALL;
+    static const scalar ROOTVSMALL = doubleScalarROOTVSMALL;
 
     #ifdef COMPAT_OPENFOAM_ORG
     //! \cond compat_openfoam_org
