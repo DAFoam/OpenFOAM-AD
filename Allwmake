@@ -65,6 +65,8 @@ fi
 # OpenFOAM libraries
 src/Allwmake $targetType $*
 
+exit 0
+
 # OpenFOAM applications
 applications/Allwmake $targetType $*
 

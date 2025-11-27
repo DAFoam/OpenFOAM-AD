@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   REPO_NAME: 'OpenFOAM-AD'
-  DOCKER_WORKING_DIR: '/home/dafoamuser/'
+  DOCKER_WORKING_DIR: '/home/dafoamuser/$REPO_NAME'
   DOCKER_MOUNT_DIR: '/home/dafoamuser/mount/$REPO_NAME'
   DOCKER_TAG: 'u2404'
 
@@ -20,4 +20,4 @@ jobs:
         docker pull dafoam/opt-packages:${{env.DOCKER_TAG}}
         docker run -i -d -u dafoamuser --name regtest -v $GITHUB_WORKSPACE:${{env.DOCKER_MOUNT_DIR}} dafoam/opt-packages:${{env.DOCKER_TAG}} /bin/bash
         docker exec -i regtest /bin/bash -c "cp -r ${{env.DOCKER_MOUNT_DIR}} ${{env.DOCKER_WORKING_DIR}}"
-        docker exec -i regtest /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}} && git checkout v2506-ad && . etc/bashrc && ./Allwmake"
+        docker exec -i regtest /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}} && . etc/bashrc && ./Allwmake"
