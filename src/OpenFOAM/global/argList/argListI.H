@@ -208,7 +208,8 @@ namespace Foam
 
     template<> inline double argList::get<double>(const label index) const
     {
-        return Foam::readDouble(args_[index]);
+        // codi:
+        return Foam::readDouble(args_[index]).getValue();
     }
 
 
@@ -229,7 +230,8 @@ namespace Foam
 
     template<> inline double argList::get<double>(const word& optName) const
     {
-        return Foam::readDouble(options_[optName]);
+        // codi:
+        return Foam::readDouble(options_[optName]).getValue();
     }
 
 

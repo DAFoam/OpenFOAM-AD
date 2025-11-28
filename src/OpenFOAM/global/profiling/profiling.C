@@ -102,7 +102,8 @@ Foam::profilingInformation* Foam::profiling::endTimer()
     stack_.pop_back();
     times_.pop_back();
 
-    info->update(clockval.elapsed());   // Update elapsed time
+    // codi:
+    info->update(static_cast<double>(clockval.elapsed()));   // Update elapsed time
     info->setActive(false);             // Mark as off stack
 
     return info;

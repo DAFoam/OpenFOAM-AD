@@ -95,6 +95,11 @@ inline Scalar atan2(const Scalar y, const Scalar x)
     return atan2(y, x);
 }
 
+// codi: AD-aware min for scalar / doubleScalar
+inline Scalar min(const Scalar& a, const Scalar& b)
+{
+    return (a < b) ? a : b;
+}
 
 // Normal (double-precision) transcendental functions
 // codi: using ADL to auto-select func namespace

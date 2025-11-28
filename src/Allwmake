@@ -47,9 +47,9 @@ case "$WM_COMPILER" in
     ;;
 esac
 
-exit 0
-
 wmake $targetType OpenFOAM
+
+exit 0
 
 wmake $targetType fileFormats
 wmake $targetType surfMesh
