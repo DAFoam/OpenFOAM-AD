@@ -31,6 +31,9 @@ License
 #error  "scalarImpl.C" is only to be included internally
 #endif
 
+// codi: for the << operator
+#include <type_traits>
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -162,12 +165,13 @@ Istream& operator>>(Istream& is, Scalar& val)
 
     if (t.isNumber())
     {
+        // codi:
         val =
         (
             (prefix == token::MINUS)
           ? (0 - t.number())
           : t.number()
-        );
+        ).getValue();
     }
     else
     {
@@ -186,10 +190,11 @@ Istream& operator>>(Istream& is, Scalar& val)
     return is;
 }
 
-
-Ostream& operator<<(Ostream& os, const Scalar val)
+// codi: make this work for both doubleScalar and floatScalar
+template<class T, typename std::enable_if<std::is_class<T>::value, int>::type = 0>
+Ostream& operator<<(Ostream& os, const T& val)
 {
-    os.write(val);
+    os.write(val.getValue());
     os.check(FUNCTION_NAME);
     return os;
 }

@@ -207,16 +207,16 @@ Foam::Switch::Switch(const char* str, bool allowBad)
     value_(parse(str, !allowBad))
 {}
 
-
+// codi:
 Foam::Switch::Switch(const float val, const float tol)
 :
-    value_((mag(val) > tol) ? switchType::TRUE : switchType::FALSE)
+    value_((fabs(val) > tol) ? switchType::TRUE : switchType::FALSE)
 {}
 
-
+// codi:
 Foam::Switch::Switch(const double val, const double tol)
 :
-    value_((mag(val) > tol) ? switchType::TRUE : switchType::FALSE)
+    value_((fabs(val) > tol) ? switchType::TRUE : switchType::FALSE)
 {}
 
 

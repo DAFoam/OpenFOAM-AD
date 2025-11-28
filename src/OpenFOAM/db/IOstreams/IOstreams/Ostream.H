@@ -353,8 +353,8 @@ inline Ostream& operator<<(Ostream& os, stdFoam::span<const char> s)
 
 
 // codi: IO operators for passive double/float types
-// When scalar types are AD types (e.g., codi::RealForward), raw 'double' and
-// 'float' still need operator<< support for code that uses passive types
+// When scalar types are AD types (e.g., codi::RealForward), raw 'double' 
+// still need operator<< support for code that uses passive types
 // directly. These call the virtual write() method which handles the output.
 
 //- Write passive double to Ostream
@@ -362,14 +362,6 @@ inline Ostream& operator<<(Ostream& os, const double val)
 {
     os.write(val);
     os.check("Foam::operator<<(Ostream&, double)");
-    return os;
-}
-
-//- Write passive float to Ostream
-inline Ostream& operator<<(Ostream& os, const float val)
-{
-    os.write(val);
-    os.check("Foam::operator<<(Ostream&, float)");
     return os;
 }
 
