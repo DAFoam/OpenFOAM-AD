@@ -94,6 +94,12 @@ inline Scalar atan2(const Scalar y, const Scalar x)
     return atan2(y, x);
 }
 
+// codi: custom fma 
+inline Scalar fma(const Scalar x, const Scalar y, const Scalar z)
+{
+    return x * y + z;
+}
+
 // codi: AD-aware min for scalar / doubleScalar
 inline Scalar min(const Scalar& a, const Scalar& b)
 {

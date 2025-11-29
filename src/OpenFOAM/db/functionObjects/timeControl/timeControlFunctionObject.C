@@ -418,7 +418,8 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
 
                 if (mag(jumpError) > ROOTSMALL)
                 {
-                    requiredSteps = label(timeToNextWrite/wantedDT);
+                    // codi:
+                    requiredSteps = label((timeToNextWrite/wantedDT).getValue());
                     firstDeltaRatio = timeToNextWrite/requiredSteps/deltaT0_;
                 }
                 if (debug)

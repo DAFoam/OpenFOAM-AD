@@ -26,8 +26,8 @@ License
 \*---------------------------------------------------------------------------*/
 
 // * * * * * * * * * * * * * * * * Constructors  * * * * * * * * * * * * * * //
-
-inline constexpr Foam::scalarRange::scalarRange
+// codi: remove constexpr for all funcs
+inline Foam::scalarRange::scalarRange
 (
     const scalarRange::rangeTypes type,
     const scalar minVal,
@@ -40,13 +40,13 @@ inline constexpr Foam::scalarRange::scalarRange
 {}
 
 
-inline constexpr Foam::scalarRange::scalarRange() noexcept
+inline Foam::scalarRange::scalarRange() noexcept
 :
     scalarRange(rangeTypes::NONE, GREAT, -GREAT)
 {}
 
 
-inline constexpr Foam::scalarRange::scalarRange(const scalar val) noexcept
+inline Foam::scalarRange::scalarRange(const scalar val) noexcept
 :
     scalarRange(rangeTypes::EQ, val, val)
 {}
@@ -71,48 +71,48 @@ inline Foam::scalarRange::scalarRange
 }
 
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::ge(const scalar minVal) noexcept
 {
     return scalarRange(rangeTypes::GE, minVal, GREAT);
 }
 
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::gt(const scalar minVal) noexcept
 {
     return scalarRange(rangeTypes::GT, minVal, GREAT);
 }
 
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::ge0() noexcept
 {
     return scalarRange(rangeTypes::GE, 0, GREAT);
 }
 
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::gt0() noexcept
 {
     return scalarRange(rangeTypes::GT, 0, GREAT);
 }
 
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::le(const scalar maxVal) noexcept
 {
     return scalarRange(rangeTypes::LE, -GREAT, maxVal);
 }
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::lt(const scalar maxVal) noexcept
 {
     return scalarRange(rangeTypes::LT, -GREAT, maxVal);
 }
 
 
-inline constexpr Foam::scalarRange
+inline Foam::scalarRange
 Foam::scalarRange::zero_one() noexcept
 {
     return scalarRange(rangeTypes::GE_LE, 0, 1);

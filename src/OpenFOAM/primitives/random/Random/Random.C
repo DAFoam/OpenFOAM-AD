@@ -102,7 +102,7 @@ Foam::scalar Foam::Random::GaussNormal()
 template<>
 Foam::label Foam::Random::GaussNormal()
 {
-    return round(GaussNormal<scalar>());
+    return round(GaussNormal<scalar>().getValue());
 }
 
 
@@ -133,7 +133,7 @@ Foam::label Foam::Random::position(const label& start, const label& end)
     // Since the range is non-negative, can use integer truncation
     // instead using floor().
 
-    const label val = start + label(scalar01()*(end - start + 1));
+    const label val = start + label(scalar01().getValue()*(end - start + 1));
 
     // Rare case when scalar01() returns exactly 1.000 and the truncated
     // value would be out of range.
@@ -164,7 +164,7 @@ Foam::label Foam::Random::globalSample01()
 
     if (Pstream::master())
     {
-        value = round(scalar01());
+        value = round(scalar01().getValue());
     }
 
     Pstream::broadcast(value);

@@ -80,7 +80,8 @@ Foam::IOstreamOption::floatFormat Foam::Time::format_
 
 int Foam::Time::precision_(6);
 
-const int Foam::Time::maxPrecision_(3 - log10(SMALL));
+// codi:
+const int Foam::Time::maxPrecision_((3 - log10(SMALL)).getValue());
 
 Foam::word Foam::Time::controlDictName("controlDict");
 
@@ -1108,17 +1109,19 @@ Foam::Time& Foam::Time::operator++()
             case wcUnknown:
             break;
 
+            // codi:
             case wcTimeStep:
-                writeTime_ = !(timeIndex_ % label(writeInterval_));
+                writeTime_ = !(timeIndex_ % label(writeInterval_.getValue()));
             break;
 
             case wcRunTime:
             case wcAdjustableRunTime:
             {
+                // codi:
                 const label writeIndex = label
                 (
-                    ((value() - startTime_) + 0.5*deltaT_)
-                  / writeInterval_
+                    ((value() - startTime_) + 0.5*deltaT_).getValue()
+                  / writeInterval_.getValue()
                 );
 
                 if (writeIndex > writeTimeIndex_)
@@ -1131,10 +1134,11 @@ Foam::Time& Foam::Time::operator++()
 
             case wcCpuTime:
             {
+                // codi:
                 const label writeIndex = label
                 (
-                    returnReduce(elapsedCpuTime(), maxOp<double>())
-                  / writeInterval_
+                    (returnReduce(elapsedCpuTime(), maxOp<double>())
+                  / writeInterval_).getValue()
                 );
                 if (writeIndex > writeTimeIndex_)
                 {
@@ -1146,10 +1150,11 @@ Foam::Time& Foam::Time::operator++()
 
             case wcClockTime:
             {
+                // codi:
                 const label writeIndex = label
                 (
-                    returnReduce(elapsedClockTime(), maxOp<double>())
-                  / writeInterval_
+                    (returnReduce(elapsedClockTime(), maxOp<double>())
+                  / writeInterval_).getValue()
                 );
                 if (writeIndex > writeTimeIndex_)
                 {

@@ -59,7 +59,8 @@ bool Foam::functionEntries::ifEntry::isTrue(ITstream& its)
     if (its.front().isScalar())
     {
         // Use default rounding tolerance
-        logic = Switch(its.front().scalarToken());
+        // codi:
+        logic = Switch(its.front().scalarToken().getValue());
     }
     else
     {

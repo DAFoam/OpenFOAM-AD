@@ -754,7 +754,8 @@ Foam::entry* Foam::dictionary::add
     bool overwrite
 )
 {
-    return add(new primitiveEntry(k, token(v)), overwrite);
+    // codi:
+    return add(new primitiveEntry(k, token(v.getValue())), overwrite);
 }
 
 

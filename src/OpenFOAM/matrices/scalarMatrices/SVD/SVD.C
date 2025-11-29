@@ -408,7 +408,8 @@ static std::pair<label, bool> SVDcomp
 
                 z = sqrtSumSqr(f, h);
                 S_[j] = z;
-                if (z)
+                // codi:
+                if (z.getValue())
                 {
                     z = 1.0/z;
                     c = f*z;

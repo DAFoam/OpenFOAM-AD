@@ -289,7 +289,8 @@ void Foam::Time::readDict()
 
     if (controlDict_.readIfPresent("writeInterval", writeInterval_))
     {
-        if (writeControl_ == wcTimeStep && label(writeInterval_) < 1)
+        // codi:
+        if (writeControl_ == wcTimeStep && label(writeInterval_.getValue()) < 1)
         {
             FatalIOErrorInFunction(controlDict_)
                 << "writeInterval < 1 for writeControl timeStep"
@@ -312,9 +313,9 @@ void Foam::Time::readDict()
                 // writeInterval.
                 writeTimeIndex_ = label
                 (
-                    writeTimeIndex_
+                    (writeTimeIndex_
                   * oldWriteInterval
-                  / writeInterval_
+                  / writeInterval_).getValue()
                 );
             break;
 

@@ -782,7 +782,8 @@ Foam::Istream& Foam::ISstream::read(token& t)
                     if (readScalar(buf, scalarVal))
                     {
                         // A scalar or too big to fit as a label
-                        t = scalarVal;
+                        // codi:
+                        t = scalarVal.getValue();
                     }
                     else
                     {

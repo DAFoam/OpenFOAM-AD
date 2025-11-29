@@ -232,7 +232,8 @@ Foam::IOstreamOption::versionNumber::versionNumber(const token& tok)
     {
         // Accept integer or floating-point
         // Eg, '2.0' becomes '2' after foamDictionary -expand
-        (*this) = versionNumber(float(tok.number()));
+        // codi:
+        (*this) = versionNumber(float(tok.number().getValue()));
     }
     else
     {

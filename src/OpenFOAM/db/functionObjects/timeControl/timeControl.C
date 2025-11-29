@@ -210,13 +210,14 @@ bool Foam::timeControl::execute()
         case ocRunTime:
         case ocAdjustableRunTime:
         {
+            // codi:
             label executionIndex = label
             (
                 (
                     (time_.value() - time_.startTime().value())
                   + 0.5*time_.deltaTValue()
-                )
-               /interval_
+                ).getValue()
+               /interval_.getValue()
             );
 
             if (executionIndex > executionIndex_)
@@ -229,10 +230,11 @@ bool Foam::timeControl::execute()
 
         case ocCpuTime:
         {
+            // codi:
             label executionIndex = label
             (
-                returnReduce(time_.elapsedCpuTime(), maxOp<double>())
-               /interval_
+                (returnReduce(time_.elapsedCpuTime(), maxOp<double>())
+               /interval_).getValue()
             );
             if (executionIndex > executionIndex_)
             {
@@ -244,10 +246,11 @@ bool Foam::timeControl::execute()
 
         case ocClockTime:
         {
+            // codi:
             label executionIndex = label
             (
-                returnReduce(time_.elapsedClockTime(), maxOp<double>())
-               /interval_
+                (returnReduce(time_.elapsedClockTime(), maxOp<double>())
+               /interval_).getValue()
             );
             if (executionIndex > executionIndex_)
             {

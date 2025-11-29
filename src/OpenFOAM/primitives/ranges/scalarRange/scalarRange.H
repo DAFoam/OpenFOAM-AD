@@ -93,7 +93,8 @@ class scalarRange
         enum rangeTypes type_;
 
         //- Construct from components, no checks
-        inline constexpr scalarRange
+        // codi: remove constexpr for all funcs
+        inline scalarRange
         (
             const rangeTypes type,
             const scalar minVal,
@@ -118,10 +119,10 @@ public:
     // Constructors
 
         //- Construct an empty (inverse, NONE) range - never matches
-        inline constexpr scalarRange() noexcept;
+        inline scalarRange() noexcept;
 
         //- Construct an exact value matcher
-        inline explicit constexpr scalarRange(const scalar val) noexcept;
+        inline explicit scalarRange(const scalar val) noexcept;
 
         //- Construct a range from min-value to max-value
         //  Check validity of the range and sets to NONE or EQ if required.
@@ -156,25 +157,25 @@ public:
 
 
         //- A greater-equals bound
-        inline static constexpr scalarRange ge(const scalar minVal) noexcept;
+        inline static scalarRange ge(const scalar minVal) noexcept;
 
         //- A greater-than bound
-        inline static constexpr scalarRange gt(const scalar minVal) noexcept;
+        inline static scalarRange gt(const scalar minVal) noexcept;
 
         //- A greater-equals zero bound
-        inline static constexpr scalarRange ge0() noexcept;
+        inline static scalarRange ge0() noexcept;
 
         //- A greater-than zero bound
-        inline static constexpr scalarRange gt0() noexcept;
+        inline static scalarRange gt0() noexcept;
 
         //- A less-equals bound
-        inline static constexpr scalarRange le(const scalar maxVal) noexcept;
+        inline static scalarRange le(const scalar maxVal) noexcept;
 
         //- A less-than bound
-        inline static constexpr scalarRange lt(const scalar maxVal) noexcept;
+        inline static scalarRange lt(const scalar maxVal) noexcept;
 
         //- A greater-equals 0, less-equals 1 bound
-        inline static constexpr scalarRange zero_one() noexcept;
+        inline static scalarRange zero_one() noexcept;
 
 
     // Member Functions
