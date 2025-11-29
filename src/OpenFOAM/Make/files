@@ -118,4 +118,88 @@ primitives/functions/Function1/quarterCosineRamp/quarterCosineRamp.C
 primitives/functions/Function1/halfCosineRamp/halfCosineRamp.C
 primitives/functions/Polynomial/polynomialFunction.C
 
+/* Math functions */
+math = primitives/functions/Math
+$(math)/erfInv.C
+$(math)/incGamma.C
+$(math)/invIncGamma.C
+
+primitives/subModelBase/subModelBase.C
+
+csys = primitives/coordinate/systems
+$(csys)/coordinateSystem.C
+$(csys)/coordinateSystemNew.C
+$(csys)/coordinateSystemTransform.C
+$(csys)/coordinateSystems.C
+$(csys)/cartesianCS.C
+$(csys)/cylindricalCS.C
+$(csys)/indirectCS.C
+
+crot = primitives/coordinate/rotation
+$(crot)/axesRotation.C
+$(crot)/axisAngleRotation.C
+$(crot)/coordinateRotation.C
+$(crot)/cylindricalRotation.C
+$(crot)/identityRotation.C
+$(crot)/specifiedRotation.C
+$(crot)/EulerCoordinateRotation.C
+$(crot)/STARCDCoordinateRotation.C
+
+strings = primitives/strings
+$(strings)/string/string.C
+$(strings)/string/stringIO.C
+$(strings)/string/stringIOList.C
+$(strings)/word/word.C
+$(strings)/word/wordIO.C
+$(strings)/word/wordIOList.C
+$(strings)/fileName/fileName.C
+$(strings)/fileName/fileNameIO.C
+$(strings)/keyType/keyType.C
+$(strings)/regex/regExpCxx.C
+$(strings)/wordRe/wordRe.C
+$(strings)/wordRes/wordRes.C
+$(strings)/lists/CStringList.cxx
+$(strings)/lists/hashedWordList.cxx
+$(strings)/parsing/parsing.C
+$(strings)/parsing/genericRagelLemonDriver.C
+$(strings)/stringOps/stringOps.cxx
+$(strings)/stringOps/stringOpsEvaluate.cxx
+$(strings)/stringOps/stringOpsSort.cxx
+$(strings)/stringOps/stringOpsSplit.cxx
+$(strings)/stringOps/stringOpsSubstr.cxx
+
+expr = expressions
+$(expr)/exprEntry/expressionEntry.C
+$(expr)/exprEntry/expressionEntryBool.C
+$(expr)/exprEntry/expressionEntryDimensioned.C
+$(expr)/exprEntry/expressionEntryStrings.C
+$(expr)/exprEntry/expressionEntryVectors.C
+$(expr)/exprResult/exprResult.C
+$(expr)/exprResult/exprResultGlobals.C
+$(expr)/exprResult/exprResultDelayed.C
+$(expr)/exprResult/exprResultStack.C
+$(expr)/exprResult/exprResultStored.C
+$(expr)/exprResult/exprResultStoredStack.C
+$(expr)/exprString/exprString.C
+$(expr)/exprTools/exprTools.C
+$(expr)/scanToken/exprScanToken.C
+
+$(expr)/traits/exprTraits.C
+$(expr)/value/exprValue.C
+$(expr)/value/exprValueFieldTag.C
+
+$(expr)/exprDriver/exprDriver.C
+$(expr)/exprDriver/exprDriverFields.C
+$(expr)/exprDriver/exprDriverFunctions.C
+$(expr)/exprDriver/exprDriverIO.C
+
+fieldExpr = $(expr)/fields
+$(fieldExpr)/fieldExpr.C
+$(fieldExpr)/fieldExprDriver.C
+$(fieldExpr)/fieldExprDriverFields.C
+$(fieldExpr)/fieldExprLemonParser.lyy-m4
+$(fieldExpr)/fieldExprScanner.cc
+
+$(expr)/Function1/makeFunction1Expression.C
+
 LIB = $(FOAM_LIBBIN)/libOpenFOAM

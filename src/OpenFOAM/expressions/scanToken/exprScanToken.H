@@ -70,7 +70,7 @@ struct scanToken
         union
         {
             Foam::label    labelValue;
-            Foam::scalar   scalarValue;
+            double         scalarValue;  // codi: use double to avoid CoDiPack in union
             Foam::vector*  vectorPtr;
             Foam::word*    wordPtr;
             Foam::word*    name_;

@@ -158,18 +158,18 @@ operator_precedence()
 /*---------------------------------------------------------------------------*\
  * Productions (scalar)
 \*---------------------------------------------------------------------------*/
+// codi: change scalar to double
+%type svalue { double }
 
-%type svalue { Foam::scalar }
+svalue (lhs) ::= NUMBER (tok) .             { lhs = (tok).scalarValue; } // scanToken
 
-svalue (lhs) ::= NUMBER (tok) .     { lhs = (tok).scalarValue; } // scanToken
-
-svalue (lhs) ::= ZERO .             { lhs = Foam::zero{}; }
-svalue (lhs) ::= PI LPAREN RPAREN . { lhs = Foam::constant::mathematical::pi; }
-svalue (lhs) ::= DEG_TO_RAD LPAREN RPAREN . { lhs = Foam::degToRad(); }
-svalue (lhs) ::= RAD_TO_DEG LPAREN RPAREN . { lhs = Foam::radToDeg(); }
-svalue (lhs) ::= ARG LPAREN RPAREN . { lhs = driver->argValue(); }
-svalue (lhs) ::= TIME LPAREN RPAREN . { lhs = driver->timeValue(); }
-svalue (lhs) ::= DELTA_T LPAREN RPAREN . { lhs = driver->deltaT(); }
+svalue (lhs) ::= ZERO .                     { lhs = Foam::Zero; }
+svalue (lhs) ::= PI LPAREN RPAREN .         { lhs = Foam::constant::mathematical::pi.getValue(); }
+svalue (lhs) ::= DEG_TO_RAD LPAREN RPAREN . { lhs = Foam::degToRad().getValue(); }
+svalue (lhs) ::= RAD_TO_DEG LPAREN RPAREN . { lhs = Foam::radToDeg().getValue(); }
+svalue (lhs) ::= ARG LPAREN RPAREN .        { lhs = driver->argValue().getValue(); }
+svalue (lhs) ::= TIME LPAREN RPAREN .       { lhs = driver->timeValue().getValue(); }
+svalue (lhs) ::= DELTA_T LPAREN RPAREN .    { lhs = driver->deltaT().getValue(); }
 
 svalue (lhs) ::= SCALAR_FUNCTION_ID (name) LPAREN RPAREN .
 {
@@ -177,7 +177,7 @@ svalue (lhs) ::= SCALAR_FUNCTION_ID (name) LPAREN RPAREN .
     (
         make_obj(name.name_),
         driver->timeValue()
-    );
+    ).getValue();
 }
 
 

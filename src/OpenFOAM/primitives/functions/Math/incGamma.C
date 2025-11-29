@@ -123,13 +123,14 @@ static scalar calcTE18
     const scalar phi
 )
 {
-    constexpr scalar D0_0  = -0.333333333333333E-00;
-    constexpr scalar D0_1  =  0.833333333333333E-01;
-    constexpr scalar D0_2  = -0.148148148148148E-01;
-    constexpr scalar D0_3  =  0.115740740740741E-02;
-    constexpr scalar D0_4  =  0.352733686067019E-03;
-    constexpr scalar D0_5  = -0.178755144032922E-03;
-    constexpr scalar D0_6  =  0.391926317852244E-04;
+    // codi:
+    const scalar D0_0  = -0.333333333333333E-00;
+    const scalar D0_1  =  0.833333333333333E-01;
+    const scalar D0_2  = -0.148148148148148E-01;
+    const scalar D0_3  =  0.115740740740741E-02;
+    const scalar D0_4  =  0.352733686067019E-03;
+    const scalar D0_5  = -0.178755144032922E-03;
+    const scalar D0_6  =  0.391926317852244E-04;
     // unused: constexpr scalar D0_7  = -0.218544851067999E-05;
     // unused: constexpr scalar D0_8  = -0.185406221071516E-05;
     // unused: constexpr scalar D0_9  =  0.829671134095309E-06;
@@ -138,11 +139,11 @@ static scalar calcTE18
     // unused: constexpr scalar D0_12 =  0.102618097842403E-07;
     // unused: constexpr scalar D0_13 = -0.438203601845335E-08;
 
-    constexpr scalar D1_0  = -0.185185185185185E-02;
-    constexpr scalar D1_1  = -0.347222222222222E-02;
-    constexpr scalar D1_2  =  0.264550264550265E-02;
-    constexpr scalar D1_3  = -0.990226337448560E-03;
-    constexpr scalar D1_4  =  0.205761316872428E-03;
+    const scalar D1_0  = -0.185185185185185E-02;
+    const scalar D1_1  = -0.347222222222222E-02;
+    const scalar D1_2  =  0.264550264550265E-02;
+    const scalar D1_3  = -0.990226337448560E-03;
+    const scalar D1_4  =  0.205761316872428E-03;
     // unused: constexpr scalar D1_5  = -0.401877572016461E-06;
     // unused: constexpr scalar D1_6  = -0.180985503344900E-04;
     // unused: constexpr scalar D1_7  =  0.764916091608111E-05;
@@ -152,8 +153,8 @@ static scalar calcTE18
     // unused: constexpr scalar D1_11 = -0.575254560351770E-07;
     // unused: constexpr scalar D1_12 =  0.119516285997781E-07;
 
-    constexpr scalar D2_0  =  0.413359788359788E-02;
-    constexpr scalar D2_1  = -0.268132716049383E-02;
+    const scalar D2_0  =  0.413359788359788E-02;
+    const scalar D2_1  = -0.268132716049383E-02;
     // unused: constexpr scalar D2_2  =  0.771604938271605E-03;
     // unused: constexpr scalar D2_3  =  0.200938786008230E-05;
     // unused: constexpr scalar D2_4  = -0.107366532263652E-03;
@@ -226,9 +227,9 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
     }
     #endif
 
-    constexpr scalar BIG = 14;
-    constexpr scalar x0 = 17;
-    constexpr scalar e0 = 0.025;
+    const scalar BIG = 14;
+    const scalar x0 = 17;
+    const scalar e0 = 0.025;
 
     if (a < 1)
     {
@@ -258,7 +259,7 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
 
             for (label n = 1; n <= 10; ++n)
             {
-                sum += pow((-x), n)/((a + n)*factorial(n));
+                sum += pow(scalar(-x), n)/((a + n)*factorial(n));
             }
 
             const scalar J = -a*sum;
@@ -266,15 +267,15 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
             if (a > alpha || a == alpha)
             {
                 // (DM:Eq. 9)
-                return 1 - (pow(x, a)*(1 - J))/tgamma(a + 1);
+                return 1 - (pow(x, a)*(1 - J))/tgamma(scalar(a + 1));
             }
             else
             {
                 // (DM:Eq. 10)
                 const scalar L = exp(a*log(x)) - 1;
-                const scalar H = 1/(tgamma(a + 1)) - 1;
+                const scalar H = 1/(tgamma(scalar(a + 1))) - 1;
 
-                return (pow(x, a)*J - L)/tgamma(a + 1) - H;
+                return (pow(x, a)*J - L)/tgamma(scalar(a + 1)) - H;
             }
         }
         else
@@ -403,7 +404,7 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
                 }
                 else
                 {
-                    int i = a - 0.5;
+                    int i = a.getValue() - 0.5;
                     scalar prod = 1;
                     scalar sum = 0;
 

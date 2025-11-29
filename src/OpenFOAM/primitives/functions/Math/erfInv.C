@@ -49,7 +49,8 @@ Foam::scalar Foam::Math::erfInv(const scalar y)
     #endif
 
     // (W:p. 2) to reduce the max relative error to O(1e-4)
-    constexpr scalar a = 0.147;
+    // codi:
+    const scalar a = 0.147;
 
     const scalar k =
         scalar(2)/(a*constant::mathematical::pi) + 0.5*log(scalar(1) - sqr(y));

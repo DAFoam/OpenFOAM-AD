@@ -491,8 +491,11 @@ tr5:
 
         scanToken scanTok;
         scanTok.setScalar(0);
-        if (readScalar(std::string(ts, te-ts), scanTok.scalarValue))
+		// codi:
+		scalar tmpVal;
+        if (readScalar(std::string(ts, te-ts), tmpVal))
         {
+			scanTok.scalarValue = tmpVal.getValue();
             parser_->parse(TOKEN_OF(NUMBER), scanTok);
         }
         else
@@ -627,8 +630,10 @@ tr65:
 
         scanToken scanTok;
         scanTok.setScalar(0);
-        if (readScalar(std::string(ts, te-ts), scanTok.scalarValue))
+		scalar tmpVal;
+        if (readScalar(std::string(ts, te-ts), tmpVal))
         {
+			scanTok.scalarValue = tmpVal.getValue();
             parser_->parse(TOKEN_OF(NUMBER), scanTok);
         }
         else

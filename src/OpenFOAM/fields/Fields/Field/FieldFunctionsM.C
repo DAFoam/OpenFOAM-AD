@@ -122,7 +122,7 @@ void Func                                                                      \
         ReturnType, result, =, ::Foam::Func, Type1, f1, Type2, f2              \
     )                                                                          \
 }
-
+// codi: change the template namespace to avoid ambiguities of the min/max func
 #define BINARY_FUNCTION_INTERFACE(ReturnType, Type1, Type2, Func)              \
                                                                                \
 TEMPLATE                                                                       \
@@ -133,7 +133,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f1.size());                        \
-    Func(tres.ref(), f1, f2);                                                  \
+    ::Foam::Func(tres.ref(), f1, f2);                                                  \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -145,7 +145,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type2>::New(tf2);                         \
-    Func(tres.ref(), f1, tf2());                                               \
+    ::Foam::Func(tres.ref(), f1, tf2());                                               \
     tf2.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -158,7 +158,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type1>::New(tf1);                         \
-    Func(tres.ref(), tf1(), f2);                                               \
+    ::Foam::Func(tres.ref(), tf1(), f2);                                               \
     tf1.clear();                                                               \
     return tres;                                                               \
 }                                                                              \
@@ -171,7 +171,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmpTmp<ReturnType, Type1, Type1, Type2>::New(tf1, tf2);   \
-    Func(tres.ref(), tf1(), tf2());                                            \
+    ::Foam::Func(tres.ref(), tf1(), tf2());                                            \
     tf1.clear();                                                               \
     tf2.clear();                                                               \
     return tres;                                                               \

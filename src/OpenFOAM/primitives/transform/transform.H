@@ -46,6 +46,21 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// codi: Custom type trait to detect arithmetic types including CoDiPack AD types
+// Default: use standard is_arithmetic
+template<class T>
+struct is_arithmetic : std::is_arithmetic<T> {};
+
+// codi: Specialize for scalar type (which may be double or CoDiPack AD type)
+template<>
+struct is_arithmetic<scalar> : std::true_type {};
+
+// Helper variable template
+template<class T>
+inline constexpr bool is_arithmetic_v = is_arithmetic<T>::value;
+
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
 //- Rotational transformation tensor from vector n1 to n2
 inline tensor rotationTensor
 (
@@ -149,8 +164,9 @@ inline tensor Ra(const vector& a, const scalar omega)
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 //- No-op rotational transform for base types
+// codi: remove std::
 template<class T>
-constexpr std::enable_if_t<std::is_arithmetic_v<T>, T>
+constexpr std::enable_if_t<is_arithmetic_v<T>, T>
 transform(const tensor&, const T val)
 {
     return val;
@@ -170,8 +186,9 @@ inline SphericalTensor<Cmpt> transform
 
 
 //- No-op inverse rotational transform for base types
+// codi: remove std::
 template<class T>
-constexpr std::enable_if_t<std::is_arithmetic_v<T>, T>
+constexpr std::enable_if_t<is_arithmetic_v<T>, T>
 invTransform(const tensor&, const T val)
 {
     return val;

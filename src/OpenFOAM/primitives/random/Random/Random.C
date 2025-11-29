@@ -65,7 +65,8 @@ Foam::scalar Foam::Random::sample01()
 template<>
 Foam::label Foam::Random::sample01()
 {
-    return round(scalar01());
+    // codi:
+    return round(scalar01().getValue());
 }
 
 

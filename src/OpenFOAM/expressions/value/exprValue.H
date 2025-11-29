@@ -80,7 +80,8 @@ namespace Detail
 //- The data content (as a union).
 //  The stem of the member names correspond identically to the data types
 //  to enable macro definitions (naming similar to Foam::token)
-union exprValueUnion
+// codi: change union to struct
+struct exprValueUnion
 {
     // Member Data
 

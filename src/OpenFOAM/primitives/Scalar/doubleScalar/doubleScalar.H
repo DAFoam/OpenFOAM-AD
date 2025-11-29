@@ -83,9 +83,8 @@ inline Scalar mag(const Scalar s)
 
 inline Scalar hypot(const Scalar x, const Scalar y)
 {
-    // codi: using ADL to auto-select func namespace
-    using std::hypot;
-    return hypot(x, y);
+    // codi: manual implementation of hypot
+    return sqrt(x * x + y * y);
 }
 
 inline Scalar atan2(const Scalar y, const Scalar x)
@@ -99,6 +98,12 @@ inline Scalar atan2(const Scalar y, const Scalar x)
 inline Scalar min(const Scalar& a, const Scalar& b)
 {
     return (a < b) ? a : b;
+}
+
+// codi: AD-aware max for scalar / doubleScalar
+inline Scalar max(const Scalar& a, const Scalar& b)
+{
+    return (a > b) ? a : b;
 }
 
 // Normal (double-precision) transcendental functions

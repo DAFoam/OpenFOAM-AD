@@ -35,6 +35,8 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// codi: Remove problematic (ambiguous) scalar operators entirely - let dimensionedType handle it
+/*
 dimensionedScalar operator+(const dimensionedScalar& ds1, const scalar s2)
 {
     return ds1 + dimensionedScalar(s2);
@@ -69,7 +71,7 @@ dimensionedScalar operator/(const scalar s1, const dimensionedScalar& ds2)
 {
     return dimensionedScalar(s1)/ds2;
 }
-
+*/
 
 dimensionedScalar pow
 (

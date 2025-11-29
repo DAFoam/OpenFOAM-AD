@@ -64,8 +64,8 @@ struct swakModuloOp
         {
             return 0;
         }
-
-        const scalar val = std::fmod(a, b);
+        // codi:
+        const scalar val = std::fmod(a.getValue(), b.getValue());
 
         if (Foam::mag(val) > (0.5*b))
         {

@@ -49,24 +49,25 @@ static scalar minimaxs(const scalar P)
 {
     // (DM:Eq. 32)
 
-    constexpr scalar a_0 = 3.31125922108741;
-    constexpr scalar a_1 = 11.6616720288968;
-    constexpr scalar a_2 = 4.28342155967104;
-    constexpr scalar a_3 = 0.213623493715853;
+    // codi:
+    const scalar a_0 = 3.31125922108741;
+    const scalar a_1 = 11.6616720288968;
+    const scalar a_2 = 4.28342155967104;
+    const scalar a_3 = 0.213623493715853;
 
-    constexpr scalar b_0 = 6.61053765625462;
-    constexpr scalar b_1 = 6.40691597760039;
-    constexpr scalar b_2 = 1.27364489782223;
-    constexpr scalar b_3 = 0.03611708101884203;
+    const scalar b_0 = 6.61053765625462;
+    const scalar b_1 = 6.40691597760039;
+    const scalar b_2 = 1.27364489782223;
+    const scalar b_3 = 0.03611708101884203;
 
-    const scalar t = P < 0.5 ? sqrt(-2*log(P)) : sqrt(-2*log(1 - P));
+    const scalar t = P < 0.5 ? scalar(sqrt(-2*log(P))) : scalar(sqrt(-2*log(1 - P)));
 
     const scalar s =
         t
       - (a_0 + t*(a_1 + t*(a_2 + t*a_3)))
        /(1 + t*(b_0 + t*(b_1 + t*(b_2 + t*b_3))));
 
-    return P < 0.5 ? -s : s;
+    return P < 0.5 ? scalar(-s) : s;
 }
 
 
@@ -132,7 +133,7 @@ Foam::scalar Foam::Math::invIncGamma(const scalar a, const scalar P)
         {
             // (DM:Eq. 21)
             const scalar u =
-                (B*Q > 1e-8) ? pow(P*Ga*a, 1/a) : exp((-Q/a) - Eu);
+                (B*Q > 1e-8) ? scalar(pow(P*Ga*a, 1/a)) : scalar(exp((-Q/a) - Eu));
 
             return u/(1 - (u/(a + 1)));
         }
@@ -229,7 +230,7 @@ Foam::scalar Foam::Math::invIncGamma(const scalar a, const scalar P)
             else
             {
                 const scalar D = max(scalar(2), scalar(a*(a - 1)));
-                const scalar lnGa = lgamma(a);
+                const scalar lnGa = lgamma(a.getValue());
                 const scalar lnB = log(Q) + lnGa;
 
                 if (lnB < -2.3*D)
@@ -294,7 +295,7 @@ Foam::scalar Foam::Math::invIncGamma(const scalar a, const scalar P)
             {
                 // (DM:Eq. 35)
                 const scalar ap2 = a + 2;
-                const scalar v = log(P) + lgamma(ap1);
+                const scalar v = log(P) + lgamma(ap1.getValue());
                 z = exp((v + w)/a);
                 s = log1p(z/ap1*(1 + z/ap2));
                 z = exp((v + z - s)/a);
@@ -312,7 +313,7 @@ Foam::scalar Foam::Math::invIncGamma(const scalar a, const scalar P)
             {
                 // (DM:Eq. 36)
                 const scalar lnSn = log(Sn(a, z));
-                const scalar v = log(P) + lgamma(ap1);
+                const scalar v = log(P) + lgamma(ap1.getValue());
                 z = exp((v + z - lnSn)/a);
 
                 return z*(1 - (a*log(z) - z - v + lnSn)/(a - z));

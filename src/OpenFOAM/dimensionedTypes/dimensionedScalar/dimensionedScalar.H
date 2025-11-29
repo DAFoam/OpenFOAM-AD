@@ -49,14 +49,13 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-dimensionedScalar operator+(const dimensionedScalar&, const scalar);
-dimensionedScalar operator+(const scalar, const dimensionedScalar&);
-
-dimensionedScalar operator-(const dimensionedScalar&, const scalar);
-dimensionedScalar operator-(const scalar, const dimensionedScalar&);
-
-dimensionedScalar operator*(const dimensionedScalar&, const scalar);
-dimensionedScalar operator/(const scalar, const dimensionedScalar&);
+// codi: Remove problematic (ambiguous) scalar operators entirely - let dimensionedType handle it
+// dimensionedScalar operator+(const dimensionedScalar&, const scalar);
+// dimensionedScalar operator+(const scalar, const dimensionedScalar&);
+// dimensionedScalar operator-(const dimensionedScalar&, const scalar);
+// dimensionedScalar operator-(const scalar, const dimensionedScalar&);
+// dimensionedScalar operator*(const dimensionedScalar&, const scalar);
+// dimensionedScalar operator/(const scalar, const dimensionedScalar&);
 
 dimensionedScalar pow(const dimensionedScalar&, const dimensionedScalar&);
 dimensionedScalar pow3(const dimensionedScalar&);

@@ -100,7 +100,8 @@ addNamedToRunTimeSelectionTable
 Foam::string Foam::exprTools::dimensionedScalarEntry::evaluate(const entry& e)
 {
     dimensionedScalar dt(dynamicCast<const primitiveEntry>(e));
-    return std::to_string(dt.value());
+    // codi:
+    return std::to_string(dt.value().getValue());
 }
 
 

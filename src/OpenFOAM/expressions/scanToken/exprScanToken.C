@@ -64,7 +64,8 @@ void Foam::expressions::scanToken::setLabel(label val)
 void Foam::expressions::scanToken::setScalar(scalar val)
 {
     type_ = tokenType::SCALAR;
-    scalarValue = val;
+    // codi:
+    scalarValue = val.getValue();
 }
 
 
