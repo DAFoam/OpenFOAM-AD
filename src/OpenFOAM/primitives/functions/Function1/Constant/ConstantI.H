@@ -50,8 +50,17 @@ inline Type Foam::Function1Types::Constant<Type>::integrate
     const scalar x1,
     const scalar x2
 ) const
-{
-    return Type((x2 - x1)*value_);
+{    
+    // codi:
+    if constexpr(std::is_same_v<Type,Foam::label>){
+        return Type(((x2 - x1)*value_).getValue());
+    }
+    else{
+        return Type((x2 - x1)*value_);
+    }
+
+    
+    //return Type((x2 - x1)*value_);
 }
 
 

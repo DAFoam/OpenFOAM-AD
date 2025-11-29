@@ -104,12 +104,14 @@ Foam::Vector2D<Foam::complex> Foam::eigenValues(const tensor2D& T)
 
     // (JLM:p. 2246)
     scalar w = b*c;
-    scalar e = std::fma(-b, c, w);
-    scalar f = std::fma(a, d, -w);
+    // codi: replace fma with direct formulations
+    scalar e = -b * c + w; // std::fma(-b, c, w);
+    scalar f = a * d - w; // std::fma(a, d, -w);
     const scalar determinant = f + e;
 
     // Square-distance between two eigenvalues
-    const scalar gapSqr = std::fma(-4.0, determinant, sqr(trace));
+    // codi: replace fma with direct formulations
+    const scalar gapSqr = -4.0 * determinant + sqr(trace); // std::fma(-4.0, determinant, sqr(trace));
 
     // (F:Sec. 8.4.2.)
     // Eigenvalues are effectively real
@@ -170,7 +172,7 @@ Foam::Vector2D<Foam::complex> Foam::eigenVector
     // Evaluate the eigenvector using the largest divisor
     if (mag(A.yy()) > mag(A.xx()) && mag(A.yy()) > SMALL)
     {
-        Vector2D<complex> eVec(complex(1), -A.yx()/A.yy());
+        Vector2D<complex> eVec(complex(scalar(1.0)), -A.yx()/A.yy());
 
         #ifdef FULLDEBUG
         if (mag(eVec) < SMALL)
@@ -186,7 +188,7 @@ Foam::Vector2D<Foam::complex> Foam::eigenVector
     }
     else if (mag(A.xx()) > SMALL)
     {
-        Vector2D<complex> eVec(-A.xy()/A.xx(), complex(1));
+        Vector2D<complex> eVec(-A.xy()/A.xx(), complex(scalar(1.0)));
 
         #ifdef FULLDEBUG
         if (mag(eVec) < SMALL)

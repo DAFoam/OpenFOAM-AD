@@ -128,6 +128,16 @@ inline constexpr Istream& operator>>(Istream& is, zero&) noexcept
 
 #include "zeroI.H"
 
+// codi: enable CoDiPack constructor from Foam::zero
+// Must be AFTER zeroI.H which includes scalar.H which includes CoDiPack
+// codi_enable_constructor_for is defined in src/codipack/include/codi/expressions/activeTypeBase.hpp
+namespace codi {
+  template <>
+  struct codi_enable_constructor_for<Foam::zero> {
+    typedef void type;
+  };
+}
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 #endif

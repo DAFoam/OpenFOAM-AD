@@ -37,11 +37,12 @@ inline Foam::scalar Foam::Function1Types::Sine<Type>::cycle
 ) const
 {
     // The cycle: (freq * time) or (time / period)
+    // codi:
     return
     (
         frequency_
-      ? (t - t0_) * frequency_->value(t)
-      : (t - t0_) / (period_->value(t) + VSMALL)
+      ? scalar((t - t0_) * frequency_->value(t))
+      : scalar((t - t0_) / (period_->value(t) + VSMALL))
     );
 }
 
@@ -83,7 +84,7 @@ Foam::Function1Types::Sine<Type>::squareForm
     return
     (
         // Fraction of incomplete cycle
-        ((cyc - std::floor(cyc)) < posFrac ? 1.0 : -1.0)
+        ((cyc - std::floor(cyc.getValue())) < posFrac ? 1.0 : -1.0)
       * (amplitude_ ? amplitude_->value(t) : 1.0)
     );
 }

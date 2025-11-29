@@ -45,6 +45,22 @@
 /** \copydoc codi::Namespace */
 namespace codi {
 
+  // codi: *****************************
+  // Trait to enable constructor from external types in OpenFOAM
+  // By default, disabled for all types
+  template<typename T>
+  struct codi_enable_constructor_for {};
+
+  // Macro to enable constructor for a specific type
+  #define CODI_ENABLE_CONSTRUCTOR_FOR(T)         \
+    namespace codi {                             \
+    template <>                                  \
+    struct codi_enable_constructor_for<T> {      \
+      typedef void type;                         \
+    };                                           \
+    }
+  // codi: *****************************
+
   /**
    * @brief Represents the base implementation concrete lvalue in the CoDiPack expression tree.
    *
@@ -128,6 +144,17 @@ namespace codi {
         Base::init(rhs.cast().getValue(), EventHints::Statement::Passive);
       }
 
+      // codi: *****************************
+      // Constructor from types enabled via codi_enable_constructor_for trait
+      // This allows external types like Foam::zero to opt-in
+      template<typename T, typename = typename codi_enable_constructor_for<T>::type>
+      CODI_INLINE ActiveTypeBase(T const&) 
+        : primalValue(PassiveReal(0.0)), identifier() 
+      {
+        Base::init(PassiveReal(0.0), EventHints::Statement::Passive);
+      }
+      // codi: *****************************
+
       /// Destructor
       CODI_INLINE ~ActiveTypeBase() {
         Base::destroy();
@@ -138,6 +165,17 @@ namespace codi {
         static_cast<LhsExpressionInterface<Real, Gradient, Tape, Impl>&>(*this) = v;
         return cast();
       }
+      
+      // codi: *****************************
+      // Assignment operator for types enabled via codi_enable_constructor_for trait
+      // This allows OpenFOAM to use Foam::zero in assignments
+      template<typename T, typename = typename codi_enable_constructor_for<T>::type>
+      CODI_INLINE Impl& operator=(T const&) {
+        static_cast<LhsExpressionInterface<Real, Gradient, Tape, Impl>&>(*this) = PassiveReal(0.0);
+        return cast();
+      }
+      // codi: *****************************
+      
       using Base::operator=;
 
       /*******************************************************************************/
