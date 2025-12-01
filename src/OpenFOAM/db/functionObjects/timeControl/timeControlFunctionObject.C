@@ -167,8 +167,9 @@ Foam::scalar Foam::functionObjects::timeControl::calcExpansion
     for (label iter = 0; iter < 100; iter++)
     {
         // Dimensionless equation
-        scalar f = (y-1)*pow(ratio, n)+1-y*pow(ratio, n-1);
-        scalar dfdratio = (y-1)*n*pow(ratio, n-1)-y*(n-1)*pow(ratio, n-2);
+        // codi:
+        scalar f = (y-1)*pow(ratio, scalar(n))+1-y*pow(ratio, scalar(n-1));
+        scalar dfdratio = (y-1)*n*pow(ratio, scalar(n-1))-y*(n-1)*pow(ratio, scalar(n-2));
         scalar dratio = f/(dfdratio + SMALL);
         ratio -= dratio;
         // Exit if function is satisfied
@@ -223,8 +224,9 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
     // calculations
     if (requiredDeltaTCoeff != 1.0)
     {
+        // codi:
         requiredTimeInterval *=
-            (pow(requiredDeltaTCoeff, nSteps) - 1)
+            (pow(requiredDeltaTCoeff, scalar(nSteps)) - 1)
            /(requiredDeltaTCoeff - 1);
     }
 
@@ -325,14 +327,15 @@ void Foam::functionObjects::timeControl::calcDeltaTCoeff
                 y,
                 requiredSteps
             );
+            // codi:
             const scalar deltaTLoop =
                 wantedDT
-              / pow(newRatio, mag(requiredSteps)-1);
+              / pow(newRatio, scalar(mag(requiredSteps)-1));
             scalar firstDeltaRatio = deltaTLoop/deltaT0_;
             // Avoid division by zero for ratio = 1.0
             scalar Sn =
                 deltaTLoop
-               *(pow(newRatio, mag(requiredSteps))-1)
+               *(pow(newRatio, scalar(mag(requiredSteps)))-1)
                /(newRatio-1+SMALL);
 
             if (debug)
@@ -629,14 +632,15 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                         clipThreshold = deltaTCoeff_;
                     }
                     // Adjust time step
+                    // codi: force to use codi:: to avoid ambiguity
                     if (newDeltaT >= deltaT)
                     {
-                        deltaT = min(newDeltaT, clipThreshold*deltaT);
+                        deltaT = codi::min(newDeltaT, clipThreshold*deltaT);
                     }
                     else
                     {
                         clipThreshold = 1/clipThreshold;
-                        deltaT = max(newDeltaT, clipThreshold*deltaT);
+                        deltaT = codi::max(newDeltaT, clipThreshold*deltaT);
                     }
 
                     const_cast<Time&>(time_).setDeltaT(deltaT, false);
@@ -765,13 +769,13 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
             if (deltaTCoeff_ != GREAT)
             {
                 // Clip time step change to deltaTCoeff
-
+                // codi force to use codi:: to avoid ambiguity
                 scalar requiredDeltaTCoeff =
                 (
                     max
                     (
                         1.0/deltaTCoeff_,
-                        min(deltaTCoeff_, wantedDT/deltaT0_)
+                        codi::min(deltaTCoeff_, wantedDT/deltaT0_)
                     )
                 );
 

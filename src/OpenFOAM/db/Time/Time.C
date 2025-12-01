@@ -129,13 +129,14 @@ void Foam::Time::adjustDeltaT()
 
             // Control the increase of the time step to within a factor of 2
             // and the decrease within a factor of 5.
+            // codi: force to use codi:: to avoid ambiguity
             if (newDeltaT >= deltaT_)
             {
-                deltaT_ = min(newDeltaT, 2.0*deltaT_);
+                deltaT_ = codi::min(newDeltaT, 2.0*deltaT_);
             }
             else
             {
-                deltaT_ = max(newDeltaT, 0.2*deltaT_);
+                deltaT_ = codi::max(newDeltaT, 0.2*deltaT_);
             }
         }
     }
@@ -1199,8 +1200,9 @@ Foam::Time& Foam::Time::operator++()
                 timeToUserTime(value()) - timeToUserTime(value() - deltaT_);
 
             // Tolerance used when testing time equivalence
+            // force to use codi:: to avoid ambiguity
             const scalar timeTol =
-                max(min(pow(scalar(10), -precision_), 0.1*userDeltaT), SMALL);
+                codi::max(codi::min(pow(scalar(10), scalar(-precision_)), 0.1*userDeltaT), SMALL);
 
             // Time value obtained by reading timeName
             scalar timeNameValue = -VGREAT;

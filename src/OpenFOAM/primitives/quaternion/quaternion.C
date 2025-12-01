@@ -153,7 +153,8 @@ Foam::quaternion Foam::pow(const quaternion& q, const label power)
         powq *= power*acos(q.w()/magQ);
     }
 
-    return pow(magQ, power)*exp(powq);
+    // codi:
+    return pow(magQ, scalar(power))*exp(powq);
 }
 
 

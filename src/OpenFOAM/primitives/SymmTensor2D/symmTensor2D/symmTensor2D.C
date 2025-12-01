@@ -97,7 +97,8 @@ Foam::vector2D Foam::eigenValues(const symmTensor2D& T)
     //(K:Eqs. 3.2-3.3)
     const scalar skewTrace = T.xx() - T.yy();
     const scalar trace = tr(T);
-    const scalar gap = sign(skewTrace)*hypot(skewTrace, 2*T.xy());
+    // codi: force to use codi:: to avoid ambiguity
+    const scalar gap = sign(skewTrace)*codi::hypot(skewTrace, 2*T.xy());
 
     return vector2D(0.5*(trace + gap), 0.5*(trace - gap));
 }

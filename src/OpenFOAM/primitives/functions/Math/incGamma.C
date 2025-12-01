@@ -85,7 +85,8 @@ static scalar calcPE15(const scalar a, const scalar x, const int nmax = 20)
     for (int n = 1; n <= nmax; n++)
     {
         prod *= (a + n);
-        sum += pow(x, n)/prod;
+        // codi:
+        sum += pow(x, scalar(n))/prod;
     }
 
     const scalar R = (exp(-x)*pow(x, a))/tgamma(a);
@@ -103,7 +104,8 @@ static scalar calcQE16(const scalar a, const scalar x, const int N = 20)
     for (int n = 1; n <= (N - 1); n++)
     {
         an *= (a - n);
-        sum += an/pow(x, n);
+        // codi:
+        sum += an/pow(x, scalar(n));
     }
 
     const scalar R = (exp(-x)*pow(x, a))/tgamma(a);
@@ -259,7 +261,8 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
 
             for (label n = 1; n <= 10; ++n)
             {
-                sum += pow(scalar(-x), n)/((a + n)*factorial(n));
+                // codi:
+                sum += pow(scalar(-x), scalar(n))/((a + n)*factorial(n));
             }
 
             const scalar J = -a*sum;
@@ -344,7 +347,8 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
             }
             else
             {
-                if (x <= max(a, log(10.0)))
+                // codi: force to use codi:: to avoid ambiguity
+                if (x <= codi::max(a, log(10.0)))
                 {
                     // (DM:Eq. 15)
                     return 1 - calcPE15(a, x);
@@ -368,7 +372,8 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
     {
         if (a > x || x >= x0)
         {
-            if (x <= max(a, log(10.0)))
+            // codi: force to use codi:: to avoid ambiguity
+            if (x <= codi::max(a, log(10.0)))
             {
                 // (DM:Eq. 15)
                 return 1 - calcPE15(a, x);
@@ -397,7 +402,8 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
 
                     for (label n = 0; n <= (a - 1); ++n)
                     {
-                        sum += pow(x, n)/factorial(n);
+                        // codi:
+                        sum += pow(x, scalar(n))/factorial(n);
                     }
 
                     return exp(-x)*sum;
@@ -411,13 +417,15 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
                     for (int n = 1; n <= i; n++)
                     {
                         prod *= (n - 0.5);
-                        sum += pow(x, n)/prod;
+                        // codi:
+                        sum += pow(x, scalar(n))/prod;
                     }
 
                     return erfc(sqrt(x)) + exp(-x)/sqrt(pi*x)*sum;
                 }
             }
-            else if (x <= max(a, log(10.0)))
+            // codi: force to use codi:: to avoid ambiguity
+            else if (x <= codi::max(a, log(10.0)))
             {
                 // (DM:Eq. 15)
                 return 1 - calcPE15(a, x);

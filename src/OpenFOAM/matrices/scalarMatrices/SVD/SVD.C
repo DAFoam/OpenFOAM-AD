@@ -208,8 +208,8 @@ static std::pair<label, bool> SVDcomp
                 }
             }
         }
-
-        anorm = max(anorm, mag(S_[i]) + mag(rv1[i]));
+        // force to use codi:: to avoid ambiguity
+        anorm = codi::max(anorm, mag(S_[i]) + mag(rv1[i]));
     }
 
     anorm *= SMALL;

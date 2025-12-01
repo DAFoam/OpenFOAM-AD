@@ -81,13 +81,13 @@ void Foam::wedgePolyPatch::calcGeometry(PstreamBuffers&)
                     << endl;
             }
         }
-
+        // force to use codi:: to avoid ambiguity
         centreNormal_ =
             vector
             (
-                sign(n_.x())*(max(mag(n_.x()), 0.5) - 0.5),
-                sign(n_.y())*(max(mag(n_.y()), 0.5) - 0.5),
-                sign(n_.z())*(max(mag(n_.z()), 0.5) - 0.5)
+                sign(n_.x())*(codi::max(mag(n_.x()), 0.5) - 0.5),
+                sign(n_.y())*(codi::max(mag(n_.y()), 0.5) - 0.5),
+                sign(n_.z())*(codi::max(mag(n_.z()), 0.5) - 0.5)
             );
         centreNormal_.normalise();
 
