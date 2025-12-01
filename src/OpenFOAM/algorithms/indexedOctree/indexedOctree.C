@@ -642,11 +642,12 @@ Foam::point Foam::indexedOctree<Type>::pushPoint
 
         if (faceID & treeBoundBox::LEFTBIT)
         {
+            // codi: add scalar() for all ? selection
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
-              : (bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
             );
         }
         else if (faceID & treeBoundBox::RIGHTBIT)
@@ -654,8 +655,8 @@ Foam::point Foam::indexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
-              : (bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
             );
         }
     }
@@ -668,8 +669,8 @@ Foam::point Foam::indexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
-              : (bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
             );
         }
         else if (faceID & treeBoundBox::TOPBIT)
@@ -677,8 +678,8 @@ Foam::point Foam::indexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
-              : (bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
             );
         }
     }
@@ -691,8 +692,8 @@ Foam::point Foam::indexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
-              : (bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
             );
         }
         else if (faceID & treeBoundBox::FRONTBIT)
@@ -700,8 +701,8 @@ Foam::point Foam::indexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
-              : (bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
             );
         }
     }
@@ -2170,8 +2171,9 @@ Foam::indexedOctree<Type>::indexedOctree
     }
 
     // Start off with one node with all shapes in it.
-    DynamicList<node> nodes(label(shapes.size() / maxLeafRatio));
-    DynamicList<labelList> contents(label(shapes.size() / maxLeafRatio));
+    // codi:
+    DynamicList<node> nodes(label(shapes.size() / maxLeafRatio.getValue()));
+    DynamicList<labelList> contents(label(shapes.size() / maxLeafRatio.getValue()));
     contents.push_back(identity(shapes.size()));
 
     // Create topnode.
@@ -2228,7 +2230,8 @@ Foam::indexedOctree<Type>::indexedOctree
         label nOldNodes = nodes.size();
         splitNodes
         (
-            label(maxLeafRatio),
+            // codi:
+            label(maxLeafRatio.getValue()),
             nodes,
             contents
         );

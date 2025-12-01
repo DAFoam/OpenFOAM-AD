@@ -49,7 +49,8 @@ void Foam::GAMGSolver::interpolate
     const scalar* const __restrict__ upperPtr = m.upper().begin();
     const scalar* const __restrict__ lowerPtr = m.lower().begin();
 
-    Apsi = 0;
+    // codi:
+    Apsi = scalar(0);
     solveScalar* __restrict__ ApsiPtr = Apsi.begin();
 
     const label startRequest = UPstream::nRequests();

@@ -686,7 +686,8 @@ void Foam::GAMGSolver::solveCoarsestLevel
     //}
     else
     {
-        coarsestCorrField = 0;
+        // codi:
+        coarsestCorrField = scalar(0);
         const solverPerformance coarseSolverPerf
         (
             coarsestSolverPtr_->scalarSolve

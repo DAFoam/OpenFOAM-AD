@@ -987,12 +987,16 @@ Foam::label Foam::findLower
     const label start
 )
 {
+    // codi: use StoredType as input for lessOp
+    typedef typename ListType::value_type StoredType;
+    StoredType eval_val = val;
+    
     return findLower
     (
         input,
-        val,
+        eval_val,
         start,
-        lessOp<T>()
+        lessOp<StoredType>()
     );
 }
 

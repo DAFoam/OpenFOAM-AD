@@ -591,11 +591,12 @@ Foam::point Foam::dynamicIndexedOctree<Type>::pushPoint
 
         if (faceID & treeBoundBox::LEFTBIT)
         {
+            // codi: add scalar for all ? selections
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
-              : (bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
             );
         }
         else if (faceID & treeBoundBox::RIGHTBIT)
@@ -603,8 +604,8 @@ Foam::point Foam::dynamicIndexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
-              : (bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
             );
         }
     }
@@ -617,8 +618,8 @@ Foam::point Foam::dynamicIndexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
-              : (bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
             );
         }
         else if (faceID & treeBoundBox::TOPBIT)
@@ -626,8 +627,8 @@ Foam::point Foam::dynamicIndexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
-              : (bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
             );
         }
     }
@@ -640,8 +641,8 @@ Foam::point Foam::dynamicIndexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
-              : (bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.min()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.min()[dir] - (perturbVec[dir] + ROOTVSMALL))
             );
         }
         else if (faceID & treeBoundBox::FRONTBIT)
@@ -649,8 +650,8 @@ Foam::point Foam::dynamicIndexedOctree<Type>::pushPoint
             perturbedPt[dir] =
             (
                 pushInside
-              ? (bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
-              : (bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
+              ? scalar(bb.max()[dir] - (perturbVec[dir] + ROOTVSMALL))
+              : scalar(bb.max()[dir] + (perturbVec[dir] + ROOTVSMALL))
             );
         }
     }

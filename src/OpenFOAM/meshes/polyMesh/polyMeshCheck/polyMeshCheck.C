@@ -58,8 +58,9 @@ bool Foam::polyMesh::checkFaceOrthogonality
     const scalarField& ortho = tortho.ref();
 
     // Severe nonorthogonality threshold
+    // codi:
     const scalar severeNonorthogonalityThreshold =
-        ::cos(degToRad(primitiveMesh::nonOrthThreshold_));
+        cos(degToRad(primitiveMesh::nonOrthThreshold_));
 
 
     scalar minDDotS = GREAT;
@@ -95,13 +96,14 @@ bool Foam::polyMesh::checkFaceOrthogonality
                 if (detailedReport && errorNonOrth == 0)
                 {
                     // Non-orthogonality greater than 90 deg
+                    // codi:
                     WarningInFunction
                         << "Severe non-orthogonality for face "
                         << facei
                         << " between cells " << own[facei]
                         << " and " << nei[facei]
                         << ": Angle = "
-                        << radToDeg(::acos(clamp(ortho[facei], -1, 1)))
+                        << radToDeg(acos(clamp(ortho[facei], -1, 1)))
                         << " deg." << endl;
                 }
 
@@ -127,8 +129,9 @@ bool Foam::polyMesh::checkFaceOrthogonality
 
     if (nSummed > 0)
     {
-        scalar maxNonOrth = radToDeg(::acos(clamp(minDDotS, -1, 1)));
-        scalar aveNonOrth = radToDeg(::acos(clamp(sumDDotS/nSummed, -1, 1)));
+        // codi:
+        scalar maxNonOrth = radToDeg(acos(clamp(minDDotS, -1, 1)));
+        scalar aveNonOrth = radToDeg(acos(clamp(sumDDotS/nSummed, -1, 1)));
 
         meshDict.set("maxNonOrth", maxNonOrth);
         meshDict.set("aveNonOrth", aveNonOrth);

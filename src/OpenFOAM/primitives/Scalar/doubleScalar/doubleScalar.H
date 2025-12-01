@@ -112,6 +112,19 @@ inline Scalar max(const Scalar& a, const Scalar& b)
     return (a > b) ? a : b;
 }
 
+// codi: passive lgamma function. It seems lgamma is used only in lagrangian/DSMC
+inline Scalar lgamma(const Scalar s)
+{
+    return ::lgamma(s.getValue());
+}
+
+// codi: AD-aware pow for two scalars
+inline Scalar pow(const Scalar& x, const Scalar& y)
+{
+    using std::pow;
+    return pow(x, y);
+}
+
 // Normal (double-precision) transcendental functions
 // codi: using ADL to auto-select func namespace
 #define transFunc(func)                                         \

@@ -381,8 +381,9 @@ bool Foam::primitiveMesh::checkFaceOrthogonality
     const scalarField& ortho = tortho();
 
     // Severe nonorthogonality threshold
+    // codi:
     const scalar severeNonorthogonalityThreshold =
-        ::cos(degToRad(nonOrthThreshold_));
+        cos(degToRad(nonOrthThreshold_));
 
     scalar minDDotS = min(ortho);
 
@@ -429,11 +430,12 @@ bool Foam::primitiveMesh::checkFaceOrthogonality
 
         if (neiSize > 0)
         {
+            // codi:
             if (debug || report)
             {
                 Info<< "    Mesh non-orthogonality Max: "
-                    << radToDeg(::acos(minDDotS))
-                    << " average: " << radToDeg(::acos(sumDDotS/neiSize))
+                    << radToDeg(acos(minDDotS))
+                    << " average: " << radToDeg(acos(sumDDotS/neiSize))
                     << endl;
             }
         }

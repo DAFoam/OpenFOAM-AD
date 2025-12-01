@@ -251,7 +251,8 @@ namespace Foam
 template<>
 complex sumProd(const UList<complex>& f1, const UList<complex>& f2)
 {
-    complex result(0);
+    // codi:
+    complex result = Zero;
     if (f1.size() && (f1.size() == f2.size()))
     {
         // std::inner_product

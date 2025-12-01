@@ -37,6 +37,7 @@ Description
 #ifndef Foam_ops_H
 #define Foam_ops_H
 
+#include <type_traits>
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -244,6 +245,28 @@ Bool1Op(greater, x > value)
 Bool1Op(greaterEqual, x >= value)
 
 WeightedOp(multiply, (weight*y))
+
+// codi: Specialization for multiplyOp3 when the result is an integer label.
+// This avoids trying to convert a Codi expression into an int.
+template<class T1, class T2>
+struct multiplyOp3<Foam::label, T1, T2>
+{
+    [[nodiscard]] Foam::label operator()(const T1& x, const T2& y) const
+    {
+        return (x * y).getValue();
+    }
+};
+
+// codi: Specialization for divideOp3 when the result is an integer label.
+// This avoids trying to convert a Codi expression into an int.
+template<class T1, class T2>
+struct divideOp3<Foam::label, T1, T2>
+{
+    [[nodiscard]] Foam::label operator()(const T1& x, const T2& y) const
+    {
+        return (x / y).getValue();
+    }
+};
 
 #undef Op
 #undef BoolOp

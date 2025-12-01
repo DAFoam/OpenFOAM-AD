@@ -202,7 +202,8 @@ void Foam::processorLduInterface::compressedSend
 
         for (label i=0; i<nm1; i++)
         {
-            fArray[i] = sArray[i] - slast[i%nCmpts];
+            // codi:
+            fArray[i] = (sArray[i] - slast[i%nCmpts]).getValue();
         }
 
         reinterpret_cast<Type&>(fArray[nm1]) = f.last();
