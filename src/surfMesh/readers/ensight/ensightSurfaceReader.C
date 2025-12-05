@@ -200,7 +200,8 @@ Foam::ensightSurfaceReader::readGeometryHeader
         // Optional extents - read and discard 6 floats
         // (xmin, xmax, ymin, ymax, zmin, zmax)
 
-        is.skip<scalar>(6);
+        // codi:
+        is.skip<double>(6);
 
         // "part"
         is.read(buffer);
@@ -704,7 +705,15 @@ Foam::meshedSurface Foam::ensightSurfaceReader::readGeometry
         }
 
         pointField points;
-        is.readPoints(nPoints, points);
+        // codi:
+        //is.readPoints(nPoints, points);
+        List<doubleVector> tempPoints;
+        is.readPoints(nPoints, tempPoints);
+        points.resize(nPoints);
+        forAll(points, i)
+        {
+            points[i] = point(scalar(tempPoints[i].x()), scalar(tempPoints[i].y()), scalar(tempPoints[i].z()));
+        }
 
 
         // Read faces - may be a mix of tria3, quad4, nsided

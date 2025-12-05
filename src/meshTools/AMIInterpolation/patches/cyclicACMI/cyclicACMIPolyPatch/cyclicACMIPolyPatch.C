@@ -34,6 +34,25 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// codi: TODO this is a local fix for an ambiguity issue related to this call.
+/*
+        tmp<scalarField> scale
+        (
+            scalar(1)
+          - min
+            (
+                max(mask, tolerance_),
+                maxTol
+            )
+        );
+*/
+namespace Foam {
+    inline tmp<Field<scalar>> min(const tmp<Field<scalar>>& tf, const scalar& s)
+    {
+        return Foam::min(tf(), s);
+    }
+}
+
 namespace Foam
 {
     defineTypeNameAndDebug(cyclicACMIPolyPatch, 0);
@@ -99,7 +118,8 @@ bool Foam::cyclicACMIPolyPatch::updateAreas() const
         srcScaledMask_ =
             min
             (
-                scalar(1) - tolerance_,
+                // codi:
+                scalar(scalar(1) - tolerance_),
                 max(tolerance_, srcScalePtr_->value(t)*srcMask_)
             );
 
@@ -112,7 +132,8 @@ bool Foam::cyclicACMIPolyPatch::updateAreas() const
         tgtScaledMask_ =
             min
             (
-                scalar(1) - tolerance_,
+                // codi:
+                scalar(scalar(1) - tolerance_),
                 max(tolerance_, tgtScalePtr_->value(t)*tgtMask_)
             );
 
@@ -163,7 +184,8 @@ void Foam::cyclicACMIPolyPatch::reportCoverage
 {
     label nUncovered = 0;
     label nCovered = 0;
-    for (const scalar sum : weightSum)
+    // codi: use reference to avoid copying sum
+    for (const scalar& sum : weightSum)
     {
         if (sum < tolerance_)
         {

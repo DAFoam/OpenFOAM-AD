@@ -68,7 +68,7 @@ static inline scalar linearWeight
     const scalar radiusSqr
 )
 {
-    return (1 - ::sqrt(p.distSqr(p0) / radiusSqr));
+    return (1 - sqrt(p.distSqr(p0) / radiusSqr));
 }
 
 

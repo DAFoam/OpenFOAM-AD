@@ -82,7 +82,16 @@ void Foam::ensightOutput::Detail::copyComponent
         else
         {
             // Copy with narrowing
-            *iter = narrowFloat(component(val, cmpt));
+            // codi:
+            auto comp = component(val, cmpt);
+            if constexpr (std::is_class_v<decltype(comp)>)
+            {
+                *iter = narrowFloat(comp.getValue());
+            }
+            else
+            {
+                *iter = narrowFloat(comp);
+            }
         }
         ++iter;
     }

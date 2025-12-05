@@ -37,7 +37,18 @@ void Foam::glTF::object::addData(const Type& fld)
     {
         for (direction d = 0; d < nCmpts; ++d)
         {
-            data_[count++] = component(fld[fieldi], d);
+            // codi:
+            //data_[count++] = component(fld[fieldi], d);
+            auto comp = component(fld[fieldi], d);
+            if constexpr (std::is_class_v<decltype(comp)>)
+            {
+                data_[count++] = comp.getValue();
+            }
+            else
+            {
+                data_[count++] = comp;
+            }
+            
         }
     }
 }
@@ -62,14 +73,15 @@ void Foam::glTF::object::addData(const Type1& fld1, const Type2& fld2)
 
     forAll(fld1, fieldi)
     {
+        // codi:
         for (direction d = 0; d < nCmpts1; ++d)
         {
-            data_[count++] = component(fld1[fieldi], d);
+            data_[count++] = component(fld1[fieldi], d).getValue();
         }
 
         for (direction d = 0; d < nCmpts2; ++d)
         {
-            data_[count++] = component(fld2[fieldi], d);
+            data_[count++] = component(fld2[fieldi], d).getValue();
         }
     }
 }

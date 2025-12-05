@@ -45,7 +45,8 @@ inline void Foam::vtk::write
     {
         for (direction cmpt=0; cmpt < nCmpt; ++cmpt)
         {
-            fmt.write(component(val, cmpt));
+            // codi:
+            fmt.write(component(val, cmpt).getValue());
         }
     }
 }

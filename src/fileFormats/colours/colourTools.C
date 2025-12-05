@@ -39,10 +39,11 @@ using namespace Foam::constant;
 namespace Foam
 {
 
-static constexpr scalar oneThird = 1.0 / 3.0;
-static constexpr scalar oneSixth = 1.0 / 6.0;
-static constexpr scalar twoThird = 2.0 / 3.0;
-static constexpr scalar fiveSixth = 5.0 / 6.0;
+    // codi:
+static constexpr double oneThird = 1.0 / 3.0;
+static constexpr double oneSixth = 1.0 / 6.0;
+static constexpr double twoThird = 2.0 / 3.0;
+static constexpr double fiveSixth = 5.0 / 6.0;
 
 
 // Compute HSV from RGB
@@ -72,7 +73,7 @@ static inline void RGB_to_HSV
     }
 
     v = cmax;
-    s = (v > 0.0) ? ((cmax - cmin) / cmax) : 0.0;
+    s = (v > 0.0) ? scalar((cmax - cmin) / cmax) : scalar(0.0);
 
     if (s > 0.0)
     {
@@ -177,9 +178,10 @@ static inline scalar from_XYZ(scalar val)
 }
 
 // Observer= 2 deg Illuminant= D65
-static constexpr scalar ref_X = 0.9505;
-static constexpr scalar ref_Y = 1.000;
-static constexpr scalar ref_Z = 1.089;
+// codi:
+static constexpr double ref_X = 0.9505;
+static constexpr double ref_Y = 1.000;
+static constexpr double ref_Z = 1.089;
 
 static inline void LAB_to_XYZ
 (
@@ -218,22 +220,24 @@ static inline void XYZ_to_LAB
 
 static inline scalar gamma_from_xyz(const scalar val)
 {
+    // codi:
     return
     (
         val > 0.0031308
-      ? (1.055 * (pow(val, 1.0/2.4)) - 0.055)
-      : 12.92 * val
+      ? scalar(1.055 * (pow(val, scalar(1.0/2.4))) - scalar(0.055))
+      : scalar(12.92 * val)
     );
 }
 
 
 static inline scalar gamma_to_xyz(const scalar val)
 {
+    // codi:
     return
     (
         val > 0.04045
-      ? (pow((val + 0.055) / 1.055, 2.4))
-      : val / 12.92
+      ? scalar(pow(scalar((val + 0.055) / 1.055), scalar(2.4)))
+      : scalar(val / 12.92)
     );
 }
 
@@ -292,8 +296,9 @@ inline void labToMsh(const vector& lab, vector& msh)
     const scalar& b = lab[2];
 
     msh[0] = sqrt(L*L + a*a + b*b);
-    msh[1] = (msh[0] > 0.001) ? acos(L / msh[0]) : 0.0;
-    msh[2] = (msh[1] > 0.001) ? atan2(b,a) : 0.0;
+    // codi:
+    msh[1] = (msh[0] > 0.001) ? scalar(acos(L / msh[0])) : scalar(0.0);
+    msh[2] = (msh[1] > 0.001) ? scalar(atan2(b,a)) : scalar(0.0);
 }
 
 

@@ -198,7 +198,8 @@ inline Foam::scalar Foam::triangle2D::area() const noexcept
 
 inline Foam::label Foam::triangle2D::order() const
 {
-    return mag(area_) < SMALL ? 0 : sign(area_);
+    // codi:
+    return mag(area_) < SMALL ? 0 : label(sign(area_).getValue());
 }
 
 

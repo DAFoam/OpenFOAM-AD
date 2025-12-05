@@ -49,11 +49,12 @@ void Foam::cyclicLduInterfaceField::transformCoupleField
     {
         if (forwardT().size() == 1)
         {
-            f *= pow(diag(forwardT()[0]).component(cmpt), rank());
+            // codi:
+            f *= pow(diag(forwardT()[0]).component(cmpt), scalar(rank()));
         }
         else
         {
-            f *= pow(diag(forwardT())().component(cmpt), rank());
+            f *= pow(diag(forwardT())().component(cmpt), scalar(rank()));
         }
     }
 }

@@ -51,7 +51,8 @@ bool Foam::JSONformatter::writeToken(const token& t)
 
         case token::tokenType::FLOAT:
         case token::tokenType::DOUBLE:
-            write(t.scalarToken());
+            // codi:
+            write(t.scalarToken().getValue());
             break;
 
         case token::tokenType::WORD:

@@ -67,12 +67,22 @@ Foam::string Foam::glTF::accessor::getValueType()
 template<class Type>
 Foam::string Foam::glTF::accessor::toString(const Type& val)
 {
+    // codi:
     OStringStream buf;
     buf << "[ ";
     for (direction dir = 0; dir < pTraits<Type>::nComponents; ++dir)
     {
         if (dir) buf << ", ";
-        buf << float(component(val, dir));
+        //buf << float(component(val, dir));
+        auto comp = component(val, dir);
+        if constexpr (std::is_class_v<decltype(comp)>)
+        {
+            buf << float(comp.getValue());
+        }
+        else
+        {
+            buf << float(comp);
+        }
     }
     buf << " ]";
 

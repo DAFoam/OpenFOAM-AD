@@ -87,12 +87,13 @@ inline void Foam::fileFormats::STLsurfaceFormat<Face>::writeShell
         const label fp2 = f.fcIndex(fp1);
 
         // Write BINARY
+        // codi:
         STLtriangle
         (
-            norm,
-            p0,
-            pts[f[fp1]],
-            pts[f[fp2]],
+            STLpoint(norm.x().getValue(), norm.y().getValue(), norm.z().getValue()),
+            STLpoint(p0.x().getValue(), p0.y().getValue(), p0.z().getValue()),
+            STLpoint(pts[f[fp1]].x().getValue(), pts[f[fp1]].y().getValue(), pts[f[fp1]].z().getValue()),
+            STLpoint(pts[f[fp2]].x().getValue(), pts[f[fp2]].y().getValue(), pts[f[fp2]].z().getValue()),
             zoneI
         ).write(os);
     }

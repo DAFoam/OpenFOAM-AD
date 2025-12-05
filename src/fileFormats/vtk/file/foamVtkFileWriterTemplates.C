@@ -39,11 +39,13 @@ void Foam::vtk::fileWriter::beginDataArray
 {
     typedef typename pTraits<Type>::cmptType cmptType;
 
+    // codi:
     static_assert
     (
         (
             std::is_same_v<label, cmptType>
          || std::is_floating_point_v<cmptType>
+         || std::is_same_v<scalar, cmptType>
         ),
         "Label and Floating-point vector space only"
     );

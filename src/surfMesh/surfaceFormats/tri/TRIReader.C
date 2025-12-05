@@ -45,7 +45,8 @@ static inline STLpoint getSTLpoint(Istream& is)
     scalar b = readScalar(is);
     scalar c = readScalar(is);
 
-    return STLpoint(a, b, c);
+    // codi:
+    return STLpoint(a.getValue(), b.getValue(), c.getValue());
 }
 } // End namespace Foam
 

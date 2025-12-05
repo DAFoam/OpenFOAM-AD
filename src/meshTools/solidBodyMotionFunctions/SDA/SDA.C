@@ -79,7 +79,8 @@ Foam::septernion Foam::solidBodyMotionFunctions::SDA::transformation() const
     // Current Phase for Heave [rad]
     scalar phh = phr + piByTwo;
 
-    scalar rollA = max(rollAmax_*exp(-sqr(Tpi - Tpn_)/(2*Q_)), rollAmin_);
+    // codi: force to use the codi::max
+    scalar rollA = codi::max(rollAmax_*exp(-sqr(Tpi - Tpn_)/(2*Q_)), rollAmin_);
 
     vector T
     (

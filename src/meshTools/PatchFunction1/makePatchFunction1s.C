@@ -45,8 +45,9 @@ License
 
 namespace Foam
 {
-    makePatchFunction1(label);
-    makePatchFunction1Type(ConstantField, label);
+    // codi: comment out label makepatch to avoid errors
+    //makePatchFunction1(label);
+    //makePatchFunction1Type(ConstantField, label);
 
     makePatchFunction1s(scalar);
     makePatchFunction1s(vector);

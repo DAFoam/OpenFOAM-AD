@@ -267,7 +267,8 @@ void sumReduce
     const int communicator = UPstream::worldComm
 )
 {
-    static_assert(std::is_arithmetic_v<CountType>, "Counter not arithmetic");
+    // codi: TODO. Comment out this for now!
+    // static_assert(std::is_arithmetic_v<CountType>, "Counter not arithmetic");
 
     if (!UPstream::is_parallel(communicator))
     {

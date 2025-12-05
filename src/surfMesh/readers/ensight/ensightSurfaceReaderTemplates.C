@@ -122,8 +122,11 @@ Foam::tmp<Foam::Field<Type>> Foam::ensightSurfaceReader::readField
                 if (strValue.contains("undef"))
                 {
                     // Skip undef entry
+                    // codi:
                     scalar value;
-                    is.read(value);
+                    double tmp;
+                    is.read(tmp);
+                    value = tmp;
                 }
 
                 // Ensight fields are written component-wise
@@ -136,8 +139,11 @@ Foam::tmp<Foam::Field<Type>> Foam::ensightSurfaceReader::readField
 
                     for (label facei = begFace; facei < endFace; ++facei)
                     {
+                        // codi:
+                        double tmp;
                         scalar value;
-                        is.read(value);
+                        is.read(tmp);
+                        value = tmp;
                         setComponent(field[facei], cmpt) = value;
                     }
                 }

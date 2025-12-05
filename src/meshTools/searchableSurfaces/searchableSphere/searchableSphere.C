@@ -139,7 +139,8 @@ inline static scalar vectorMag
     const scalar z
 )
 {
-    return ::sqrt(vectorMagSqr(x, y, z));
+    // codi:
+    return sqrt(vectorMagSqr(x, y, z));
 }
 
 
@@ -156,7 +157,8 @@ namespace Foam
 static constexpr int maxIters = 100;
 
 // Relative ellipse size within the root finding (1)
-static constexpr scalar tolCloseness = 1e-3;
+// codi:
+static const scalar tolCloseness = 1e-3;
 
 
 // Find root for distance to ellipse
@@ -171,7 +173,8 @@ static scalar findRootEllipseDistance
     const scalar n0 = r0*z0;
 
     scalar s0 = z1 - 1;
-    scalar s1 = (g < 0 ? 0 : vectorMag(n0, z1) - 1);
+    // codi:
+    scalar s1 = (g < 0 ? scalar(0) : scalar(vectorMag(n0, z1) - 1));
     scalar s = 0;
 
     int nIters = 0;
@@ -223,7 +226,8 @@ static scalar findRootEllipsoidDistance
     const scalar n1 = r1*z1;
 
     scalar s0 = z2 - 1;
-    scalar s1 = (g < 0 ? 0 : vectorMag(n0, n1, z2) - 1);
+    // codi:
+    scalar s1 = (g < 0 ? scalar(0) : scalar(vectorMag(n0, n1, z2) - 1));
     scalar s = 0;
 
     int nIters = 0;

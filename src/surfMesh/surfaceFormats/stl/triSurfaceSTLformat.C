@@ -218,12 +218,17 @@ void Foam::triSurface::writeSTLBINARY(const fileName& filename) const
         const labelledTri& f = (*this)[facei];
 
         // Write BINARY
+        // codi:
+        const vector& norm = faceNormals()[facei];
+        const point& p0 = points()[f[0]];
+        const point& p1 = points()[f[1]];
+        const point& p2 = points()[f[2]];
         STLtriangle
         (
-            faceNormals()[facei],
-            points()[f[0]],
-            points()[f[1]],
-            points()[f[2]],
+            STLpoint(norm.x().getValue(), norm.y().getValue(), norm.z().getValue()),
+            STLpoint(p0.x().getValue(), p0.y().getValue(), p0.z().getValue()),
+            STLpoint(p1.x().getValue(), p1.y().getValue(), p1.z().getValue()),
+            STLpoint(p2.x().getValue(), p2.y().getValue(), p2.z().getValue()),
             f.region()
         ).write(os);
     }

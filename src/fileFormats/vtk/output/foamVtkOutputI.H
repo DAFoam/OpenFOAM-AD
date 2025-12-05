@@ -72,12 +72,13 @@ inline void write(vtk::formatter& fmt, const symmTensor& val, const label n)
 {
     for (label i=0; i < n; ++i)
     {
-        fmt.write(component(val, symmTensor::XX));
-        fmt.write(component(val, symmTensor::YY));
-        fmt.write(component(val, symmTensor::ZZ));
-        fmt.write(component(val, symmTensor::XY));
-        fmt.write(component(val, symmTensor::YZ));
-        fmt.write(component(val, symmTensor::XZ));
+        // codi:
+        fmt.write(component(val, symmTensor::XX).getValue());
+        fmt.write(component(val, symmTensor::YY).getValue());
+        fmt.write(component(val, symmTensor::ZZ).getValue());
+        fmt.write(component(val, symmTensor::XY).getValue());
+        fmt.write(component(val, symmTensor::YZ).getValue());
+        fmt.write(component(val, symmTensor::XZ).getValue());
     }
 }
 
@@ -227,7 +228,8 @@ inline void Foam::vtk::legacy::writeTimeValue
 )
 {
     legacy::floatField<1>(fmt, "TimeValue", 1);
-    fmt.write(timeValue);
+    // codi:
+    fmt.write(timeValue.getValue());
     fmt.flush();
 }
 

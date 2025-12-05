@@ -319,10 +319,11 @@ void Foam::fileFormats::FIRECore::putFirePoint
 {
     if (os.format() == IOstreamOption::BINARY)
     {
+        // codi:
         fireReal_t fvalue[3];
-        fvalue[0] = value.x();
-        fvalue[1] = value.y();
-        fvalue[2] = value.z();
+        fvalue[0] = value.x().getValue();
+        fvalue[1] = value.y().getValue();
+        fvalue[2] = value.z().getValue();
 
         os.stdStream().write
         (

@@ -58,7 +58,8 @@ Foam::PatchFunction1Types::ConstantField<Type>::integrate
         return (x2 - x1) * this->transform(value_);
     }
 
-    return (x2 - x1)*value_;
+    // codi:
+    return scalar(x2 - x1)*value_;
 }
 
 

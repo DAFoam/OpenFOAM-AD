@@ -262,7 +262,8 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
     const labelList& nei = mesh.faceNeighbour();
 
     // Severe nonorthogonality threshold
-    const scalar severeNonorthogonalityThreshold = ::cos(degToRad(orthWarn));
+    // codi: change the :: namespace for all cos acos funcs
+    const scalar severeNonorthogonalityThreshold = cos(degToRad(orthWarn));
 
     scalar minDDotS = GREAT;
 
@@ -293,7 +294,7 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
                         Pout<< "Severe non-orthogonality for face " << facei
                             << " between cells " << own[facei]
                             << " and " << nei[facei]
-                            << ": Angle = " << radToDeg(::acos(dDotS))
+                            << ": Angle = " << radToDeg(acos(dDotS))
                             << " deg." << endl;
                     }
 
@@ -314,7 +315,7 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
                             << facei
                             << " between cells " << own[facei] << " and "
                             << nei[facei]
-                            << ": Angle = " << radToDeg(::acos(dDotS))
+                            << ": Angle = " << radToDeg(acos(dDotS))
                             << " deg." << endl;
                     }
 
@@ -359,8 +360,8 @@ bool Foam::primitiveMeshGeometry::checkFaceDotProduct
         if (neiSize > 0)
         {
             Info<< "Mesh non-orthogonality Max: "
-                << radToDeg(::acos(minDDotS))
-                << " average: " << radToDeg(::acos(sumDDotS/neiSize))
+                << radToDeg(acos(minDDotS))
+                << " average: " << radToDeg(acos(sumDDotS/neiSize))
                 << endl;
         }
     }

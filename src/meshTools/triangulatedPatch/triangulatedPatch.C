@@ -94,7 +94,8 @@ Foam::triangulatedPatch::triangulatedPatch
 )
 :
     patch_(patch),
-    perturbTol_(perturbTol),
+    // codi:
+    perturbTol_(perturbTol.getValue()),
     triFace_(),
     triWght_()
 {

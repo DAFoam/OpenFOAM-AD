@@ -2459,8 +2459,9 @@ Foam::triSurface Foam::triSurfaceTools::delaunay2D(const List<vector2D>& pts)
     label doubleI = 0;
     for (const vector2D& pt : pts)
     {
-        geompackVertices[doubleI++] = pt[0];
-        geompackVertices[doubleI++] = pt[1];
+        // codi: TODO need to be careful of using double which may lose AD seeds
+        geompackVertices[doubleI++] = pt[0].getValue();
+        geompackVertices[doubleI++] = pt[1].getValue();
     }
 
     // Storage for triangles

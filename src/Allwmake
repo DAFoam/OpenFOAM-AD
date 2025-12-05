@@ -48,12 +48,10 @@ case "$WM_COMPILER" in
 esac
 
 wmake $targetType OpenFOAM
-
-exit 0
-
 wmake $targetType fileFormats
 wmake $targetType surfMesh
 wmake $targetType meshTools
+exit 0
 
 wmake $targetType finiteArea
 wmake $targetType finiteVolume
