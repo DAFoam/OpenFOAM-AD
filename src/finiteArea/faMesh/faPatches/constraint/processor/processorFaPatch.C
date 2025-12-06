@@ -473,7 +473,8 @@ void Foam::processorFaPatch::makeDeltaCoeffs(scalarField& dc) const
             const scalar alpha = PN[i]*(edgeNormal & unitDelta[i]);
             if (mag(alpha) > SMALL)
             {
-                dc[i] = scalar(1)/max(alpha, 0.05*PN[i]);
+                // codi:
+                dc[i] = scalar(1)/codi::max(alpha, 0.05*PN[i]);
             }
         }
     }

@@ -34,25 +34,6 @@ License
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// codi: TODO this is a local fix for an ambiguity issue related to this call.
-/*
-        tmp<scalarField> scale
-        (
-            scalar(1)
-          - min
-            (
-                max(mask, tolerance_),
-                maxTol
-            )
-        );
-*/
-namespace Foam {
-    inline tmp<Field<scalar>> min(const tmp<Field<scalar>>& tf, const scalar& s)
-    {
-        return Foam::min(tf(), s);
-    }
-}
-
 namespace Foam
 {
     defineTypeNameAndDebug(cyclicACMIPolyPatch, 0);

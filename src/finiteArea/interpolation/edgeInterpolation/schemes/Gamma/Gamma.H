@@ -76,7 +76,8 @@ public:
 
         // Rescale k_ to be >= 0 and <= 0.5 (TVD conformant)
         // and avoid the /0 when k_ = 0
-        k_ = max(0.5*k_, SMALL);
+        // codi:
+        k_ = codi::max(0.5*k_, SMALL);
     }
 
 

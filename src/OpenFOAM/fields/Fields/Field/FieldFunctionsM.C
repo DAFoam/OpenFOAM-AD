@@ -200,6 +200,7 @@ void Func                                                                      \
     )                                                                          \
 }
 
+// codi: add Foam:: to Func to avoid ambiguities
 #define BINARY_FUNCTION_INTERFACE_SF(ReturnType, Type1, Type2, Func)           \
                                                                                \
 TEMPLATE                                                                       \
@@ -210,7 +211,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f2.size());                        \
-    Func(tres.ref(), s1, f2);                                                  \
+    Foam::Func(tres.ref(), s1, f2);                                            \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -222,7 +223,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type2>::New(tf2);                         \
-    Func(tres.ref(), s1, tf2());                                               \
+    Foam::Func(tres.ref(), s1, tf2());                                         \
     tf2.clear();                                                               \
     return tres;                                                               \
 }
@@ -248,6 +249,7 @@ void Func                                                                      \
     )                                                                          \
 }
 
+// codi: add Foam:: to Func to avoid ambiguities
 #define BINARY_FUNCTION_INTERFACE_FS(ReturnType, Type1, Type2, Func)           \
                                                                                \
 TEMPLATE                                                                       \
@@ -258,7 +260,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = tmp<Field<ReturnType>>::New(f1.size());                        \
-    Func(tres.ref(), f1, s2);                                                  \
+    Foam::Func(tres.ref(), f1, s2);                                            \
     return tres;                                                               \
 }                                                                              \
                                                                                \
@@ -270,7 +272,7 @@ tmp<Field<ReturnType>> Func                                                    \
 )                                                                              \
 {                                                                              \
     auto tres = reuseTmp<ReturnType, Type1>::New(tf1);                         \
-    Func(tres.ref(), tf1(), s2);                                               \
+    Foam::Func(tres.ref(), tf1(), s2);                                         \
     tf1.clear();                                                               \
     return tres;                                                               \
 }

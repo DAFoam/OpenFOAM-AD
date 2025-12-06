@@ -41,7 +41,8 @@ Foam::outletInletFaPatchField<Type>::outletInletFaPatchField
 {
     this->refValue() = *this;
     this->refGrad() = Zero;
-    this->valueFraction() = 0;
+    // codi:
+    this->valueFraction() = scalar(0);
 }
 
 
@@ -75,7 +76,8 @@ Foam::outletInletFaPatchField<Type>::outletInletFaPatchField
     // Require outletValue (MUST_READ)
     this->refValue().assign("outletValue", dict, p.size());
     this->refGrad() = Zero;
-    this->valueFraction() = 0;
+    // codi:
+    this->valueFraction() = scalar(0);
 
     if (!this->readValueEntry(dict))
     {

@@ -187,6 +187,13 @@ Foam::edgeInterpolationScheme<Type>::interpolate
         const tensor& TP = curT[1];
         const tensor& TN = curT[2];
 
+        // codi:
+        Type tempVal = lambda[fi]*transform(TP, vfi[P[fi]])
+              + y[fi]*transform(TN, vfi[N[fi]]);
+
+        sfi[fi] = transform(Te.T(), tempVal);
+
+        /*
         sfi[fi] =
             transform
             (
@@ -194,6 +201,7 @@ Foam::edgeInterpolationScheme<Type>::interpolate
                 lambda[fi]*transform(TP, vfi[P[fi]])
               + y[fi]*transform(TN, vfi[N[fi]])
             );
+        */
     }
 
 
@@ -223,6 +231,13 @@ Foam::edgeInterpolationScheme<Type>::interpolate
                 const tensor& TP = curT[1];
                 const tensor& TN = curT[2];
 
+                // codi:
+                Type tempVal = pLambda[i]*transform(TP, pOwnVf[i])
+                      + pY[i]*transform(TN, pNgbVf[i]);
+        
+                pSf[i] = transform(Te.T(), tempVal);
+
+                /*
                 pSf[i] =
                     transform
                     (
@@ -230,6 +245,7 @@ Foam::edgeInterpolationScheme<Type>::interpolate
                         pLambda[i]*transform(TP, pOwnVf[i])
                       + pY[i]*transform(TN, pNgbVf[i])
                     );
+                */
             }
 
 //             sf.boundaryFieldRef()[pi] =
@@ -303,6 +319,12 @@ Foam::edgeInterpolationScheme<Type>::interpolate
         const tensor& TP = curT[1];
         const tensor& TN = curT[2];
 
+        // codi:
+        Type tempVal = lambda[eI]*transform(TP, vfi[P[eI]])
+             + (1 - lambda[eI])*transform(TN, vfi[N[eI]]);
+        
+        sfi[eI] = transform(Te.T(), tempVal);
+        /*
         sfi[eI] =
             transform
             (
@@ -310,6 +332,7 @@ Foam::edgeInterpolationScheme<Type>::interpolate
                 lambda[eI]*transform(TP, vfi[P[eI]])
               + (1 - lambda[eI])*transform(TN, vfi[N[eI]])
             );
+        */
     }
 
 
@@ -340,6 +363,10 @@ Foam::edgeInterpolationScheme<Type>::interpolate
                 const tensor& TP = curT[1];
                 const tensor& TN = curT[2];
 
+                Type tempVal = pLambda[i]*transform(TP, pOwnVf[i])
+                      + (1 - pLambda[i])*transform(TN, pNgbVf[i]);
+                pSf[i] = transform(Te.T(), tempVal);
+                /*
                 pSf[i] =
                     transform
                     (
@@ -347,6 +374,7 @@ Foam::edgeInterpolationScheme<Type>::interpolate
                         pLambda[i]*transform(TP, pOwnVf[i])
                       + (1 - pLambda[i])*transform(TN, pNgbVf[i])
                     );
+                */
             }
 
 //             tsf().boundaryFieldRef()[pi] =
