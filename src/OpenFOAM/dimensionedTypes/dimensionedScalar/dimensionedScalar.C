@@ -35,7 +35,68 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// codi: Remove problematic (ambiguous) scalar operators entirely - let dimensionedType handle it
+// codi: Fix problematic (ambiguous) scalar operators. They conflict with codipack's operators
+// here we restrict the input type to dimensionedScalar and scalar.
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator+(const T1& ds1, const T2 s2)
+{
+    return ds1 + dimensionedScalar(s2);
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator+(const T1 s1, const T2& ds2)
+{
+    return dimensionedScalar(s1) + ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator-(const T1& ds1, const T2 s2)
+{
+    return ds1 - dimensionedScalar(s2);
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator-(const T1 s1, const T2& ds2)
+{
+    return dimensionedScalar(s1) - ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator*(const T1& ds1, const T2 s2)
+{
+    return ds1 * dimensionedScalar(s2);
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator/(const T1 s1, const T2& ds2)
+{
+    return dimensionedScalar(s1)/ds2;
+}
+
 /*
 dimensionedScalar operator+(const dimensionedScalar& ds1, const scalar s2)
 {

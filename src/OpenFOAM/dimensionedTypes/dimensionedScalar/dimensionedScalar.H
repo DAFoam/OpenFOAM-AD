@@ -49,13 +49,56 @@ namespace Foam
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
-// codi: Remove problematic (ambiguous) scalar operators entirely - let dimensionedType handle it
-// dimensionedScalar operator+(const dimensionedScalar&, const scalar);
-// dimensionedScalar operator+(const scalar, const dimensionedScalar&);
-// dimensionedScalar operator-(const dimensionedScalar&, const scalar);
-// dimensionedScalar operator-(const scalar, const dimensionedScalar&);
-// dimensionedScalar operator*(const dimensionedScalar&, const scalar);
-// dimensionedScalar operator/(const scalar, const dimensionedScalar&);
+// codi: Fix problematic (ambiguous) scalar operators. They conflict with codipack's operators
+// here we restrict the input type to dimensionedScalar and scalar.
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator+(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator+(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator-(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator-(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator*(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator/(const T1, const T2&);
+
+//dimensionedScalar operator+(const dimensionedScalar&, const scalar);
+//dimensionedScalar operator+(const scalar, const dimensionedScalar&);
+//dimensionedScalar operator-(const dimensionedScalar&, const scalar);
+//dimensionedScalar operator-(const scalar, const dimensionedScalar&);
+//dimensionedScalar operator*(const dimensionedScalar&, const scalar);
+//dimensionedScalar operator/(const scalar, const dimensionedScalar&);
 
 dimensionedScalar pow(const dimensionedScalar&, const dimensionedScalar&);
 dimensionedScalar pow3(const dimensionedScalar&);
