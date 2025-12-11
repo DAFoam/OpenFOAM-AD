@@ -56,11 +56,11 @@ inline void faceLimitedGrad<scalar>::limitEdge
 {
     if (extrapolate > maxDelta + VSMALL)
     {
-        limiter = min(limiter, maxDelta/extrapolate);
+        limiter = codi::min(limiter, maxDelta/extrapolate); // codi: disambiguate
     }
     else if (extrapolate < minDelta - VSMALL)
     {
-        limiter = min(limiter, minDelta/extrapolate);
+        limiter = codi::min(limiter, minDelta/extrapolate); // codi: disambiguate
     }
 }
 

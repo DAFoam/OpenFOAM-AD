@@ -78,7 +78,7 @@ backwardFaDdtScheme<Type>::facDdt
     const dimensioned<Type> dt
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -133,7 +133,7 @@ backwardFaDdtScheme<Type>::facDdt0
     const dimensioned<Type> dt
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -153,11 +153,12 @@ backwardFaDdtScheme<Type>::facDdt0
 
     tmp<GeometricField<Type, faPatchField, areaMesh>> tdtdt0
     (
+        // codi:
         new GeometricField<Type, faPatchField, areaMesh>
         (
             ddtIOobject,
             mesh(),
-            -rDeltaT*(coefft0 - coefft00)*dt
+            -rDeltaT*scalar(coefft0 - coefft00)*dt
         )
     );
 
@@ -180,7 +181,7 @@ backwardFaDdtScheme<Type>::facDdt
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -253,7 +254,7 @@ backwardFaDdtScheme<Type>::facDdt0
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -324,7 +325,7 @@ backwardFaDdtScheme<Type>::facDdt
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -397,7 +398,7 @@ backwardFaDdtScheme<Type>::facDdt0
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -468,7 +469,7 @@ backwardFaDdtScheme<Type>::facDdt
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -545,7 +546,7 @@ backwardFaDdtScheme<Type>::facDdt0
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (

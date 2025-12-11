@@ -51,9 +51,9 @@ wmake $targetType OpenFOAM
 wmake $targetType fileFormats
 wmake $targetType surfMesh
 wmake $targetType meshTools
-exit 0
 
 wmake $targetType finiteArea
+exit 0
 wmake $targetType finiteVolume
 wmake $targetType fused/finiteVolume
 

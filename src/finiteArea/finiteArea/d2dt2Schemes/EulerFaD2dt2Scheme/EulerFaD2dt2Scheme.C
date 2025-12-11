@@ -65,8 +65,8 @@ EulerFaD2dt2Scheme<Type>::facD2dt2
     scalar deltaT = deltaT_();
     scalar deltaT0 = deltaT0_();
 
-    dimensionedScalar rDeltaT2 =
-        4.0/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
+    dimensionedScalar rDeltaT2 = // codi:
+        scalar(4.0)/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
 
     scalar coefft   = (deltaT + deltaT0)/(2*deltaT);
     scalar coefft00 = (deltaT + deltaT0)/(2*deltaT0);
@@ -127,8 +127,8 @@ EulerFaD2dt2Scheme<Type>::facD2dt2
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT2 =
-        4.0/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
+    dimensionedScalar rDeltaT2 = // codi:
+        scalar(4.0)/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
 
     const IOobject d2dt2IOobject
     (
@@ -205,8 +205,8 @@ EulerFaD2dt2Scheme<Type>::facD2dt2
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT2 =
-        4.0/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
+    dimensionedScalar rDeltaT2 = // codi:
+        scalar(4.0)/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
 
     const IOobject d2dt2IOobject
     (
@@ -292,8 +292,8 @@ EulerFaD2dt2Scheme<Type>::facD2dt2
     const GeometricField<Type, faPatchField, areaMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT2 =
-        4.0/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
+    dimensionedScalar rDeltaT2 = // codi:
+        scalar(4.0)/sqr(mesh().time().deltaT() + mesh().time().deltaT0());
 
     const IOobject d2dt2IOobject
     (
@@ -377,7 +377,7 @@ EulerFaD2dt2Scheme<Type>::facD2dt2
     }
     else
     {
-        dimensionedScalar halfRdeltaT2 = 0.5*rDeltaT2;
+        dimensionedScalar halfRdeltaT2 = scalar(0.5)*rDeltaT2; // codi:
 
         areaScalarField rhoRho0(rho + rho.oldTime());
         areaScalarField rho0Rho00(rho.oldTime() + rho.oldTime().oldTime());

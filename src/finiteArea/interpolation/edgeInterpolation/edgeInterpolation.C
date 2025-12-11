@@ -423,7 +423,7 @@ void Foam::edgeInterpolation::makeDeltaCoeffs() const
         const scalar alpha = lPN*(unitDelta & edgeNormal);
         if (mag(alpha) > SMALL)
         {
-            dc[edgeI] = scalar(1)/max(alpha, 0.05*lPN);
+            dc[edgeI] = scalar(1)/codi::max(alpha, 0.05*lPN); // codi: disambiguate
         }
     }
 

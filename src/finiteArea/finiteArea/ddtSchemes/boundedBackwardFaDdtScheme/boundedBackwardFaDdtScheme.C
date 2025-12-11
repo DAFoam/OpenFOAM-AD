@@ -61,7 +61,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt
 {
     // No change compared to backward
 
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -116,7 +116,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt0
 {
     // No change compared to backward
 
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -136,11 +136,12 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt0
 
     tmp<areaScalarField> tdtdt0
     (
+        // codi:
         new areaScalarField
         (
             ddtIOobject,
             mesh(),
-            -rDeltaT*(coefft0 - coefft00)*dt
+            -rDeltaT*scalar(coefft0 - coefft00)*dt
         )
     );
 
@@ -161,7 +162,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt
     const areaScalarField& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -258,7 +259,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt0
     const areaScalarField& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -353,7 +354,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt
     const areaScalarField& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -450,7 +451,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt0
     const areaScalarField& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -545,7 +546,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt
     const areaScalarField& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (
@@ -646,7 +647,7 @@ tmp<areaScalarField> boundedBackwardFaDdtScheme::facDdt0
     const areaScalarField& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     const IOobject ddtIOobject
     (

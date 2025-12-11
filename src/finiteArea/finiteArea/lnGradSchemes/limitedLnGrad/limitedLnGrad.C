@@ -64,13 +64,13 @@ limitedLnGrad<Type>::correction
 
     const edgeScalarField limiter
     (
-        min
+        Foam::min // codi:
         (
             limitCoeff_
            *mag(lnGradScheme<Type>::lnGrad(vf, deltaCoeffs(vf), "orthSnGrad"))
-           /(
-                (1 - limitCoeff_)*mag(corr)
-              + dimensionedScalar("small", corr.dimensions(), SMALL)
+           /( // codi:
+                (scalar(1) - limitCoeff_)*mag(corr)
+              + dimensionedScalar("small", corr.dimensions(), scalar(SMALL))
             ),
             dimensionedScalar(dimless, Foam::one{})
         )

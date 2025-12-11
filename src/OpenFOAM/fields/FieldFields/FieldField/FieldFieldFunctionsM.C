@@ -194,6 +194,8 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// codi: Add ::Foam:: namespace to Func call to ensure proper function lookup
+// and avoid falling back to std::min/max which incorrectly interprets arguments
 #define BINARY_TYPE_FUNCTION_SF(ReturnType, Type1, Type2, Func)                \
                                                                                \
 TEMPLATE                                                                       \
@@ -208,7 +210,7 @@ void Func                                                                      \
                                                                                \
     for (label i = 0; i < loopLen; ++i)                                        \
     {                                                                          \
-        Func(result[i], s1, f2[i]);                                            \
+        ::Foam::Func(result[i], s1, f2[i]);                                    \
     }                                                                          \
 }                                                                              \
                                                                                \
@@ -238,6 +240,8 @@ tmp<FieldField<Field, ReturnType>> Func                                        \
 }
 
 
+// codi: Add ::Foam:: namespace to Func call to ensure proper function lookup
+// and avoid falling back to std::min/max which incorrectly interprets arguments
 #define BINARY_TYPE_FUNCTION_FS(ReturnType, Type1, Type2, Func)                \
                                                                                \
 TEMPLATE                                                                       \
@@ -252,7 +256,7 @@ void Func                                                                      \
                                                                                \
     for (label i = 0; i < loopLen; ++i)                                        \
     {                                                                          \
-        Func(result[i], f1[i], s2);                                            \
+        ::Foam::Func(result[i], f1[i], s2);                                    \
     }                                                                          \
 }                                                                              \
                                                                                \
