@@ -412,7 +412,7 @@ Foam::scalar Foam::turbulence::IntegralScaleBox<Type>::calcC1
     const vector& L
 ) const
 {
-    constexpr scalar c1 = -0.25*constant::mathematical::pi;
+    const scalar c1 = -0.25*constant::mathematical::pi;  // codi: removed constexpr
     return Foam::exp(c1/L.x());
 }
 
@@ -423,7 +423,7 @@ Foam::vector Foam::turbulence::IntegralScaleBox<Type>::calcC1
     const tensor& L
 ) const
 {
-    constexpr scalar c1 = -0.25*constant::mathematical::pi;
+    const scalar c1 = -0.25*constant::mathematical::pi;  // codi: removed constexpr
 
     vector C1(Zero);
     forAll(C1, i)
@@ -441,7 +441,7 @@ Foam::scalar Foam::turbulence::IntegralScaleBox<Type>::calcC2
     const vector& L
 ) const
 {
-    constexpr scalar c2 = -0.5*constant::mathematical::pi;
+    const scalar c2 = -0.5*constant::mathematical::pi;  // codi: removed constexpr
     return Foam::sqrt(scalar(1) - Foam::exp(c2/L.x()));
 }
 
@@ -452,7 +452,7 @@ Foam::vector Foam::turbulence::IntegralScaleBox<Type>::calcC2
     const tensor& L
 ) const
 {
-    constexpr scalar c2 = -0.5*constant::mathematical::pi;
+    const scalar c2 = -0.5*constant::mathematical::pi;  // codi: removed constexpr
 
     vector C2(Zero);
     forAll(C2, i)

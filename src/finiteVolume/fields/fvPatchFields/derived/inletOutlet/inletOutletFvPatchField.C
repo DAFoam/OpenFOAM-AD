@@ -42,7 +42,7 @@ Foam::inletOutletFvPatchField<Type>::inletOutletFvPatchField
 {
     this->refValue() = Zero;
     this->refGrad() = Zero;
-    this->valueFraction() = 0.0;
+    this->valueFraction() = Zero;  // codi:
 }
 
 
@@ -76,7 +76,7 @@ Foam::inletOutletFvPatchField<Type>::inletOutletFvPatchField
     // Require inletValue (MUST_READ)
     this->refValue().assign("inletValue", dict, p.size());
     this->refGrad() = Zero;
-    this->valueFraction() = 0;
+    this->valueFraction() = Zero;  // codi:
 
     if (!this->readValueEntry(dict))
     {

@@ -52,7 +52,7 @@ Foam::freestreamVelocityFvPatchVectorField::freestreamVelocityFvPatchVectorField
     // freestreamValue() and refValue() are identical
     freestreamValue().assign("freestreamValue", dict, p.size());
     refGrad() = Zero;
-    valueFraction() = 1;
+    valueFraction() = scalar(1);  // codi:
 
     if (!this->readValueEntry(dict))
     {

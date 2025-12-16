@@ -82,7 +82,7 @@ Foam::outletPhaseMeanVelocityFvPatchVectorField
 
     refValue() = Zero;
     refGrad() = Zero;
-    valueFraction() = 0;
+    valueFraction() = Zero;  // codi:
 
     if (!this->readValueEntry(dict))
     {

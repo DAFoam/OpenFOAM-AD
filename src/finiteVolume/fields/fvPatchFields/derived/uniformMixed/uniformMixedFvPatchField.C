@@ -192,13 +192,13 @@ void Foam::uniformMixedFvPatchField<Type>::updateCoeffs()
         else
         {
             // Has value only
-            this->valueFraction() = 1;
+            this->valueFraction() = scalar(1);  // codi:
         }
     }
     else
     {
         this->refValue() = Zero;
-        this->valueFraction() = 0;
+        this->valueFraction() = Zero;  // codi:
     }
     if (refGradFunc_)
     {

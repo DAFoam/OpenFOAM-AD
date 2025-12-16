@@ -58,7 +58,7 @@ freestreamPressureFvPatchScalarField
     // freestreamValue() and refValue() are identical
     freestreamValue().assign("freestreamValue", dict, p.size());
     refGrad() = Zero;
-    valueFraction() = 0;
+    valueFraction() = Zero;  // codi:
 
     if (!this->readValueEntry(dict))
     {

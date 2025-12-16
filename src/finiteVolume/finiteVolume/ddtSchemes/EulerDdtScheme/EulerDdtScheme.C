@@ -50,7 +50,8 @@ EulerDdtScheme<Type>::fvcDdt
     const dimensioned<Type>& dt
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -94,7 +95,8 @@ EulerDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -151,7 +153,8 @@ EulerDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -208,7 +211,8 @@ EulerDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -269,7 +273,8 @@ EulerDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -340,7 +345,8 @@ EulerDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvsPatchField, surfaceMesh>& sf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -522,7 +528,8 @@ EulerDdtScheme<Type>::fvcDdtUfCorr
     const GeometricField<Type, fvsPatchField, surfaceMesh>& Uf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     fluxFieldType phiUf0(mesh().Sf() & Uf.oldTime());
     fluxFieldType phiCorr
@@ -555,7 +562,8 @@ EulerDdtScheme<Type>::fvcDdtPhiCorr
     const fluxFieldType& phi
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     fluxFieldType phiCorr
     (
@@ -588,7 +596,8 @@ EulerDdtScheme<Type>::fvcDdtUfCorr
     const GeometricField<Type, fvsPatchField, surfaceMesh>& Uf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     if
     (
@@ -673,7 +682,8 @@ EulerDdtScheme<Type>::fvcDdtPhiCorr
     const fluxFieldType& phi
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi:
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     if
     (

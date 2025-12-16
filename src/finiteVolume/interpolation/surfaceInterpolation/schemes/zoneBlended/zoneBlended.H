@@ -217,7 +217,7 @@ public:
             auto tbf = surfaceScalarField::New("blendingFactor", mesh, dimless);
             auto& bf = tbf.ref();
             auto& bbf = bf.boundaryFieldRef();
-            bf = 0.0;
+            bf = scalar(0.0); // codi:
 
             const auto& pbm = mesh.boundaryMesh();
             const auto& zones = mesh.faceZones();

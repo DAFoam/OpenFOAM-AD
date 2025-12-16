@@ -117,6 +117,19 @@ tmp<FieldField<Field, ReturnType>> operator Op                                 \
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// codi:
+// Forward declare Field level 3-arg functions using template-template parameter
+// to match fvPatchField, fvsPatchField, etc.
+namespace Foam
+{
+    template<template<class> class FieldType, class Type>
+    void max(FieldType<Type>&, const FieldType<Type>&, const FieldType<Type>&);
+
+    template<template<class> class FieldType, class Type>
+    void min(FieldType<Type>&, const FieldType<Type>&, const FieldType<Type>&);
+}
+
+// codi:
 #define BINARY_FUNCTION(ReturnType, Type1, Type2, Func)                        \
                                                                                \
 TEMPLATE                                                                       \

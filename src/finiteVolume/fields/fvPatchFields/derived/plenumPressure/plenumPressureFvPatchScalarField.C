@@ -294,7 +294,7 @@ void Foam::plenumPressureFvPatchScalarField::updateCoeffs()
 
     // Relaxation fraction
     const scalar oneByFraction = timeScale_/dt;
-    const scalar fraction = oneByFraction < 1.0 ? 1.0 : 1.0/oneByFraction;
+    const scalar fraction = oneByFraction < 1.0 ? scalar(1.0) : scalar(1.0)/oneByFraction;  // codi:
 
     // Set the new value
     operator==(lerp(p_old, p_new, fraction));

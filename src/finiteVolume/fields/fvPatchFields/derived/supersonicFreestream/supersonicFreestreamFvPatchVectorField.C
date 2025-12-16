@@ -51,7 +51,7 @@ supersonicFreestreamFvPatchVectorField
 {
     refValue() = patchInternalField();
     refGrad() = Zero;
-    valueFraction() = 1;
+    valueFraction() = scalar(1);  // codi:
 }
 
 
@@ -81,7 +81,7 @@ supersonicFreestreamFvPatchVectorField
 
     refValue() = *this;
     refGrad() = Zero;
-    valueFraction() = 1;
+    valueFraction() = scalar(1);  // codi:
 
     if (pInf_ < SMALL)
     {
@@ -181,7 +181,7 @@ void Foam::supersonicFreestreamFvPatchVectorField::updateCoeffs()
     }
 
     vectorField& Up = refValue();
-    valueFraction() = 1;
+    valueFraction() = scalar(1);  // codi:
 
     // get the near patch internal cell values
     const vectorField U(patchInternalField());

@@ -643,8 +643,10 @@ tr5:
 
         scanToken scanTok;
         scanTok.setScalar(0);
-        if (readScalar(std::string(ts, te-ts), scanTok.scalarValue))
+        scalar temp; // codi: readScalar needs scalar& (AD type)
+        if (readScalar(std::string(ts, te-ts), temp))
         {
+            scanTok.scalarValue = temp.value(); // codi: extract passive value
             parser_->parse(TOKEN_OF(NUMBER), scanTok);
         }
         else
@@ -779,8 +781,10 @@ tr66:
 
         scanToken scanTok;
         scanTok.setScalar(0);
-        if (readScalar(std::string(ts, te-ts), scanTok.scalarValue))
+        scalar temp; // codi: readScalar needs scalar& (AD type)
+        if (readScalar(std::string(ts, te-ts), temp))
         {
+            scanTok.scalarValue = temp.value(); // codi: extract passive value
             parser_->parse(TOKEN_OF(NUMBER), scanTok);
         }
         else

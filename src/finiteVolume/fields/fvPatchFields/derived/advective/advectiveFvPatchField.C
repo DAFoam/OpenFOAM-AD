@@ -53,7 +53,7 @@ Foam::advectiveFvPatchField<Type>::advectiveFvPatchField
 {
     this->refValue() = Zero;
     this->refGrad() = Zero;
-    this->valueFraction() = 0.0;
+    this->valueFraction() = Zero;  // codi:
 }
 
 
@@ -96,7 +96,7 @@ Foam::advectiveFvPatchField<Type>::advectiveFvPatchField
 
     this->refValue() = *this;
     this->refGrad() = Zero;
-    this->valueFraction() = 0;
+    this->valueFraction() = Zero;  // codi:
 
     if (dict.readIfPresent("lInf", lInf_))
     {

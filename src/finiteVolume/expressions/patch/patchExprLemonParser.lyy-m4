@@ -126,24 +126,25 @@ identifier (lhs) ::= IDENTIFIER (tok) .
  * Productions (scalar)
 \*---------------------------------------------------------------------------*/
 
-%type svalue { Foam::scalar }
+%type svalue { double }  // codi: use double for union (no non-trivial destructor)
 
 svalue (lhs) ::= NUMBER (tok) .     { lhs = (tok).scalarValue; } // scanToken
-svalue (lhs) ::= ZERO .             { lhs = Foam::zero{}; }
-svalue (lhs) ::= PI LPAREN RPAREN . { lhs = Foam::constant::mathematical::pi; }
-svalue (lhs) ::= DEG_TO_RAD LPAREN RPAREN . { lhs = Foam::degToRad(); }
-svalue (lhs) ::= RAD_TO_DEG LPAREN RPAREN . { lhs = Foam::radToDeg(); }
-svalue (lhs) ::= ARG LPAREN RPAREN .  { lhs = driver->argValue(); }
-svalue (lhs) ::= TIME LPAREN RPAREN . { lhs = driver->timeValue(); }
-svalue (lhs) ::= DELTA_T LPAREN RPAREN . { lhs = driver->deltaT(); }
+svalue (lhs) ::= ZERO .             { lhs = 0.0; } // codi: zero is a constant, not AD type
+svalue (lhs) ::= PI LPAREN RPAREN . { lhs = Foam::constant::mathematical::pi.value(); } // codi:
+svalue (lhs) ::= DEG_TO_RAD LPAREN RPAREN . { lhs = Foam::degToRad().value(); } // codi:
+svalue (lhs) ::= RAD_TO_DEG LPAREN RPAREN . { lhs = Foam::radToDeg().value(); } // codi:
+svalue (lhs) ::= ARG LPAREN RPAREN .  { lhs = driver->argValue().value(); } // codi:
+svalue (lhs) ::= TIME LPAREN RPAREN . { lhs = driver->timeValue().value(); } // codi:
+svalue (lhs) ::= DELTA_T LPAREN RPAREN . { lhs = driver->deltaT().value(); } // codi:
 
 svalue (lhs) ::= SCALAR_FUNCTION_ID (name) LPAREN RPAREN .
 {
+    // codi:
     lhs = driver->getFunctionValue<Foam::scalar>
     (
         make_obj(name.name_),
         driver->timeValue()
-    );
+    ).value();
 }
 
 /*---------------------------------------------------------------------------*\
