@@ -120,10 +120,12 @@ tmp<volScalarField> SLTSDdtScheme<Type>::SLrDeltaT() const
 
     if (phi.dimensions() == dimensionSet(0, 3, -1, 0, 0))
     {
+        // codi:
+        const scalar rDeltaTMin = scalar(1.0)/deltaT.value();
         rDeltaT.primitiveFieldRef() = max
         (
             rDeltaT.primitiveField()/mesh().V(),
-            scalar(1)/deltaT.value()
+            rDeltaTMin
         );
     }
     else if (phi.dimensions() == dimensionSet(1, 0, -1, 0, 0))
@@ -134,10 +136,12 @@ tmp<volScalarField> SLTSDdtScheme<Type>::SLrDeltaT() const
                 rhoName_
             ).oldTime();
 
+        // codi:
+        const scalar rDeltaTMin = scalar(1.0)/deltaT.value();
         rDeltaT.primitiveFieldRef() = max
         (
             rDeltaT.primitiveField()/(rho.primitiveField()*mesh().V()),
-            scalar(1)/deltaT.value()
+            rDeltaTMin
         );
     }
     else
@@ -775,7 +779,7 @@ SLTSDdtScheme<Type>::fvcDdtPhiCorr
     const fluxFieldType& phi
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     if
     (

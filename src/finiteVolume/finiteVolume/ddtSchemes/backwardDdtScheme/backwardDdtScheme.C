@@ -81,7 +81,8 @@ backwardDdtScheme<Type>::fvcDdt
     const dimensioned<Type>& dt
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    // codi: change 1.0 to scalar(1.0) for all instances
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -134,7 +135,7 @@ backwardDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -213,7 +214,7 @@ backwardDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -292,7 +293,7 @@ backwardDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -375,7 +376,7 @@ backwardDdtScheme<Type>::fvcDdt
     const GeometricField<Type, fvPatchField, volMesh>& vf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     IOobject ddtIOobject
     (
@@ -697,7 +698,7 @@ backwardDdtScheme<Type>::fvcDdtUfCorr
     const GeometricField<Type, fvsPatchField, surfaceMesh>& Uf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     scalar deltaT = deltaT_();
     scalar deltaT0 = deltaT0_(U);
@@ -741,7 +742,7 @@ backwardDdtScheme<Type>::fvcDdtPhiCorr
     const fluxFieldType& phi
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     scalar deltaT = deltaT_();
     scalar deltaT0 = deltaT0_(U);
@@ -784,7 +785,7 @@ backwardDdtScheme<Type>::fvcDdtUfCorr
     const GeometricField<Type, fvsPatchField, surfaceMesh>& Uf
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     scalar deltaT = deltaT_();
     scalar deltaT0 = deltaT0_(U);
@@ -895,7 +896,7 @@ backwardDdtScheme<Type>::fvcDdtPhiCorr
     const fluxFieldType& phi
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT();
 
     scalar deltaT = deltaT_();
     scalar deltaT0 = deltaT0_(U);

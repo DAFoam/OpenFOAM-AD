@@ -57,7 +57,8 @@ namespace Foam
 //- Calculate geometric expansion factor from expansion ratio
 inline scalar calcGexp(const scalar expRatio, const label nDiv)
 {
-    return nDiv > 1 ? pow(expRatio, 1.0/(nDiv - 1)) : 0.0;
+    // codi:
+    return nDiv > 1 ? pow(expRatio, 1.0/(nDiv - 1)) : scalar(0.0);
 }
 
 //- Calculate geometric ratio from relative ratio
@@ -67,7 +68,8 @@ inline scalar relativeToGeometricRatio
     const label nDiv
 )
 {
-    return nDiv > 1 ? pow(expRatio, (nDiv - 1)) : 1.0;
+    // codi:
+    return nDiv > 1 ? pow(expRatio, (nDiv - 1)) : scalar(1.0);
 }
 
 } // End namespace Foam

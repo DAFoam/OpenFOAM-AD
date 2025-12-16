@@ -66,13 +66,15 @@ inline const Foam::scalar& Foam::PDRblock::location::max() const
 
 inline Foam::scalar Foam::PDRblock::location::centre() const
 {
-    return scalarList::empty() ? 0 : (0.5*front() + 0.5*back());
+    // codi:
+    return scalarList::empty() ? scalar(0) : scalar(0.5*front() + 0.5*back());
 }
 
 
 inline Foam::scalar Foam::PDRblock::location::length() const
 {
-    return scalarList::empty() ? 0 : mag(back() - front());
+    // codi:
+    return scalarList::empty() ? scalar(0) : mag(back() - front());
 }
 
 

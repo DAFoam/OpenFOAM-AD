@@ -64,7 +64,7 @@ Foam::Istream& Foam::operator>>
     {
         is >> rhs.normal_;
     }
-    else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+    else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi: hard-coded double type
     {
         // Non-native label or scalar size
         is.beginRawRead();

@@ -754,7 +754,8 @@ void Foam::polyMeshFilter::printScalarFieldStats
 ) const
 {
     scalar sum = 0;
-    scalar validElements = 0;
+    // codi: this is a bug in OF. We should use label instead of scalar
+    label validElements = 0;
     scalar min = GREAT;
     scalar max = -GREAT;
 

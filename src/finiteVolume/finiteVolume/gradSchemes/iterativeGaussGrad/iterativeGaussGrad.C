@@ -75,7 +75,8 @@ Foam::fv::iterativeGaussGrad<Type>::calcGrad
         if (useRelax)
         {
             // relax*prediction + (1-relax)*old
-            gGrad *= (1.0 - relax);
+            // codi:
+            gGrad *= scalar(1.0 - relax);
             gGrad += relax*fv::gaussGrad<Type>::gradf(tcorr + ssf, name);
         }
         else

@@ -770,7 +770,7 @@ CoEulerDdtScheme<Type>::fvcDdtPhiCorr
     const fluxFieldType& phi
 )
 {
-    dimensionedScalar rDeltaT = 1.0/mesh().time().deltaT();
+    dimensionedScalar rDeltaT = scalar(1.0)/mesh().time().deltaT(); // codi:
 
     if
     (

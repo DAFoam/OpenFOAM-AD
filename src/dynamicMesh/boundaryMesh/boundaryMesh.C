@@ -1006,8 +1006,9 @@ Foam::labelList Foam::boundaryMesh::getNearest
                 label rightFacei = rightFaces[rightInfo.index()];
                 label leftFacei = leftFaces[leftInfo.index()];
 
-                label rightDist = rightInfo.point().dist(ctr);
-                label leftDist = leftInfo.point().dist(ctr);
+                // codi:
+                label rightDist = rightInfo.point().dist(ctr).getValue();
+                label leftDist = leftInfo.point().dist(ctr).getValue();
 
                 scalar rightSign = n & ns[rightFacei];
                 scalar leftSign = n & ns[leftFacei];
@@ -1352,7 +1353,8 @@ void Foam::boundaryMesh::setFeatureEdges(const scalar minCos)
 
                     const vector& n1 = mesh().faceNormals()[face1I];
 
-                    float cosAng = n0 & n1;
+                    // codi:
+                    float cosAng = (n0 & n1).getValue();
 
                     if (cosAng < minCos)
                     {

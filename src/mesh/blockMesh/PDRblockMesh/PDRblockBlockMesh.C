@@ -59,7 +59,8 @@ inline scalar relativeToGeometricRatio
     const label nDiv
 )
 {
-    return nDiv > 1 ? pow(expRatio, (nDiv - 1)) : 1.0;
+    // codi:
+    return nDiv > 1 ? pow(expRatio, (nDiv - 1)) : scalar(1.0);
 }
 
 

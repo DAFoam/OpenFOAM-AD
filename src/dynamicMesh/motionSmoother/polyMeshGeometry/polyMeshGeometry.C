@@ -247,7 +247,7 @@ Foam::scalar Foam::polyMeshGeometry::checkNonOrtho
                     << " between cells " << mesh.faceOwner()[facei]
                     << " and " << nei
                     << ": Angle = "
-                    << radToDeg(::acos(dDotS))
+                    << radToDeg(acos(dDotS)) // codi:
                     << " deg." << endl;
             }
 
@@ -264,7 +264,7 @@ Foam::scalar Foam::polyMeshGeometry::checkNonOrtho
                     << " between cells " << mesh.faceOwner()[facei]
                     << " and " << nei
                     << ": Angle = "
-                    << radToDeg(::acos(dDotS))
+                    << radToDeg(acos(dDotS)) // codi:
                     << " deg." << endl;
             }
 
@@ -386,7 +386,7 @@ bool Foam::polyMeshGeometry::checkFaceDotProduct
     const polyBoundaryMesh& patches = mesh.boundaryMesh();
 
     // Severe nonorthogonality threshold
-    const scalar severeNonorthogonalityThreshold = ::cos(degToRad(orthWarn));
+    const scalar severeNonorthogonalityThreshold = cos(degToRad(orthWarn)); // codi:
 
     // Calculate coupled cell centre
     pointField neiCc(mesh.nBoundaryFaces());
@@ -517,9 +517,10 @@ bool Foam::polyMeshGeometry::checkFaceDotProduct
     {
         if (nDDotS > 0)
         {
+            // codi:
             Info<< "Mesh non-orthogonality Max: "
-                << radToDeg(::acos(minDDotS))
-                << " average: " << radToDeg(::acos(sumDDotS/nDDotS))
+                << radToDeg(acos(minDDotS))
+                << " average: " << radToDeg(acos(sumDDotS/nDDotS))
                 << endl;
         }
     }

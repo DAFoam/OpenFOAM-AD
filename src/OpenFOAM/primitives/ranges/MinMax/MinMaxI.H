@@ -137,7 +137,7 @@ inline T Foam::MinMax<T>::centre() const
 template<class T>
 inline T Foam::MinMax<T>::span() const
 {
-    return (empty() ? Zero : (max() - min()));
+    return (empty() ? T(Zero) : (max() - min())); // codi:
 }
 
 

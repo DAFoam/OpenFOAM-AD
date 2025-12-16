@@ -392,7 +392,7 @@ void Foam::motionSmootherAlgo::correct()
 {
     oldPoints_ = mesh_.points();
 
-    scale_ = 1.0;
+    scale_ = scalar(1.0); // codi:
 
     // No need to update twoDmotion corrector since only holds edge labels
     // which will remain the same as before. So unless the mesh was distorted
@@ -1015,7 +1015,7 @@ bool Foam::motionSmootherAlgo::scaleMesh
             mesh_,
             scale_,
             maxEqOp<scalar>(),
-            -GREAT              // null value
+            scalar(-GREAT)  // codi:              // null value
         );
 
 

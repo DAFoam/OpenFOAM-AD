@@ -163,8 +163,9 @@ Foam::blockEdges::projectEdge::position(const scalarList& lambdas) const
     constexpr label maxIter = 10;
 
     // Residual tolerance
-    constexpr scalar relTol = 0.1;
-    constexpr scalar absTol = 1e-4;
+    // codi:
+    const scalar relTol = 0.1;
+    const scalar absTol = 1e-4;
 
     scalar initialResidual = 0.0;
 

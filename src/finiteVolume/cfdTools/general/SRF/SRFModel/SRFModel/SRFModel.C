@@ -124,7 +124,7 @@ Foam::SRF::SRFModel::Fcoriolis() const
         "Fcoriolis",
         IOobject::NO_REGISTER,
         (
-            2.0*omega_ ^ Urel_.internalField()
+            scalar(2.0)*omega_ ^ Urel_.internalField() // codi:
         )
     );
 }
