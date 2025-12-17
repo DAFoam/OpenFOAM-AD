@@ -89,13 +89,13 @@ tmp<volScalarField> SpalartAllmarasDDES<BasicTurbulenceModel>::fd
               - (fvc::grad(mag(fvc::curl(this->U_))) & n)
               * sqrt(nuTilda/maxEps(pow3(magGradU), SMALL))
             );
-            const volScalarField alpha((7.0/6.0*Cd4_ - GOmega)/(Cd4_/6.0));
+            const volScalarField alpha((scalar(7.0/6.0)*Cd4_ - GOmega)/(Cd4_/scalar(6.0))); // codi:
             const volScalarField fRGOmega
             (
                 pos(Cd4_ - GOmega)
               + 1.0
                /(1 + exp(min(-6*alpha/max(1 - sqr(alpha), SMALL), scalar(50))))
-               *pos(4*Cd4_/3.0 - GOmega)*pos(GOmega - Cd4_)
+               *pos(scalar(4)*Cd4_/scalar(3.0) - GOmega)*pos(GOmega - Cd4_) // codi:
             );
 
             // Use more conservative fP2-function in case switch is true;

@@ -331,7 +331,7 @@ void Foam::faceReflecting::calculate()
     Pstream::mapCombineReduce(refFacesDirIndex, minEqOp<label>());
 
     const scalar maxBounding =
-        returnReduce(5.0*mesh_.bounds().mag(), maxOp<scalar>());
+        returnReduce(scalar(5.0*mesh_.bounds().mag()), maxOp<scalar>()); // codi:
 
     // Shoot Rays
     // From faces t = 0, r = 0 and a > 0 to all 'used' discrete reflected

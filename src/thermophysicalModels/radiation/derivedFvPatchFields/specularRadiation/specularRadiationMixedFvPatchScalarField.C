@@ -417,12 +417,12 @@ void specularRadiationMixedFvPatchScalarField::updateCoeffs()
     if (compID == -1)
     {
         // Apply zero-gradient condition for rays outgoing from the domain
-        this->valueFraction() = 0;
+        this->valueFraction() = scalar(0); // codi:
     }
     else
     {
         // Apply fixed condition for rays incoming to the domain
-        this->valueFraction() = 1;
+        this->valueFraction() = scalar(1); // codi:
 
         if (!interpolate_)
         {

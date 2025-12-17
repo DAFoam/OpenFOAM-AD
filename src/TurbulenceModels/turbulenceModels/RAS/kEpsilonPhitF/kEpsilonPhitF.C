@@ -470,9 +470,9 @@ void kEpsilonPhitF<BasicTurbulenceModel>::correct()
       ==
       - fvm::Sp(1.0/L2(), f_)
       - (
-            (Cf1_ - 1.0)*(phit_() - 2.0/3.0)/T_()
+            (Cf1_ - scalar(1.0))*(phit_() - 2.0/3.0)/T_() // codi:
            -(Cf2_*G())/k_()
-           +(Cf2_*(2.0/3.0)*divU)
+           +(Cf2_*scalar(2.0/3.0)*divU) // codi:
            -(2.0*this->nu()*(fvc::grad(phit_) & fvc::grad(k_)))()/k_()
            -(this->nu()*fvc::laplacian(phit_))()
         )/L2()

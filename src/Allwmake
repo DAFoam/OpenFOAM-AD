@@ -83,10 +83,10 @@ transportModels/Allwmake $targetType $*
 randomProcesses/Allwmake $targetType $*
 
 wmake $targetType ODE
-exit 0
 
 thermophysicalModels/Allwmake $targetType $*
 TurbulenceModels/Allwmake $targetType $*
+exit 0
 wmake $targetType combustionModels
 
 wmakeLnInclude -u regionFaModels

@@ -63,14 +63,16 @@ void Foam::singleStepReactingMixture<ThermoType>::massAndAirStoichRatios()
     const label O2Index = this->species().find("O2");
     const scalar Wu = this->speciesData()[fuelIndex_].W();
 
-    stoicRatio_ =
+    // codi:
+    stoicRatio_.value() =
        (this->speciesData()[inertIndex_].W()
       * specieStoichCoeffs_[inertIndex_]
       + this->speciesData()[O2Index].W()
       * mag(specieStoichCoeffs_[O2Index]))
       / (Wu*mag(specieStoichCoeffs_[fuelIndex_]));
 
-    s_ =
+    // codi:
+    s_.value() =
         (this->speciesData()[O2Index].W()
       * mag(specieStoichCoeffs_[O2Index]))
       / (Wu*mag(specieStoichCoeffs_[fuelIndex_]));

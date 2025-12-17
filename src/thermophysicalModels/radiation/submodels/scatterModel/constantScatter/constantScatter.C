@@ -71,7 +71,7 @@ Foam::radiation::constantScatter::sigmaEff() const
         "sigma",
         IOobject::NO_REGISTER,
         mesh_,
-        sigma_*(3.0 - C_)
+        sigma_*(scalar(3.0) - C_) // codi:
     );
 }
 

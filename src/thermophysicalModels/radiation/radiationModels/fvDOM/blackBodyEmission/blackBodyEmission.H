@@ -122,7 +122,7 @@ public:
                 const scalar lambda
             ) const
             {
-                return (C1_/(pow5(lambda)*(exp(C2_/(lambda*T)) - 1.0)));
+                return (C1_/(pow5(lambda)*(exp(C2_/(lambda*T)) - scalar(1.0)))); // codi:
             }
 
             //- Proportion of total energy at T from lambda1 to lambda2

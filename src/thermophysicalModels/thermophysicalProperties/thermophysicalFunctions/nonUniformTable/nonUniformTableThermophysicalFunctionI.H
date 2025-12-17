@@ -46,7 +46,7 @@ inline Foam::label Foam::nonUniformTable::index
         nd = (Trange_.max() - Trange_.min())/deltaT_;
     }
 
-    const label j = nd;
+    const label j = nd.getValue(); // codi:
 
     label i = jumpTable_[j];
 

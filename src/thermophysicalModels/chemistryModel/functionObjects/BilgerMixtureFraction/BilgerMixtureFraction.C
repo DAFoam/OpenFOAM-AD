@@ -82,7 +82,8 @@ void Foam::functionObjects::BilgerMixtureFraction::calcBilgerMixtureFraction()
 
     auto& Y = thermo_.Y();
 
-    f_Bilger = -o2RequiredOx_;
+    // codi:
+    f_Bilger = dimensionedScalar(dimless, -o2RequiredOx_);
     forAll(Y, i)
     {
         f_Bilger +=

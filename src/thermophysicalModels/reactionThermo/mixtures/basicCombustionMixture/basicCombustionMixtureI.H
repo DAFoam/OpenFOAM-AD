@@ -31,7 +31,7 @@ inline Foam::scalar Foam::basicCombustionMixture::fres
     const scalar stoicRatio
 ) const
 {
-    return max(ft - (scalar(1) - ft)/stoicRatio, scalar(0));
+    return Foam::max(ft - (scalar(1) - ft)/stoicRatio, scalar(0)); // codi:
 }
 
 
@@ -41,7 +41,7 @@ inline Foam::tmp<Foam::volScalarField> Foam::basicCombustionMixture::fres
     const dimensionedScalar& stoicRatio
 ) const
 {
-    return max(ft - (scalar(1) - ft)/stoicRatio.value(), scalar(0));
+    return Foam::max(ft - (scalar(1) - ft)/stoicRatio.value(), scalar(0)); // codi:
 }
 
 

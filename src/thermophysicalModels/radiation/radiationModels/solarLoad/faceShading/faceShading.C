@@ -144,7 +144,7 @@ void Foam::faceShading::calculate()
     }
 
     const scalar maxBounding =
-        returnReduce(5.0*mesh_.bounds().mag(), maxOp<scalar>());
+        returnReduce(scalar(5.0*mesh_.bounds().mag()), maxOp<scalar>()); // codi:
 
     // Calculate index of faces which have a direct hit (local)
 

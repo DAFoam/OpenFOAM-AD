@@ -210,7 +210,7 @@ void Maxwell<BasicTurbulenceModel>::correct()
             this->runTime_.constant(),
             this->mesh_
         ),
-        1.0/(lambda_)
+        scalar(1.0)/(lambda_) // codi:
     );
 
     // Note sigma is positive on lhs of momentum eqn

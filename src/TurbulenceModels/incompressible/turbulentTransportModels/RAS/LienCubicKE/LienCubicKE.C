@@ -53,7 +53,7 @@ tmp<volScalarField> LienCubicKE::fMu() const
 
     return
         (scalar(1) - exp(-Anu_*yStar))
-       *(scalar(1) + (2*kappa_/(pow(Cmu_, 0.75))/(yStar + SMALL)));
+       *(scalar(1) + (scalar(2)*kappa_/(pow(Cmu_, scalar(0.75)))/(yStar + SMALL))); // codi:
 }
 
 
@@ -70,11 +70,11 @@ tmp<volScalarField> LienCubicKE::E(const volScalarField& f2) const
     const volScalarField yStar(sqrt(k_)*y_/nu());
     const volScalarField le
     (
-        kappa_*y_/(scalar(1) + (2*kappa_/(pow(Cmu_, 0.75))/(yStar + SMALL)))
+        kappa_*y_/(scalar(1) + (scalar(2)*kappa_/(pow(Cmu_, scalar(0.75)))/(yStar + SMALL))) // codi:
     );
 
     return
-        (Ceps2_*pow(Cmu_, 0.75))
+        (Ceps2_*pow(Cmu_, scalar(0.75))) // codi:
        *(f2*sqrt(k_)*epsilon_/le)*exp(-AE_*sqr(yStar));
 }
 

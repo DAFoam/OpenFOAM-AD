@@ -309,7 +309,7 @@ Foam::ReynoldsStress<BasicTurbulenceModel>::DivDevRhoReff
         (
             fvc::laplacian
             (
-                (1.0 - couplingFactor_)*this->alpha_*rho*this->nut(),
+                (scalar(1.0) - couplingFactor_)*this->alpha_*rho*this->nut(), // codi:
                 U,
                 "laplacian(nuEff,U)"
             )

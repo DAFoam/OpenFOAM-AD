@@ -133,7 +133,7 @@ tmp<volScalarField::Internal> SpalartAllmarasBase<BasicEddyViscosityModel>::fw
     const volScalarField::Internal r(this->r(nuTilda_, Stilda, dTilda)()());
     const volScalarField::Internal g(r + Cw2_*(pow6(r) - r));
 
-    return g*pow((1 + pow6(Cw3_))/(pow6(g) + pow6(Cw3_)), 1.0/6.0);
+    return g*pow((scalar(1) + pow6(Cw3_))/(pow6(g) + pow6(Cw3_)), 1.0/6.0); // codi:
 }
 
 
@@ -239,7 +239,7 @@ SpalartAllmarasBase<BasicEddyViscosityModel>::SpalartAllmarasBase
             0.622
         )
     ),
-    Cw1_(Cb1_/sqr(kappa_) + (1.0 + Cb2_)/sigmaNut_),
+    Cw1_(Cb1_/sqr(kappa_) + (scalar(1.0) + Cb2_)/sigmaNut_), // codi:
     Cw2_
     (
         dimensioned<scalar>::getOrAddToDict
@@ -351,7 +351,7 @@ bool SpalartAllmarasBase<BasicEddyViscosityModel>::read()
 
         Cb1_.readIfPresent(this->coeffDict());
         Cb2_.readIfPresent(this->coeffDict());
-        Cw1_ = Cb1_/sqr(kappa_) + (1.0 + Cb2_)/sigmaNut_;
+        Cw1_ = Cb1_/sqr(kappa_) + (scalar(1.0) + Cb2_)/sigmaNut_; // codi:
         Cw2_.readIfPresent(this->coeffDict());
         Cw3_.readIfPresent(this->coeffDict());
         Cv1_.readIfPresent(this->coeffDict());
@@ -400,7 +400,7 @@ tmp<volScalarField> SpalartAllmarasBase<BasicEddyViscosityModel>::k() const
     return tmp<volScalarField>::New
     (
         IOobject::groupName("k", this->alphaRhoPhi_.group()),
-        cbrt(fv1)*nuTilda_*::sqrt(scalar(2)/Cmu)*mag(symm(fvc::grad(this->U_)))
+        cbrt(fv1)*nuTilda_*sqrt(scalar(2)/Cmu)*mag(symm(fvc::grad(this->U_))) // codi:
     );
 }
 
@@ -416,7 +416,7 @@ SpalartAllmarasBase<BasicEddyViscosityModel>::epsilon() const
     return tmp<volScalarField>::New
     (
         IOobject::groupName("epsilon", this->alphaRhoPhi_.group()),
-        sqrt(fv1)*sqr(::sqrt(Cmu)*this->k())/(nuTilda_ + this->nut_ + nutSMALL)
+        sqrt(fv1)*sqr(sqrt(Cmu)*this->k())/(nuTilda_ + this->nut_ + nutSMALL) // codi:
     );
 }
 

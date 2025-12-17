@@ -105,7 +105,7 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicTurbulenceModel>::Fthetat
                 max
                 (
                     Fwake*exp(-pow4((y/delta))),
-                    (1 - sqr((gammaInt_() - 1.0/ce2_)/(1 - 1.0/ce2_)))
+                    (scalar(1) - sqr((gammaInt_() - scalar(1.0)/ce2_)/(scalar(1) - scalar(1.0)/ce2_))) // codi:
                 ),
                 scalar(1)
             )
@@ -134,14 +134,14 @@ kOmegaSSTLM<BasicTurbulenceModel>::ReThetac() const
         ReThetac[celli] =
             ReThetat <= 1870
           ?
-            ReThetat
+            scalar(ReThetat
           - 396.035e-2
           + 120.656e-4*ReThetat
           - 868.230e-6*sqr(ReThetat)
           + 696.506e-9*pow3(ReThetat)
-          - 174.105e-12*pow4(ReThetat)
+          - 174.105e-12*pow4(ReThetat)) // codi:
           :
-            ReThetat - 593.11 - 0.482*(ReThetat - 1870);
+            scalar(ReThetat - 593.11 - 0.482*(ReThetat - 1870)); // codi:
     }
 
     return tReThetac;
@@ -251,16 +251,16 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicTurbulenceModel>::ReThetat0
                 const scalar Flambda =
                     dUsds[celli] <= 0
                   ?
-                    1
+                    scalar(1
                   - (
                      - 12.986*lambda
                      - 123.66*sqr(lambda)
                      - 405.689*pow3(lambda)
-                    )*exp(-pow(Tu/1.5, 1.5))
+                    )*exp(-pow(Tu/1.5, 1.5))) // codi:
                   :
-                    1
+                    scalar(1
                   + 0.275*(1 - exp(-35*lambda))
-                   *exp(-Tu/0.5);
+                   *exp(-Tu/0.5)); // codi:
 
                 thetat =
                     (1173.51 - 589.428*Tu + 0.2196/sqr(Tu))
@@ -272,16 +272,16 @@ tmp<volScalarField::Internal> kOmegaSSTLM<BasicTurbulenceModel>::ReThetat0
                 const scalar Flambda =
                     dUsds[celli] <= 0
                   ?
-                    1
+                    scalar(1
                   - (
                       -12.986*lambda
                       -123.66*sqr(lambda)
                       -405.689*pow3(lambda)
-                    )*exp(-pow(Tu/1.5, 1.5))
+                    )*exp(-pow(Tu/1.5, 1.5)))
                   :
-                    1
+                    scalar(1
                   + 0.275*(1 - exp(-35*lambda))
-                   *exp(-2*Tu);
+                   *exp(-2*Tu));
 
                 thetat =
                     331.50*pow((Tu - 0.5658), -0.671)
@@ -545,7 +545,7 @@ void kOmegaSSTLM<BasicTurbulenceModel>::correctReThetatGammaInt()
         fvOptions.constrain(ReThetatEqn.ref());
         solve(ReThetatEqn);
         fvOptions.correct(ReThetat_);
-        bound(ReThetat_, 0);
+        bound(ReThetat_, scalar(0)); // codi:
     }
 
     const volScalarField::Internal ReThetac(this->ReThetac());
@@ -582,17 +582,17 @@ void kOmegaSSTLM<BasicTurbulenceModel>::correctReThetatGammaInt()
         fvOptions.constrain(gammaIntEqn.ref());
         solve(gammaIntEqn);
         fvOptions.correct(gammaInt_);
-        bound(gammaInt_, 0);
+        bound(gammaInt_, scalar(0)); // codi:
     }
 
     const volScalarField::Internal Freattach(exp(-pow4(RT/20.0)));
     const volScalarField::Internal gammaSep
     (
-        min(2*max(Rev/(3.235*ReThetac) - 1, scalar(0))*Freattach, scalar(2))
+        Foam::min(2*Foam::max(Rev/(3.235*ReThetac) - 1, scalar(0))*Freattach, scalar(2)) // codi:
        *Fthetat
     );
 
-    gammaIntEff_ = max(gammaInt_(), gammaSep);
+    gammaIntEff_ = Foam::max(gammaInt_(), gammaSep); // codi:
 }
 
 

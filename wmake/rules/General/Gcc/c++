@@ -11,7 +11,8 @@ CC         := g++$(COMPILER_VERSION) -std=c++17
 c++ARCH    :=
 c++DBUG    :=
 c++OPT     := -O2
-ptFLAGS    := -DNoRepository -ftemplate-depth-100
+# codi: increased template depth for expression template AD
+ptFLAGS    := -DNoRepository -ftemplate-depth-200
 
 # codi: suppress old-style warning
 c++WARN     = \

@@ -92,7 +92,7 @@ Foam::nonUniformTable::nonUniformTable
 
     deltaT_ *= 0.9;
 
-    jumpTable_.resize(Trange_.mag()/deltaT_ + 1);
+    jumpTable_.resize((Trange_.mag()/deltaT_).getValue() + 1); // codi:
 
     label i = 0;
     forAll(jumpTable_, j)

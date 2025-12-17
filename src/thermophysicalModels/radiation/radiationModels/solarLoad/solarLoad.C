@@ -153,7 +153,7 @@ bool Foam::radiation::solarLoad::updateHitFaces()
             {
                 const label updateIndex = label
                 (
-                    mesh_.time().value()/solarCalc_.sunTrackingUpdateInterval()
+                    (mesh_.time().value()/solarCalc_.sunTrackingUpdateInterval()).getValue() // codi:
                 );
 
                 if (updateIndex > updateTimeIndex_)

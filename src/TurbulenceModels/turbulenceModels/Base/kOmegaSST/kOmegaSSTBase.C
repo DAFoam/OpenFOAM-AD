@@ -60,7 +60,7 @@ tmp<volScalarField> kOmegaSSTBase<BasicEddyViscosityModel>::F1
                 (scalar(1)/betaStar_)*sqrt(k_)/(omega_*y_),
                 scalar(500)*(this->mu()/this->rho_)/(sqr(y_)*omega_)
             ),
-            (4*alphaOmega2_)*k_/(CDkOmegaPlus*sqr(y_))
+            (scalar(4)*alphaOmega2_)*k_/(CDkOmegaPlus*sqr(y_)) // codi:
         ),
         scalar(10)
     );
@@ -554,7 +554,7 @@ void kOmegaSSTBase<BasicEddyViscosityModel>::correct()
 
     const volScalarField CDkOmega
     (
-        (2*alphaOmega2_)*(fvc::grad(k_) & fvc::grad(omega_))/omega_
+        (scalar(2)*alphaOmega2_)*(fvc::grad(k_) & fvc::grad(omega_))/omega_ // codi:
     );
 
     const volScalarField F1(this->F1(CDkOmega));

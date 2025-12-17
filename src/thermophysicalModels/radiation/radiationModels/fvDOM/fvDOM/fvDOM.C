@@ -602,8 +602,8 @@ void Foam::radiation::fvDOM::calculate()
             {
                 label updateIndex = label
                 (
-                    mesh_.time().value()
-                   /solarCalculator_->sunTrackingUpdateInterval()
+                    (mesh_.time().value()
+                   /solarCalculator_->sunTrackingUpdateInterval()).getValue() // codi:
                 );
 
                 if (updateIndex > updateTimeIndex_)
@@ -656,7 +656,7 @@ Foam::tmp<Foam::volScalarField> Foam::radiation::fvDOM::Rp() const
         "Rp",
         IOobject::NO_REGISTER,
         (
-            4
+            scalar(4) // codi:
           * physicoChemical::sigma
           * (aLambda_[0] - absorptionEmission_->aDisp(0)())
           * blackBody_.deltaLambdaT(T_, absorptionEmission_->bands(0))
@@ -669,7 +669,7 @@ Foam::tmp<Foam::volScalarField> Foam::radiation::fvDOM::Rp() const
     {
         Rp +=
         (
-            4
+            scalar(4) // codi:
            *physicoChemical::sigma
            *(aLambda_[j] - absorptionEmission_->aDisp(j)())
            *blackBody_.deltaLambdaT(T_, absorptionEmission_->bands(j))

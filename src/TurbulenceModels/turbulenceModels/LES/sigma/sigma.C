@@ -139,7 +139,7 @@ tmp<volScalarField> sigma<BasicTurbulenceModel>::k() const
     return tmp<volScalarField>::New
     (
         IOobject::groupName("k", this->U_.group()),
-        (2.0*Ck_/this->Ce_)
+        (scalar(2.0)*Ck_/this->Ce_) // codi:
        *sqr(this->delta())
        *magSqr(devSymm(fvc::grad(this->U_)))
     );

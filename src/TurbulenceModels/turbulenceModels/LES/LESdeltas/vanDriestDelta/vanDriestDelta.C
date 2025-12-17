@@ -92,10 +92,10 @@ void Foam::LESModels::vanDriestDelta::calcDelta()
     wDist.map(ystar, mapDistribute::transform());
 
     // Calculate y/ystar (stored in ystar!) and do the clipping
-    constexpr scalar yPlusCutOff = 500;
+    const scalar yPlusCutOff = 500; // codi:
     // Allow for some precision loss from transformation/interpolation of GREAT
     // (= unvisited value)(though ystar is scalar so should not be transformed)
-    constexpr scalar fuzzyGREAT = 0.5*GREAT;
+    const scalar fuzzyGREAT = 0.5*GREAT;
 
     ystar.dimensions().reset(y.dimensions()/ystar.dimensions());
     forAll(y, celli)

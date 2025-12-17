@@ -268,7 +268,7 @@ inline Foam::scalar Foam::PengRobinsonGas<Specie>::Z
 
     if (D <= 0)
     {
-        const scalar th = ::acos(Rl/sqrt(-Q3));
+        const scalar th = acos(Rl/sqrt(-Q3)); // codi:
         const scalar qm = 2*sqrt(-Q);
         const scalar r1 = qm*cos(th/3.0) - a2/3.0;
         const scalar r2 =

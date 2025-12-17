@@ -332,7 +332,7 @@ tmp<DimensionedField<ReturnType, GeoMesh>> Func                                \
     return Foam::Func(dimensioned<Type2>(s1), tf2);                            \
 }
 
-
+// codi: add Foam:: to fix min/max ambiguity
 #define BINARY_TYPE_FUNCTION_FS(ReturnType, Type1, Type2, Func)                \
                                                                                \
 TEMPLATE                                                                       \
@@ -344,7 +344,7 @@ void Func                                                                      \
 )                                                                              \
 {                                                                              \
     /* TBD: reset dimensions? */                                               \
-    Func(result.field(), f1.field(), dt2.value());                             \
+    Foam::Func(result.field(), f1.field(), dt2.value());                       \
     result.oriented() = f1.oriented();                                         \
 }                                                                              \
                                                                                \

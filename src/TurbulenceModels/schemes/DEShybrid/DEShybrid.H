@@ -271,7 +271,7 @@ class DEShybrid
             tmp<volScalarField> tg = tanh(pow4(tB));
 
             tmp<volScalarField> tK =
-                max(Foam::sqrt(0.5*(sqr(S) + sqr(Omega))), 0.1/tau0_);
+                max(Foam::sqrt(0.5*(sqr(S) + sqr(Omega))), scalar(0.1)/tau0_); // codi:
 
             tmp<volScalarField> tlTurb =
                 Foam::sqrt

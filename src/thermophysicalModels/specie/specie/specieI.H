@@ -122,7 +122,7 @@ inline void Foam::specie::operator*=(const scalar s)
 
 inline Foam::specie Foam::operator+(const specie& st1, const specie& st2)
 {
-    const scalar sumY = max(st1.Y_ + st2.Y_, SMALL);
+    const scalar sumY = Foam::max(st1.Y_ + st2.Y_, SMALL); // codi:
 
     if (mag(sumY) > SMALL)
     {
