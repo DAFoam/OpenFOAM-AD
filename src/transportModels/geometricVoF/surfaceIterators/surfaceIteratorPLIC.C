@@ -59,7 +59,7 @@ Foam::label Foam::surfaceIteratorPLIC::vofCutCell
             << "normal length is zero in cell: " << celli << nl
             << "try increasing nCorrectors" << endl;
 
-        return sign(alpha1-0.5);
+        return sign(alpha1-0.5).getValue(); // codi:
     }
 
     normal.normalise();
@@ -97,16 +97,16 @@ Foam::label Foam::surfaceIteratorPLIC::vofCutCell
     while (L2 - L1 > 1)
     {
         L3 = round(0.5*(L1 + L2));
-        f3 = fvert[order[L3]];
+        f3 = fvert[order[L3.getValue()]]; // codi:
         cutCell_.calcSubCell(celli, f3, normal);
         a3 = cutCell_.VolumeOfFluid();
         if (a3 > alpha1)
         {
-            L1 = L3; f1 = f3; a1 = a3;
+            L1 = L3.getValue(); f1 = f3; a1 = a3; // codi:
         }
         else if (a3 < alpha1)
         {
-            L2 = L3; f2 = f3; a2 = a3;
+            L2 = L3.getValue(); f2 = f3; a2 = a3; // codi:
         }
         else
         {

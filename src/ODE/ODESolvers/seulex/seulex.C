@@ -258,7 +258,7 @@ void Foam::seulex::solve
     {
         // NOTE: the first element of relTol_ and absTol_ are used here.
         scalar logTol = -log10(relTol_[0] + absTol_[0])*0.6 + 0.5;
-        kTarg_ = max(1, min(kMaxx_ - 1, int(logTol)));
+        kTarg_ = max(1, min(kMaxx_ - 1, int(logTol.getValue()))); // codi:
     }
 
     forAll(scale_, i)

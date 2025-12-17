@@ -85,16 +85,16 @@ Foam::label Foam::surfaceIteratorIso::vofCutCell
     while (L2 - L1 > 1)
     {
         L3 = round(0.5*(L1 + L2));
-        f3 = fvert[order[L3]];
+        f3 = fvert[order[L3.getValue()]]; // codi:
         cutCell_.calcSubCell(celli, f3);
         a3 = cutCell_.VolumeOfFluid();
         if (a3 > alpha1)
         {
-            L1 = L3; f1 = f3; a1 = a3;
+            L1 = L3.getValue(); f1 = f3; a1 = a3; // codi:
         }
         else if (a3 < alpha1)
         {
-            L2 = L3; f2 = f3; a2 = a3;
+            L2 = L3.getValue(); f2 = f3; a2 = a3; // codi:
         }
         else
         {

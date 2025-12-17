@@ -171,7 +171,7 @@ Type Foam::isoSurfacePoint::generatePoint
     }
     else
     {
-        constexpr scalar s = 0.4999;
+        const scalar s = 0.4999; // codi:
 
         return s*p1 + (1.0-s)*p0;
     }

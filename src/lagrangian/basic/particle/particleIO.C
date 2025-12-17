@@ -91,7 +91,7 @@ void Foam::particle::readData
                 is  >> facei_ >> stepFraction_ >> origProc_ >> origId_;
             }
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi: hard-coded the double type
         {
             // Non-native label or scalar size
 
@@ -142,7 +142,7 @@ void Foam::particle::readData
                     >> p.origId;
             }
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi: hard-coded the double type
         {
             // Non-native label or scalar size
 

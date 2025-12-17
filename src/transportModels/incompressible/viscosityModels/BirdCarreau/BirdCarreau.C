@@ -55,7 +55,7 @@ Foam::viscosityModels::BirdCarreau::calcNu() const
     return
         nuInf_
       + (nu0_ - nuInf_)
-      * pow(scalar(1) + pow(k_*strainRate(), a_), (n_ - 1.0)/a_);
+      * pow(scalar(1) + pow(k_*strainRate(), a_), (n_ - scalar(1.0))/a_); // codi:
 }
 
 

@@ -232,7 +232,7 @@ Foam::scalar Foam::cutFaceAdvect::timeIntegratedFaceFlux
         // Here we estimate time of arrival to the face points from their normal
         // distance to the initial surface and the surface normal velocity
 
-        for (const scalar fi : f)
+        for (const label fi : f) // codi: this should be a bug in OF, should have used label for the index
         {
             scalar value = ((mesh_.points()[fi] - x0) & n0) / Un0;
             if (mag(value) < 10 * SMALL)
@@ -249,9 +249,9 @@ Foam::scalar Foam::cutFaceAdvect::timeIntegratedFaceFlux
         forAll(pTimes_, pi)
         {
             const label oldEdgeSign =
-                sign(pTimes_[(pi + 1) % nPoints] - pTimes_[pi]);
+                sign(pTimes_[(pi + 1) % nPoints] - pTimes_[pi]).getValue(); // codi:
             const label newEdgeSign =
-                sign(pTimes_[(pi + 2) % nPoints] - pTimes_[(pi + 1) % nPoints]);
+                sign(pTimes_[(pi + 2) % nPoints] - pTimes_[(pi + 1) % nPoints]).getValue(); // codi:
 
             if (newEdgeSign != oldEdgeSign)
             {
@@ -358,9 +358,9 @@ Foam::scalar Foam::cutFaceAdvect::timeIntegratedFaceFlux
         forAll(pTimes_, pi)
         {
             const label oldEdgeSign =
-                sign(pTimes_[(pi + 1) % nPoints] - pTimes_[pi]);
+                sign(pTimes_[(pi + 1) % nPoints] - pTimes_[pi]).getValue(); // codi:
             const label newEdgeSign =
-                sign(pTimes_[(pi + 2) % nPoints] - pTimes_[(pi + 1) % nPoints]);
+                sign(pTimes_[(pi + 2) % nPoints] - pTimes_[(pi + 1) % nPoints]).getValue(); // codi:
 
             if (newEdgeSign != oldEdgeSign)
             {
@@ -704,7 +704,7 @@ Foam::scalar Foam::cutFaceAdvect::timeIntegratedArea
         // calculate the initial submerged area and FIIL:
         time = 0.0;
         // Note: calcSubFace assumes well-defined 2-point FIIL!!!!
-        calcSubFace(faceI, -sign(Un0), time);
+        calcSubFace(faceI, -sign(Un0).getValue(), time);  // codi:
         initialArea = mag(subFaceArea());
         cutPoints(faceI, time, FIIL);
     }
@@ -927,7 +927,7 @@ void Foam::cutFaceAdvect::cutPoints
         WarningInFunction
             << "cutPoints = " << cutPoints
             << " for pts = " << f.points(mesh_.points())
-            << ", f - f0 = " << f - f0 << " and f0 = " << f0
+            << ", f " << f << " and f0 = " << f0 // codi:
             << endl;
     }
 }

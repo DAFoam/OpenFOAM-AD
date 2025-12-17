@@ -184,6 +184,19 @@ public:
             );
         }
 
+        //- codi: Fill data block with signaling_NaN values (template for any type)
+        //  Handles float, double, scalar, and codipack active types
+        template<class Type>
+        static void fillNan(UList<Type>& list)
+        {
+            if (list.size())
+            {
+                // For codipack types and standard types, use assignment
+                Type val = std::numeric_limits<double>::signaling_NaN();
+                std::fill(list.begin(), list.end(), val);
+            }
+        }
+
         //- Fill data block with (float) signaling_NaN values
         static void fillNan(UList<float>& list);
 

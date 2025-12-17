@@ -60,7 +60,6 @@ wmake $targetType mesh/blockMesh
 wmake $targetType mesh/extrudeModel  # Requires: blockMesh
 wmake $targetType dynamicMesh  # Requires: extrudeModel
 wmake $targetType genericPatchFields
-exit 0
 
 wmake $targetType parallel/decompose/decompositionMethods
 
@@ -84,7 +83,7 @@ transportModels/Allwmake $targetType $*
 randomProcesses/Allwmake $targetType $*
 
 wmake $targetType ODE
-
+exit 0
 
 thermophysicalModels/Allwmake $targetType $*
 TurbulenceModels/Allwmake $targetType $*

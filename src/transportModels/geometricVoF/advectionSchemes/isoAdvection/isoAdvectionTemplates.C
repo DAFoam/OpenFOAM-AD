@@ -379,7 +379,7 @@ void Foam::isoAdvection::boundFlux
                         mag(fluidToPassOn)*mag(phi[fi]*dt)/dVftot;
 
                     nFacesToPassFluidThrough +=
-                        pos0(dVfmax[fi] - fluidToPassThroughFace);
+                        pos0(dVfmax[fi] - fluidToPassThroughFace).getValue(); // codi:
 
                     fluidToPassThroughFace =
                         min(fluidToPassThroughFace, dVfmax[fi]);

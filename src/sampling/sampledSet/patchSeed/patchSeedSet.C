@@ -78,7 +78,7 @@ void Foam::patchSeedSet::calcPatchSamples
         const polyPatch& pp = mesh().boundaryMesh()[patchi];
         triangulatedPatch tp(pp, perturb);
 
-        const label np = nAvailable*pp.size()/scalar(nGlobalPatchPoints);
+        const label np = nAvailable*pp.size()/scalar(nGlobalPatchPoints).getValue(); // codi:
         for (label i = 0; i < np; ++i)
         {
             tp.randomLocalPoint(rndGen, pt, facei, celli);
@@ -231,7 +231,7 @@ void Foam::patchSeedSet::calcSelectedLocations
     if (totalSize > nAvailable)
     {
         // Check what fraction of maxPoints_ I need to generate locally.
-        label myMaxPoints = scalar(patchFaces.size())/totalSize*nAvailable;
+        label myMaxPoints = scalar(patchFaces.size()).getValue()/totalSize*nAvailable; // codi:
 
         labelList subset = identity(patchFaces.size());
         for (label iter = 0; iter < 4; ++iter)

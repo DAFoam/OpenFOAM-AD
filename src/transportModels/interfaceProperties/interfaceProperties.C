@@ -191,7 +191,7 @@ Foam::interfaceProperties::interfaceProperties
     deltaN_
     (
         "deltaN",
-        1e-8/cbrt(average(alpha1.mesh().V()))
+        scalar(1e-8)/cbrt(average(alpha1.mesh().V())) // codi:
     ),
 
     alpha1_(alpha1),

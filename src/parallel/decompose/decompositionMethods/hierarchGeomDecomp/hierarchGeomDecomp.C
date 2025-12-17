@@ -230,9 +230,11 @@ bool Foam::hierarchGeomDecomp::findBinary
 
     while (true)
     {
+        // codi:
+        scalar tmpVal = sortedWeightedSizes[mid] - sortedWeightedSizes[minIndex];
         scalar weightedSize = returnReduce
         (
-            sortedWeightedSizes[mid] - sortedWeightedSizes[minIndex],
+            tmpVal,
             sumOp<scalar>()
         );
 
