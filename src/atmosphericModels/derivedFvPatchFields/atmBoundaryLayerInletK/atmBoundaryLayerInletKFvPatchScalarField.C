@@ -65,7 +65,7 @@ atmBoundaryLayerInletKFvPatchScalarField
     phiName_ = dict.getOrDefault<word>("phi", "phi");
 
     refValue() = k(patch().Cf());
-    refGrad() = 0;
+    refGrad() = 0.0; // codi:
     valueFraction() = 1;
 
     if (!initABL_)

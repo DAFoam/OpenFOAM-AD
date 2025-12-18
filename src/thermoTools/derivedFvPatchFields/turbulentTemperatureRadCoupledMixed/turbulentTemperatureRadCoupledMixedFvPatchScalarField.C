@@ -936,10 +936,11 @@ bool turbulentTemperatureRadCoupledMixedFvPatchScalarField::writeFile()
     const label executionIndex = label
     (
         (
+        (
             (t - ts)
           + 0.5*deltaT
         )
-        /logInterval_
+        /logInterval_).getValue() //  codi:
     );
 
     bool write = false;

@@ -64,7 +64,7 @@ atmBoundaryLayerInletOmegaFvPatchScalarField
     phiName_ = dict.getOrDefault<word>("phi", "phi");
 
     refValue() = omega(patch().Cf());
-    refGrad() = 0;
+    refGrad() = 0.0; // codi:
     valueFraction() = 1;
 
     if (!initABL_)

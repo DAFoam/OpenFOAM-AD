@@ -129,7 +129,7 @@ void Foam::fv::atmCoriolisUSource::addSup
 
     if (V_ > VSMALL)
     {
-        eqn -= (2.0*Omega_)^U;
+        eqn -= (scalar(2.0)*Omega_)^U; // codi:
     }
 }
 
@@ -145,7 +145,7 @@ void Foam::fv::atmCoriolisUSource::addSup
 
     if (V_ > VSMALL)
     {
-        eqn -= rho*((2.0*Omega_)^U);
+        eqn -= rho*((scalar(2.0)*Omega_)^U); // codi:
     }
 }
 
@@ -162,7 +162,7 @@ void Foam::fv::atmCoriolisUSource::addSup
 
     if (V_ > VSMALL)
     {
-        eqn -= alpha*rho*((2.0*Omega_)^U);
+        eqn -= alpha*rho*((scalar(2.0)*Omega_)^U); // codi:
     }
 }
 
