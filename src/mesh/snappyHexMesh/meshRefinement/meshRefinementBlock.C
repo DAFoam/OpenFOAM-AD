@@ -241,7 +241,8 @@ Foam::label Foam::meshRefinement::countFaceDirs
     const cell& cFaces = mesh_.cells()[celli];
     const vectorField& faceAreas = mesh_.faceAreas();
 
-    Vector<bool> haveDirs(vector::uniform(false));
+    //Vector<bool> haveDirs(vector::uniform(false));
+    Vector<bool> haveDirs = {false,false,false}; // codi:
 
     forAll(cFaces, cFacei)
     {

@@ -96,7 +96,7 @@ void Foam::diameterModels::driftModels::phaseChange::correct()
 
     forAll(pairKeys_, i)
     {
-        W_[i] *= 0.0;
+        W_[i] *= scalar(0.0); // codi:
     }
 
     forAll(pairKeys_, k)

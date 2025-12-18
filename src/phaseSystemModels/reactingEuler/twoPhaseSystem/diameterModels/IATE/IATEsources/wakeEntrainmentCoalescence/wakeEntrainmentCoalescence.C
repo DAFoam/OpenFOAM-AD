@@ -72,7 +72,7 @@ Foam::diameterModels::IATEsources::wakeEntrainmentCoalescence::R
     volScalarField& kappai
 ) const
 {
-    return -fvm::SuSp(12*phi()*Cwe_*cbrt(CD())*iate_.a()*Ur(), kappai);
+    return -fvm::SuSp(scalar(12*phi())*Cwe_*cbrt(CD())*iate_.a()*Ur(), kappai); // codi:
 }
 
 

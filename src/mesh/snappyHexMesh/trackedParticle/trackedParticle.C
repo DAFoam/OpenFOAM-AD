@@ -100,7 +100,7 @@ Foam::trackedParticle::trackedParticle
         {
             is >> start_ >> end_ >> level_ >> i_ >> j_ >> k_;
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi: hard-coded the double type
         {
             // Non-native label or scalar size
             is.beginRawRead();

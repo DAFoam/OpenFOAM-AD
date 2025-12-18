@@ -442,7 +442,7 @@ Foam::wallBoundedParticle::wallBoundedParticle
         {
             is  >> localPosition_ >> meshEdgeStart_ >> diagEdge_;
         }
-        if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi: hard-coded double type
         {
             // Non-native label or scalar size
 

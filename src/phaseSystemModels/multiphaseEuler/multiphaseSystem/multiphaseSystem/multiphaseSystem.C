@@ -46,7 +46,7 @@ License
 void Foam::multiphaseSystem::calcAlphas()
 {
     scalar level = 0.0;
-    alphas_ == 0.0;
+    alphas_ == scalar(0.0); // codi:
 
     for (const phaseModel& phase : phases_)
     {

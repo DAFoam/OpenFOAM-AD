@@ -97,7 +97,7 @@ Foam::kineticTheoryModels::radialModels::SinclairJackson::g0prime
         )
     );
 
-    return (1.0/(3*alphaMax))/sqr(aByaMax - sqr(aByaMax));
+    return (1.0/(3.0*alphaMax))/sqr(aByaMax - sqr(aByaMax)); // codi:
 }
 
 

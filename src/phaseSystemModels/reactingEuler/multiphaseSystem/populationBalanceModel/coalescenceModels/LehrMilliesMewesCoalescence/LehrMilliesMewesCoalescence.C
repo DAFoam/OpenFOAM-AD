@@ -98,7 +98,7 @@ addToCoalescenceRate
     );
 
     coalescenceRate +=
-        pi/4.0*sqr(fi.d() + fj.d())*min(uChar, uCrit_)
+        scalar(pi/4.0)*sqr(fi.d() + fj.d())*min(uChar, uCrit_) // codi:
        *exp
         (
           - sqr(cbrt(alphaMax_)

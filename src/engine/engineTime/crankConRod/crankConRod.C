@@ -179,11 +179,11 @@ Foam::scalar Foam::crankConRod::pistonPosition(const scalar theta) const
       + clearance_.value()
     )
   - (
-        stroke_.value()*::cos(degToRad(theta))/2.0
-      + ::sqrt
+        stroke_.value()*cos(degToRad(theta))/2.0 // codi:
+      + sqrt
         (
             sqr(conRodLength_.value())
-            - sqr(stroke_.value()*::sin(degToRad(theta))/2.0)
+            - sqr(stroke_.value()*sin(degToRad(theta))/2.0)
         )
     );
 }

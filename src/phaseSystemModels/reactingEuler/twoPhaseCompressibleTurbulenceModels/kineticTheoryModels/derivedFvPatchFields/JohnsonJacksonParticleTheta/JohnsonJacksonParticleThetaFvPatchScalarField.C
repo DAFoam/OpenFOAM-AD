@@ -264,7 +264,7 @@ void Foam::JohnsonJacksonParticleThetaFvPatchScalarField::updateCoeffs()
            *magSqr(U)
            /max(6*kappa*alphaMax.value(), SMALL);
 
-        this->valueFraction() = 0;
+        this->valueFraction() = 0.0; // codi:
     }
 
     mixedFvPatchScalarField::updateCoeffs();

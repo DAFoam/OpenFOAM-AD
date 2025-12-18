@@ -89,7 +89,7 @@ void Foam::fv::tabulatedAccelerationSource::addSup
 
     eqn -=
     (
-        rho*(2*Omega ^ eqn.psi())         // Coriolis force
+        rho*(scalar(2)*Omega ^ eqn.psi())         // Coriolis force // codi:
       + rho*(Omega ^ (Omega ^ mesh_.C())) // Centrifugal force
       + rho*(dOmegaDT ^ mesh_.C())        // Angular tabulatedAcceleration force
     );

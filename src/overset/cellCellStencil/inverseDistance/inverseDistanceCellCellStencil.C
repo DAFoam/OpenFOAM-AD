@@ -1766,7 +1766,7 @@ Foam::cellCellStencils::inverseDistance::inverseDistance
         forAll(volCellTypes, celli)
         {
             // Round to integer
-            cellTypes_[celli] = volCellTypes[celli];
+            cellTypes_[celli] = volCellTypes[celli].getValue(); // codi:
         }
     }
 
@@ -1897,11 +1897,11 @@ bool Foam::cellCellStencils::inverseDistance::update()
             }
             else if (mesh_.nGeometricD() == 2)
             {
-                nDivs = label(Foam::sqrt(scalar(mesh_.nCells())));
+                nDivs = label(Foam::sqrt(scalar(mesh_.nCells())).getValue()); // codi:
             }
             else
             {
-                nDivs = label(Foam::cbrt(scalar(mesh_.nCells())));
+                nDivs = label(Foam::cbrt(scalar(mesh_.nCells())).getValue()); // codi:
             }
 
             labelVector v(nDivs, nDivs, nDivs);

@@ -1562,7 +1562,7 @@ void Foam::snappyLayerDriver::calculateLayerThickness
                 // Note: who wins if different specs?
 
                 // Calculate undistorted edge size for this level.
-                edgeLen[ppPointi] = min
+                edgeLen[ppPointi] = Foam::min
                 (
                     edgeLen[ppPointi],
                     edge0Len/(1<<maxPointLevel[ppPointi])
@@ -3012,7 +3012,7 @@ void Foam::snappyLayerDriver::getLayerCellsFaces
     cellNLayers.setSize(mesh.nCells());
     cellNLayers = 0;
     faceRealThickness.setSize(mesh.nFaces());
-    faceRealThickness = 0;
+    faceRealThickness = Zero; // codi:
 
     // Mark all faces in the layer
     const labelListList& layerFaces = addLayer.layerFaces();
@@ -4946,11 +4946,13 @@ void Foam::snappyLayerDriver::addLayers
 
     // Per patch point the number of layers to add. Is basePatchNLayers
     // for nOuterIter = 1.
-    labelList deltaNLayers
-    (
-        (basePatchNLayers+layerParams.nOuterIter()-1)
-       /layerParams.nOuterIter()
-    );
+    // codi: custom implementation
+    const label nOuterIterVal = layerParams.nOuterIter(); 
+    labelList deltaNLayers(basePatchNLayers.size());
+    forAll(deltaNLayers, i)
+    {
+        deltaNLayers[i] = (basePatchNLayers[i] + nOuterIterVal - 1) / nOuterIterVal;
+    }
 
     // Per patch point the sum of added layers so far
     labelList nAddedLayers(basePatchNLayers.size(), 0);

@@ -134,7 +134,7 @@ addToCoalescenceRate
 
     if (buoyancy_)
     {
-        const dimensionedScalar Sij(pi/4.0*sqr(fi.d() + fj.d()));
+        const dimensionedScalar Sij(scalar(pi/4.0)*sqr(fi.d() + fj.d())); // codi:
 
         coalescenceRate +=
             (

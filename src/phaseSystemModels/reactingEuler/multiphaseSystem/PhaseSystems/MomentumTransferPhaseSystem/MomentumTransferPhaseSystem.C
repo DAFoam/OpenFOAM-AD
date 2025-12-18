@@ -1088,8 +1088,8 @@ void Foam::MomentumTransferPhaseSystem<BasePhaseSystem>::partialElimination
         this->fillFields("KdByAs", dimless, KdByAs[phasei]);
         this->fillFields("phiKds", dimless, phiKds[phasei]);
 
-        KdByAs[phasei][phasei] = 1;
-        phiKds[phasei][phasei] = 1;
+        KdByAs[phasei][phasei] = scalar(1); // codi:
+        phiKds[phasei][phasei] = scalar(1);
     }
 
     // Decompose
@@ -1196,7 +1196,7 @@ void Foam::MomentumTransferPhaseSystem<BasePhaseSystem>::partialEliminationf
     {
         this->fillFields("phiKdf", dimless, phiKdfs[phasei]);
 
-        phiKdfs[phasei][phasei] = 1;
+        phiKdfs[phasei][phasei] = scalar(1); // codi:
     }
 
     // Decompose

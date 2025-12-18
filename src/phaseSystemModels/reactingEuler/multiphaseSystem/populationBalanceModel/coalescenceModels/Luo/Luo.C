@@ -109,7 +109,7 @@ addToCoalescenceRate
         );
 
         coalescenceRate +=
-            pi/4.0*sqr(fi.d() + fj.d())*uij
+            scalar(pi/4.0)*sqr(fi.d() + fj.d())*uij // codi:
            *exp
             (
               - C1_

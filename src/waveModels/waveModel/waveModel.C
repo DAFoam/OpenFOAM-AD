@@ -358,7 +358,7 @@ void Foam::waveModel::correct(const scalar t)
 
         // Reset the velocity and phase fraction fields
         U_ = vector::zero;
-        alpha_ = 0;
+        alpha_ = Zero; //  codi:
 
         // Update the calculated water level field
         scalarField calculatedLevel(nPaddle_, Zero);

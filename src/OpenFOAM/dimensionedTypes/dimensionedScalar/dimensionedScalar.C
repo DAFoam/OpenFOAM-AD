@@ -92,9 +92,191 @@ typename std::enable_if<
     std::is_same<typename std::decay<T1>::type, scalar>::value &&
     std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
     dimensionedScalar>::type
+operator*(const T1 s1, const T2& ds2)
+{
+    return dimensionedScalar(s1) * ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
 operator/(const T1 s1, const T2& ds2)
 {
     return dimensionedScalar(s1)/ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator/(const T1& ds1, const T2 s2)
+{
+    return ds1 / dimensionedScalar(s2);
+}
+
+// codi: here we need to define operators that between double and dimensionedScalar
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator+(const T1& ds1, const T2 d2)
+{
+    return ds1 + dimensionedScalar(scalar(d2));
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator+(const T1 d1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(d1)) + ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator-(const T1& ds1, const T2 d2)
+{
+    return ds1 - dimensionedScalar(scalar(d2));
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator-(const T1 d1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(d1)) - ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator*(const T1& ds1, const T2 d2)
+{
+    return ds1 * dimensionedScalar(scalar(d2));
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator*(const T1 d1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(d1)) * ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator/(const T1 d1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(d1)) / ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator/(const T1& ds1, const T2 d2)
+{
+    return ds1 / dimensionedScalar(scalar(d2));
+}
+
+// codi: here we need to define operators that between int and dimensionedScalar
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator+(const T1& ds1, const T2 i2)
+{
+    return ds1 + dimensionedScalar(scalar(i2));
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator+(const T1 i1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(i1)) + ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator-(const T1& ds1, const T2 i2)
+{
+    return ds1 - dimensionedScalar(scalar(i2));
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator-(const T1 i1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(i1)) - ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator*(const T1& ds1, const T2 i2)
+{
+    return ds1 * dimensionedScalar(scalar(i2));
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator*(const T1 i1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(i1)) * ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator/(const T1 i1, const T2& ds2)
+{
+    return dimensionedScalar(scalar(i1)) / ds2;
+}
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator/(const T1& ds1, const T2 i2)
+{
+    return ds1 / dimensionedScalar(scalar(i2));
 }
 
 /*
@@ -145,6 +327,21 @@ dimensionedScalar pow
         "pow(" + ds.name() + ',' + expt.name() + ')',
         pow(ds.dimensions(), expt),
         pow(ds.value(), expt.value())
+    );
+}
+
+// codi:
+dimensionedScalar pow
+(
+    const dimensionedScalar& ds,
+    const double& expt
+)
+{
+    return dimensionedScalar
+    (
+        "pow(" + ds.name() + ',' + Foam::name(scalar(expt)) + ')',
+        pow(ds.dimensions(), dimensionedScalar(scalar(expt))),
+        pow(ds.value(), scalar(expt))
     );
 }
 

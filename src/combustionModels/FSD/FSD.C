@@ -123,7 +123,7 @@ void FSD<ReactionThermo, ThermoType>::calculateSourceNorm()
 
     volScalarField cAux(scalar(1) - ft_);
 
-    dimensionedScalar dMgft = 1.0e-3*
+    dimensionedScalar dMgft = scalar(1.0e-3)*    // codi:
         (ft_*cAux*mgft)().weightedAverage(this->mesh().V())
        /((ft_*cAux)().weightedAverage(this->mesh().V()) + SMALL)
       + dimensionedScalar("ddMgft", mgft.dimensions(), SMALL);

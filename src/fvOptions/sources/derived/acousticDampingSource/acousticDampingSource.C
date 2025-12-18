@@ -116,7 +116,7 @@ void Foam::fv::acousticDampingSource::addSup
     (
         IOobject::scopedName(name_, "coeff"),
         IOobject::NO_REGISTER,
-        w_*frequency_*blendFactor_
+        scalar(w_)*frequency_*blendFactor_ // codi:
     );
     const auto& coeff = tcoeff();
 
@@ -142,7 +142,7 @@ void Foam::fv::acousticDampingSource::addSup
     (
         IOobject::scopedName(name_, "coeff"),
         IOobject::NO_REGISTER,
-        w_*frequency_*blendFactor_
+        scalar(w_)*frequency_*blendFactor_ // codi:
     );
     const auto& coeff = tcoeff();
 
@@ -169,7 +169,7 @@ void Foam::fv::acousticDampingSource::addSup
     (
         IOobject::scopedName(name_, "coeff"),
         IOobject::NO_REGISTER,
-        w_*frequency_*blendFactor_
+        scalar(w_)*frequency_*blendFactor_ // codi:
     );
     const auto& coeff = tcoeff();
 

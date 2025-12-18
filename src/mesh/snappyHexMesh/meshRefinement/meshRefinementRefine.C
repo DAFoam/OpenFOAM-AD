@@ -2624,10 +2624,10 @@ Foam::autoPtr<Foam::mapDistributePolyMesh> Foam::meshRefinement::balance
         const scalar nNewCellsOnly = scalar(7*cellsToRefine.size());
 
         const label maxNewCells =
-            label(returnReduce(nNewCellsOnly, maxOp<scalar>()));
+            label(returnReduce(nNewCellsOnly, maxOp<scalar>()).getValue()); // codi:
 
         const label maxDeltaCells =
-            label(mag(returnReduce(nNewCells, maxOp<scalar>())-nIdealNewCells));
+            label(mag(returnReduce(nNewCells, maxOp<scalar>())-nIdealNewCells).getValue()); // codi:
 
         // New trigger to avoid too early balancing
         // 1. Check if globally one proc exceeds the maxCellUnbalance value

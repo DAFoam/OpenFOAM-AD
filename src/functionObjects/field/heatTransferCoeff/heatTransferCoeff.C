@@ -49,7 +49,7 @@ bool Foam::functionObjects::heatTransferCoeff::calc()
 
     htcModelPtr_->calc(htc, htcModelPtr_->q());
 
-    htc *= L_/kappa_;
+    htc *= scalar(L_/kappa_); // codi:
 
     return true;
 }

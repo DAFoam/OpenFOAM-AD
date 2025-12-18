@@ -757,11 +757,11 @@ bool Foam::functionObjects::regionSizeDistribution::write()
                  && (distToPlane[i] < maxDownstream_)
                 )
                 {
-                    downstreamIndices[i] = distToPlane[i]/deltaX;
+                    downstreamIndices[i] = (distToPlane[i]/deltaX).getValue(); // codi:
                 }
             }
 
-            scalarField binDownCount(nDownstreamBins_, Zero);
+            scalarField binDownCount(nDownstreamBins_.getValue(), Zero); // codi:
             forAll(distToPlane, i)
             {
                 if (downstreamIndices[i] != -1)
@@ -774,7 +774,7 @@ bool Foam::functionObjects::regionSizeDistribution::write()
             if (UPstream::master())
             {
                 // Construct mids of bins for plotting
-                pointField xBin(nDownstreamBins_, Zero);
+                pointField xBin(nDownstreamBins_.getValue(), Zero); // codi:
 
                 {
                     scalar x = 0.5*deltaX;
@@ -837,7 +837,7 @@ bool Foam::functionObjects::regionSizeDistribution::write()
         labelList indices(sortedDiameters.size());
         forAll(sortedDiameters, i)
         {
-            indices[i] = (sortedDiameters[i]-minDiam_)/delta;
+            indices[i] = ((sortedDiameters[i]-minDiam_)/delta).getValue(); // codi:
         }
 
         // Calculate the counts per diameter bin

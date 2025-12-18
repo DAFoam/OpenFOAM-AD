@@ -342,7 +342,7 @@ void Foam::waveMakerPointPatchVectorField::updateCoeffs()
 
                 motionX[pointi] = 0.5*boardStroke*sin(phaseTot - sigma*t);
 
-                if (secondOrder_)
+                if (secondOrder_.getValue()) // codi:
                 {
                     motionX[pointi] +=
                         sqr(waveHeight_)/(16*depthRef)
@@ -379,7 +379,7 @@ void Foam::waveMakerPointPatchVectorField::updateCoeffs()
 
                 motionX[pointi] = 0.5*boardStroke*sin(phaseTot - sigma*t);
 
-                if (secondOrder_)
+                if (secondOrder_.getValue()) // codi:
                 {
                     motionX[pointi] +=
                       + sqr(waveHeight_)

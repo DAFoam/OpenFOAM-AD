@@ -156,7 +156,7 @@ Foam::meltingEvaporationModels::kineticGasEvaporation<Thermo, OtherThermo>
     (
         sqrt
         (
-            2.0*mathematical::pi
+            scalar(2.0*mathematical::pi) // codi:
           * pow3(Tactivate_)
           * constant::physicoChemical::R/Mv_
         )

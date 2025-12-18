@@ -862,7 +862,7 @@ Foam::scalarField Foam::snappySnapDriver::calcSnapDistance
         pp.meshPoints(),
         maxEdgeLen,
         maxEqOp<scalar>(),  // combine op
-        -GREAT              // null value
+        scalar(-GREAT)              // null value codi:
     );
 
     return scalarField(snapParams.snapTol()*maxEdgeLen);

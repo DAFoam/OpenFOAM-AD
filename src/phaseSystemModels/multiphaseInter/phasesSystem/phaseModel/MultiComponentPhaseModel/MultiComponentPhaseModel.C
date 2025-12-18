@@ -340,9 +340,9 @@ void Foam::MultiComponentPhaseModel<BasePhaseModel, phaseThermo>::solveYi
 
     volScalarField Yt(0.0*X_[0]);
 
-    scalar nYiSubCycles
+    label nYiSubCycles // codi: this should be a bug in OF, it should be label instead of scalar
     (
-        MULEScontrols.getOrDefault<scalar>("nYiSubCycles", 1)
+        MULEScontrols.getOrDefault<label>("nYiSubCycles", 1)
     );
 
     forAll(X_, i)

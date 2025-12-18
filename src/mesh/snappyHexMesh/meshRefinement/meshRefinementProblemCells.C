@@ -294,7 +294,7 @@ bool Foam::meshRefinement::isCollapsedFace
 {
     // Severe nonorthogonality threshold
     const scalar severeNonorthogonalityThreshold =
-        ::cos(degToRad(maxNonOrtho));
+        cos(degToRad(maxNonOrtho)); // codi:
 
     vector s = mesh_.faces()[facei].areaNormal(points);
     scalar magS = mag(s);

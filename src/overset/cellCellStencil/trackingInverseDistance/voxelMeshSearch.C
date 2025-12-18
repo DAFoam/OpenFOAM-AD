@@ -304,11 +304,11 @@ Foam::voxelMeshSearch::voxelMeshSearch
     }
     else if (mesh_.nGeometricD() == 2)
     {
-        nDivs = label(Foam::sqrt(scalar(nCells)));
+        nDivs = label(Foam::sqrt(scalar(nCells)).getValue()); // codi:
     }
     else
     {
-        nDivs = label(Foam::cbrt(scalar(nCells)));
+        nDivs = label(Foam::cbrt(scalar(nCells)).getValue()); // codi:
     }
 
     nDivs_ = labelVector(nDivs, nDivs, nDivs);

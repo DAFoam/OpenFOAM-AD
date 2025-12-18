@@ -282,7 +282,7 @@ void Foam::twoPhaseSystem::solve()
                 }
             }
 
-            phase1_.alphaPhiRef() /= nAlphaSubCycles;
+            phase1_.alphaPhiRef() /= scalar(nAlphaSubCycles); // codi:
         }
         else
         {

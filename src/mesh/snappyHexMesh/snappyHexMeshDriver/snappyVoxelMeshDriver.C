@@ -403,7 +403,8 @@ Foam::snappyVoxelMeshDriver::snappyVoxelMeshDriver
     label nTot = n_.x()*n_.y()*n_.z();
     while (nTot < 1000000)  //1048576)
     {
-        n_ *= 2;
+        //n_ *= 2;
+        n_ = { 2*n_[0], 2*n_[1], 2*n_[2] }; // codi:
         nTot = n_.x()*n_.y()*n_.z();
     }
 
@@ -582,7 +583,7 @@ void Foam::snappyVoxelMeshDriver::doRefine
                *voxel0Size[1]/s
                *voxel0Size[2]/s
             );
-            cellCount += levelCounts[leveli]*nCellsPerVoxel;
+            cellCount += levelCounts[leveli]*nCellsPerVoxel.getValue(); // codi:
         }
         Info<< "Estimated cell count : " << cellCount << endl;
     }

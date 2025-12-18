@@ -85,7 +85,7 @@ Foam::tmp<Foam::volScalarField> Foam::blendingMethods::hyperbolic::f1
             1
           + tanh
             (
-                (4/transitionAlphaScale_)
+                (scalar(4)/transitionAlphaScale_) // codi:
                *(phase2 - minContinuousAlpha_[phase2.name()])
             )
         )/2;
@@ -103,7 +103,7 @@ Foam::tmp<Foam::volScalarField> Foam::blendingMethods::hyperbolic::f2
             1
           + tanh
             (
-                (4/transitionAlphaScale_)
+                (scalar(4)/transitionAlphaScale_) // codi:
                *(phase1 - minContinuousAlpha_[phase1.name()])
             )
         )/2;

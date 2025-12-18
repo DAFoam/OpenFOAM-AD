@@ -78,7 +78,7 @@ Foam::tmp<Foam::volScalarField>
 Foam::swarmCorrections::TomiyamaSwarm::Cs() const
 {
     return
-        pow(max(this->pair_.continuous(), residualAlpha_), scalar(3) - 2*l_);
+        pow(max(this->pair_.continuous(), residualAlpha_), scalar(3) - scalar(2)*l_); // codi:
 }
 
 

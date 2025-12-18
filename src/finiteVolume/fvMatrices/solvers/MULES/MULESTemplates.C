@@ -279,8 +279,14 @@ void Foam::MULES::limiter
     scalarField psiMaxn(psiIf.size());
     scalarField psiMinn(psiIf.size());
 
-    psiMaxn = psiMin;
-    psiMinn = psiMax;
+    //psiMaxn = psiMin;
+    //psiMinn = psiMax;
+    // codi: manually loop
+    forAll(psiMaxn, i)
+    {
+        psiMaxn[i] = psiMin[i];
+        psiMinn[i] = psiMax[i];
+    }
 
     scalarField sumPhiBD(psiIf.size(), Zero);
 
@@ -383,8 +389,17 @@ void Foam::MULES::limiter
         }
     }
 
-    psiMaxn = min(psiMaxn + extremaCoeff*(psiMax - psiMin), psiMax);
-    psiMinn = max(psiMinn - extremaCoeff*(psiMax - psiMin), psiMin);
+    //psiMaxn = min(psiMaxn + extremaCoeff*(psiMax - psiMin), psiMax);
+    //psiMinn = max(psiMinn - extremaCoeff*(psiMax - psiMin), psiMin);
+    // codi: manually loop to avoid std::max/min ambiguity
+    forAll(psiMaxn,i)
+    {
+        psiMaxn[i] = min(psiMaxn[i] + extremaCoeff*(psiMax[i] - psiMin[i]), scalar(psiMax[i]));
+    }
+    forAll(psiMinn,i)
+    {
+        psiMinn[i] = min(psiMinn[i] + extremaCoeff*(psiMax[i] - psiMin[i]), scalar(psiMin[i]));
+    }
 
     if (smoothLimiter > SMALL)
     {
@@ -442,8 +457,8 @@ void Foam::MULES::limiter
 
     for (int j=0; j<nLimiterIter; j++)
     {
-        sumlPhip = 0;
-        mSumlPhim = 0;
+        sumlPhip = Zero; // codi
+        mSumlPhim = Zero;
 
         forAll(lambdaIf, facei)
         {

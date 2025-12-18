@@ -459,8 +459,8 @@ Foam::ThermalPhaseChangePhaseSystem<BasePhaseSystem>::correctInterfaceThermo()
 
         volScalarField& wDmdt(*this->wDmdt_[pair]);
         volScalarField& wMDotL(*this->wMDotL_[pair]);
-        wDmdt *= 0.0;
-        wMDotL *= 0.0;
+        wDmdt *= scalar(0.0); // codi:
+        wMDotL *= scalar(0.0);
 
         bool wallBoilingActive = false;
 

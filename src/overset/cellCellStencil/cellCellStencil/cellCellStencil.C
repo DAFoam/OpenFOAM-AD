@@ -177,7 +177,7 @@ const Foam::labelIOList& Foam::cellCellStencil::zoneID(const fvMesh& mesh)
         );
         forAll(volZoneID, celli)
         {
-            zoneID[celli] = label(volZoneID[celli]);
+            zoneID[celli] = label(volZoneID[celli].getValue()); // codi:
         }
     }
 

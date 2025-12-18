@@ -60,7 +60,7 @@ namespace Foam
 void Foam::multiphaseSystem::calcAlphas()
 {
     scalar level = 0.0;
-    alphas_ == 0.0;
+    alphas_ == scalar(0.0); // codi:
 
     forAll(phases(), i)
     {
@@ -539,7 +539,7 @@ Foam::multiphaseSystem::multiphaseSystem
     deltaN_
     (
         "deltaN",
-        1e-8/pow(average(mesh_.V()), 1.0/3.0)
+        scalar(1e-8)/pow(average(mesh_.V()), scalar(1.0/3.0)) // codi:
     )
 {
     forAll(phases(), phasei)

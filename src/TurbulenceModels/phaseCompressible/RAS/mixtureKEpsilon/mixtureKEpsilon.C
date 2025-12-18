@@ -390,7 +390,7 @@ tmp<volScalarField> mixtureKEpsilon<BasicTurbulenceModel>::Ct2() const
 
     volScalarField beta
     (
-        (6*this->Cmu_/(4*sqrt(3.0/2.0)))
+        (scalar(6)*this->Cmu_/scalar(4*sqrt(3.0/2.0))) // codi:
        *fluid.Kd()/liquid.rho()
        *(liquidTurbulence.k_/liquidTurbulence.epsilon_)
     );

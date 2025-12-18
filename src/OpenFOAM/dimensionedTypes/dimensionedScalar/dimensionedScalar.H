@@ -91,7 +91,135 @@ typename std::enable_if<
     std::is_same<typename std::decay<T1>::type, scalar>::value &&
     std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
     dimensionedScalar>::type
+operator*(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, scalar>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
 operator/(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, scalar>::value,
+    dimensionedScalar>::type
+operator/(const T1&, const T2);
+
+// codi: here we need to define operators that between double and dimensionedScalar
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator+(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator+(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator-(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator-(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator*(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator*(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, double>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator/(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, double>::value,
+    dimensionedScalar>::type
+operator/(const T1&, const T2);
+
+// codi: here we need to define operators that between in and dimensionedScalar
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator+(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator+(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator-(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator-(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator*(const T1&, const T2);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator*(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, int>::value &&
+    std::is_same<typename std::decay<T2>::type, dimensionedScalar>::value,
+    dimensionedScalar>::type
+operator/(const T1, const T2&);
+
+template<typename T1, typename T2>
+typename std::enable_if<
+    std::is_same<typename std::decay<T1>::type, dimensionedScalar>::value &&
+    std::is_same<typename std::decay<T2>::type, int>::value,
+    dimensionedScalar>::type
+operator/(const T1&, const T2);
 
 //dimensionedScalar operator+(const dimensionedScalar&, const scalar);
 //dimensionedScalar operator+(const scalar, const dimensionedScalar&);
@@ -100,6 +228,8 @@ operator/(const T1, const T2&);
 //dimensionedScalar operator*(const dimensionedScalar&, const scalar);
 //dimensionedScalar operator/(const scalar, const dimensionedScalar&);
 
+// codi: add overload pow for pow(dimensionedScalar, double) cases.
+dimensionedScalar pow(const dimensionedScalar&, const double&); 
 dimensionedScalar pow(const dimensionedScalar&, const dimensionedScalar&);
 dimensionedScalar pow3(const dimensionedScalar&);
 dimensionedScalar pow4(const dimensionedScalar&);

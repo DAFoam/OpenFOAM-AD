@@ -79,6 +79,33 @@ void Foam::dictionary::reportDefault
 }
 
 
+// * * * * * * * * * * * * * * * Helper Functions for AD Support  * * * * * * //
+
+// codi: this helper function allows getOrDefault to use double as default value
+
+// Primary template declaration
+template<class T>
+inline void dictionaryStreamExtract(Foam::ITstream& is, T& val)
+{
+    is >> val;
+}
+
+// Specialization for scalar type
+template<>
+inline void dictionaryStreamExtract<Foam::scalar>(Foam::ITstream& is, Foam::scalar& val)
+{
+    is >> val;
+}
+
+// Specialization for double type
+template<>
+inline void dictionaryStreamExtract<double>(Foam::ITstream& is, double& val)
+{
+    Foam::scalar tmp;
+    is >> tmp;
+    val = tmp.value();
+}
+
 // * * * * * * * * * * * * * * * Member Functions  * * * * * * * * * * * * * //
 
 template<class Compare>
@@ -158,7 +185,7 @@ T Foam::dictionary::getOrDefault
         T val;
 
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -188,7 +215,7 @@ T Foam::dictionary::getOrAdd
         T val;
 
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -230,7 +257,7 @@ T Foam::dictionary::getCheckOrDefault
         T val;
 
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -276,7 +303,7 @@ T Foam::dictionary::getCheckOrAdd
         T val;
 
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -316,7 +343,7 @@ bool Foam::dictionary::readEntry
     if (eptr)
     {
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -354,7 +381,7 @@ bool Foam::dictionary::readCheck
     if (eptr)
     {
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -397,7 +424,7 @@ bool Foam::dictionary::readCompat
     if (eptr)
     {
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 
@@ -471,7 +498,7 @@ T Foam::dictionary::getOrDefaultCompat
         T val;
 
         ITstream& is = eptr->stream();
-        is >> val;
+        dictionaryStreamExtract(is, val);
 
         checkITstream(is, keyword);
 

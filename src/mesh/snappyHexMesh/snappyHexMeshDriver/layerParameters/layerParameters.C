@@ -394,7 +394,7 @@ Foam::layerParameters::layerParameters
             medialAxisMeshMover::typeName
         )
     ),
-    nOuterIter_(dict.getOrDefault<scalar>("nOuterIter", 1))
+    nOuterIter_(dict.getOrDefault<label>("nOuterIter", 1)) // codi: this should be a bug in OF, it should be label instead of scalar
 {
     // Detect layer specification mode
 

@@ -86,7 +86,7 @@ wmake $targetType ODE
 
 thermophysicalModels/Allwmake $targetType $*
 TurbulenceModels/Allwmake $targetType $*
-exit 0
+
 wmake $targetType combustionModels
 
 wmakeLnInclude -u regionFaModels
@@ -109,6 +109,7 @@ wmake $targetType engine
 conversion/Allwmake $targetType $*
 
 phaseSystemModels/Allwmake $targetType $*
+exit 0
 functionObjects/Allwmake $targetType $*
 
 wmake $targetType thermoTools

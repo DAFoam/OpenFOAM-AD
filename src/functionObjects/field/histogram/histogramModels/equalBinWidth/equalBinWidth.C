@@ -74,7 +74,7 @@ bool Foam::histogramModels::equalBinWidth::read(const dictionary& dict)
         dict.getOrDefault<scalar>("max", -GREAT)
     );
 
-    nBins_ = dict.get<scalar>("nBins");
+    nBins_ = dict.get<label>("nBins"); // codi: this should be a bug in OF. It should be a label instead of a scalar
 
     if (nBins_ < 1)
     {
@@ -148,7 +148,7 @@ bool Foam::histogramModels::equalBinWidth::write(const bool log)
 
     forAll(field, celli)
     {
-        const label bini = (field[celli] - histRange.min())/delta;
+        const label bini = ((field[celli] - histRange.min())/delta).getValue(); // codi:
         if (bini >= 0 && bini < nBins_)
         {
             dataNormalised[bini] += V[celli];

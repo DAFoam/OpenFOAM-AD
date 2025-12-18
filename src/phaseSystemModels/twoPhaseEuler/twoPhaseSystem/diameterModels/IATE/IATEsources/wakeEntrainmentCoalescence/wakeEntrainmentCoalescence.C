@@ -67,7 +67,7 @@ wakeEntrainmentCoalescence
 Foam::tmp<Foam::volScalarField>
 Foam::diameterModels::IATEsources::wakeEntrainmentCoalescence::R() const
 {
-    return (-12)*phi()*Cwe_*cbrt(CD())*iate_.a()*Ur();
+    return scalar((-12)*phi())*Cwe_*cbrt(CD())*iate_.a()*Ur(); // codi:
 }
 
 
