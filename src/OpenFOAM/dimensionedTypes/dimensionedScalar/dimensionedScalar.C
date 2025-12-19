@@ -279,6 +279,39 @@ operator/(const T1& ds1, const T2 i2)
     return ds1 / dimensionedScalar(scalar(i2));
 }
 
+// codi: Explicit instantiations for dimensionedScalar operators with AD scalar types
+// These instantiations fix linking errors for operator* and operator/ between
+// scalar (which aliases to AD type) and dimensioned<scalar> (which aliases to dimensioned<AD>)
+template dimensionedScalar operator+(const scalar, const dimensionedScalar&);
+template dimensionedScalar operator-(const scalar, const dimensionedScalar&);
+template dimensionedScalar operator*(const scalar, const dimensionedScalar&);
+template dimensionedScalar operator/(const scalar, const dimensionedScalar&);
+
+template dimensionedScalar operator+(const dimensionedScalar&, const scalar);
+template dimensionedScalar operator-(const dimensionedScalar&, const scalar);
+template dimensionedScalar operator*(const dimensionedScalar&, const scalar);
+template dimensionedScalar operator/(const dimensionedScalar&, const scalar);
+
+template dimensionedScalar operator+(const double, const dimensionedScalar&);
+template dimensionedScalar operator-(const double, const dimensionedScalar&);
+template dimensionedScalar operator*(const double, const dimensionedScalar&);
+template dimensionedScalar operator/(const double, const dimensionedScalar&);
+
+template dimensionedScalar operator+(const dimensionedScalar&, const double);
+template dimensionedScalar operator-(const dimensionedScalar&, const double);
+template dimensionedScalar operator*(const dimensionedScalar&, const double);
+template dimensionedScalar operator/(const dimensionedScalar&, const double);
+
+template dimensionedScalar operator+(const int, const dimensionedScalar&);
+template dimensionedScalar operator-(const int, const dimensionedScalar&);
+template dimensionedScalar operator*(const int, const dimensionedScalar&);
+template dimensionedScalar operator/(const int, const dimensionedScalar&);
+
+template dimensionedScalar operator+(const dimensionedScalar&, const int);
+template dimensionedScalar operator-(const dimensionedScalar&, const int);
+template dimensionedScalar operator*(const dimensionedScalar&, const int);
+template dimensionedScalar operator/(const dimensionedScalar&, const int);
+
 /*
 dimensionedScalar operator+(const dimensionedScalar& ds1, const scalar s2)
 {
