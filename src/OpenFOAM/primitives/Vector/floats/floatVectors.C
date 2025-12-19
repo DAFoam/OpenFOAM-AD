@@ -35,8 +35,9 @@ License
 template<>
 const char* const Foam::Vector<float>::vsType::typeName = "floatVector";
 
+// codi: use doubleScalar instead of double to support AD types
 template<>
-const char* const Foam::Vector<double>::vsType::typeName = "vector";
+const char* const Foam::Vector<Foam::doubleScalar>::vsType::typeName = "vector";
 
 #else
 
@@ -44,8 +45,9 @@ const char* const Foam::Vector<double>::vsType::typeName = "vector";
 template<>
 const char* const Foam::Vector<float>::vsType::typeName = "vector";
 
+// codi: use doubleScalar instead of double to support AD types
 template<>
-const char* const Foam::Vector<double>::vsType::typeName = "doubleVector";
+const char* const Foam::Vector<Foam::doubleScalar>::vsType::typeName = "doubleVector";
 
 // or (TDB):
 //
@@ -108,7 +110,8 @@ const char* const Foam::Vector<double>::vsType::typeName = "doubleVector";
 
 
 defineTraits(float, floatScalar);
-defineTraits(double, doubleScalar);
+// codi: use doubleScalar instead of double to support AD types
+defineTraits(Foam::doubleScalar, doubleScalar);
 
 #undef defineTraits
 

@@ -109,31 +109,30 @@ wmake $targetType engine
 conversion/Allwmake $targetType $*
 
 phaseSystemModels/Allwmake $targetType $*
-exit 0
-functionObjects/Allwmake $targetType $*
+# functionObjects/Allwmake $targetType $*
 
 wmake $targetType thermoTools
 
-regionModels/Allwmake $targetType $*
+#regionModels/Allwmake $targetType $*
 
-wmake $targetType faOptions
-wmake $targetType regionFaModels
+#wmake $targetType faOptions
+#wmake $targetType regionFaModels
 
-lagrangian/Allwmake $targetType $*
-wmake $targetType functionObjects/lagrangian
+#lagrangian/Allwmake $targetType $*
+#wmake $targetType functionObjects/lagrangian
 
 
-wmake $targetType lumpedPointMotion
-wmake $targetType sixDoFRigidBodyMotion
-wmake $targetType sixDoFRigidBodyState
-wmake $targetType rigidBodyDynamics
-wmake $targetType rigidBodyMeshMotion
+#wmake $targetType lumpedPointMotion
+#wmake $targetType sixDoFRigidBodyMotion
+#wmake $targetType sixDoFRigidBodyState
+#wmake $targetType rigidBodyDynamics
+#wmake $targetType rigidBodyMeshMotion
 wmake $targetType atmosphericModels
-wmake $targetType optimisation/adjointOptimisation/adjoint
+#wmake $targetType optimisation/adjointOptimisation/adjoint
 
 
 # interfaceTracking libs
-dynamicFaMesh/Allwmake $targetType $*
+#dynamicFaMesh/Allwmake $targetType $*
 
 
 #------------------------------------------------------------------------------

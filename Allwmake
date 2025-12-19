@@ -65,10 +65,11 @@ fi
 # OpenFOAM libraries
 src/Allwmake $targetType $*
 
-exit 0
-
 # OpenFOAM applications
-applications/Allwmake $targetType $*
+#applications/Allwmake $targetType $*
+
+# Compile a few solvers
+#wmake $targetType $FOAM_SOLVERS/incompressible/simpleFoam
 
 #------------------------------------------------------------------------------
 # Additional components

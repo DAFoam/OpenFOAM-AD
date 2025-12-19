@@ -190,12 +190,17 @@ Istream& operator>>(Istream& is, Scalar& val)
     return is;
 }
 
-// codi: make this work for both doubleScalar and floatScalar
-template<class T, typename std::enable_if<std::is_class<T>::value, int>::type = 0>
-Ostream& operator<<(Ostream& os, const T& val)
+// codi: this operator is not implemented
+// we have a problem here Scalar can be either doubleScalar or floatScalar
+// the former requires val.getValue() but the later require the val
+// we can't satisfy both...
+Ostream& operator<<(Ostream& os, const Scalar val)
 {
-    os.write(val.getValue());
-    os.check(FUNCTION_NAME);
+    Info << "************** Warning!! *****************" << endl;
+    Info << " The operator os<<scalar is not implented!" << endl;
+    Info << "************** Warning!! *****************" << endl;
+    //os.write(val);
+    //os.check(FUNCTION_NAME);
     return os;
 }
 

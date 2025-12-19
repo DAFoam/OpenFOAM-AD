@@ -35,8 +35,9 @@ License
 template<>
 const char* const Foam::Vector2D<float>::vsType::typeName = "floatVector2D";
 
+// codi: use doubleScalar instead of double to support AD types
 template<>
-const char* const Foam::Vector2D<double>::vsType::typeName = "vector2D";
+const char* const Foam::Vector2D<Foam::doubleScalar>::vsType::typeName = "vector2D";
 
 #else
 
@@ -44,8 +45,9 @@ const char* const Foam::Vector2D<double>::vsType::typeName = "vector2D";
 template<>
 const char* const Foam::Vector2D<float>::vsType::typeName = "vector2D";
 
+// codi: use doubleScalar instead of double to support AD types
 template<>
-const char* const Foam::Vector2D<double>::vsType::typeName = "doubleVector2D";
+const char* const Foam::Vector2D<Foam::doubleScalar>::vsType::typeName = "doubleVector2D";
 
 #endif
 
@@ -98,7 +100,8 @@ const char* const Foam::Vector2D<double>::vsType::typeName = "doubleVector2D";
 
 
 defineTraits(float, floatScalar);
-defineTraits(double, doubleScalar);
+// codi: use doubleScalar instead of double to support AD types
+defineTraits(Foam::doubleScalar, doubleScalar);
 
 #undef defineTraits
 

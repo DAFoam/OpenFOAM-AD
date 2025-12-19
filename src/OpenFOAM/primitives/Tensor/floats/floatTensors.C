@@ -35,8 +35,9 @@ License
 template<>
 const char* const Foam::Tensor<float>::vsType::typeName = "floatTensor";
 
+// codi: use doubleScalar instead of double to support AD types
 template<>
-const char* const Foam::Tensor<double>::vsType::typeName = "tensor";
+const char* const Foam::Tensor<Foam::doubleScalar>::vsType::typeName = "tensor";
 
 #else
 // WM_SP, WM_SPDP
@@ -44,8 +45,9 @@ const char* const Foam::Tensor<double>::vsType::typeName = "tensor";
 template<>
 const char* const Foam::Tensor<float>::vsType::typeName = "tensor";
 
+// codi: use doubleScalar instead of double to support AD types
 template<>
-const char* const Foam::Tensor<double>::vsType::typeName = "doubleTensor";
+const char* const Foam::Tensor<Foam::doubleScalar>::vsType::typeName = "doubleTensor";
 
 #endif
 
@@ -108,7 +110,8 @@ const char* const Foam::Tensor<double>::vsType::typeName = "doubleTensor";
 
 
 defineTraits(float, floatScalar);
-defineTraits(double, doubleScalar);
+// codi: use doubleScalar instead of double to support AD types
+defineTraits(Foam::doubleScalar, doubleScalar);
 
 #undef defineTraits
 
