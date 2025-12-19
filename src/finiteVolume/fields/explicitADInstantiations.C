@@ -139,8 +139,35 @@ INSTANTIATE_MIN_MAX(sphericalTensor);
 
 // When scalar is the AD type, these templates match the operators in dimensionedScalar.H
 // Explicit instantiation forces generation in this library (finiteVolume.so)
+template dimensionedScalar operator+(const scalar, const dimensionedScalar&);
+template dimensionedScalar operator-(const scalar, const dimensionedScalar&);
 template dimensionedScalar operator*(const scalar, const dimensionedScalar&);
 template dimensionedScalar operator/(const scalar, const dimensionedScalar&);
+
+template dimensionedScalar operator+(const dimensionedScalar&, const scalar);
+template dimensionedScalar operator-(const dimensionedScalar&, const scalar);
+template dimensionedScalar operator*(const dimensionedScalar&, const scalar);
+template dimensionedScalar operator/(const dimensionedScalar&, const scalar);
+
+template dimensionedScalar operator+(const double, const dimensionedScalar&);
+template dimensionedScalar operator-(const double, const dimensionedScalar&);
+template dimensionedScalar operator*(const double, const dimensionedScalar&);
+template dimensionedScalar operator/(const double, const dimensionedScalar&);
+
+template dimensionedScalar operator+(const dimensionedScalar&, const double);
+template dimensionedScalar operator-(const dimensionedScalar&, const double);
+template dimensionedScalar operator*(const dimensionedScalar&, const double);
+template dimensionedScalar operator/(const dimensionedScalar&, const double);
+
+template dimensionedScalar operator+(const int, const dimensionedScalar&);
+template dimensionedScalar operator-(const int, const dimensionedScalar&);
+template dimensionedScalar operator*(const int, const dimensionedScalar&);
+template dimensionedScalar operator/(const int, const dimensionedScalar&);
+
+template dimensionedScalar operator+(const dimensionedScalar&, const int);
+template dimensionedScalar operator-(const dimensionedScalar&, const int);
+template dimensionedScalar operator*(const dimensionedScalar&, const int);
+template dimensionedScalar operator/(const dimensionedScalar&, const int);
 
 // NOTE: we can't directly put the above operators in dimensionedScalar.C because it will create ambiguity from
 // CoDipack's internal operators...
