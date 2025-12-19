@@ -75,6 +75,10 @@ template<> const direction ensightPTraits<float>::componentOrder[];
 template<> const char* const ensightPTraits<double>::typeName;
 template<> const direction ensightPTraits<double>::componentOrder[];
 
+// codi: Add specialization for CoDiPack AD scalar type (redefines double)
+template<> const char* const ensightPTraits<scalar>::typeName;
+template<> const direction ensightPTraits<scalar>::componentOrder[];
+
 template<> const char* const ensightPTraits<vector>::typeName;
 template<> const direction ensightPTraits<vector>::componentOrder[];
 

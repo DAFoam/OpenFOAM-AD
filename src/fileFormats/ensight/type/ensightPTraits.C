@@ -57,6 +57,18 @@ const Foam::direction
 Foam::ensightPTraits<double>::componentOrder[] = {0};
 
 
+// codi: Add specialization for CoDiPack AD scalar type
+// When using AD, scalar is typedef'd to codi::RealReverse or codi::RealForward
+// This specialization ensures that AD scalars are treated as "scalar" in ensight output
+template<>
+const char* const
+Foam::ensightPTraits<Foam::scalar>::typeName = "scalar";
+
+template<>
+const Foam::direction
+Foam::ensightPTraits<Foam::scalar>::componentOrder[] = {0};
+
+
 template<>
 const char* const
 Foam::ensightPTraits<Foam::vector>::typeName = "vector";

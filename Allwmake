@@ -69,7 +69,15 @@ src/Allwmake $targetType $*
 #applications/Allwmake $targetType $*
 
 # Compile a few solvers
-#wmake $targetType $FOAM_SOLVERS/incompressible/simpleFoam
+wmake $targetType $FOAM_SOLVERS/incompressible/simpleFoam
+#wmake $targetType $FOAM_SOLVERS/incompressible/pimpleFoam
+#wmake $targetType $FOAM_SOLVERS/compressible/rhoSimpleFoam
+
+# Compile a few utils
+#wmake $targetType $FOAM_UTILITIES/parallelProcessing/decomposePar
+#wmake $targetType $FOAM_UTILITIES/parallelProcessing/reconstructPar
+#wmake $targetType $FOAM_UTILITIES/mesh/generation/blockMesh
+#wmake $targetType $FOAM_UTILITIES/mesh/manipulation/checkMesh
 
 #------------------------------------------------------------------------------
 # Additional components

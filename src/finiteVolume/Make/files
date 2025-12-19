@@ -258,6 +258,8 @@ fvsPatchFields = fields/fvsPatchFields
 $(fvsPatchFields)/fvsPatchField/fvsPatchFieldBase.C
 $(fvsPatchFields)/fvsPatchField/fvsPatchFields.C
 
+fields/explicitADInstantiations.C
+
 basicFvsPatchFields = $(fvsPatchFields)/basic
 $(basicFvsPatchFields)/calculated/calculatedFvsPatchFields.C
 $(basicFvsPatchFields)/coupled/coupledFvsPatchFields.C

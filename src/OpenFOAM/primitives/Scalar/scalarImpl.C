@@ -190,17 +190,35 @@ Istream& operator>>(Istream& is, Scalar& val)
     return is;
 }
 
-// codi: this operator is not implemented
-// we have a problem here Scalar can be either doubleScalar or floatScalar
-// the former requires val.getValue() but the later require the val
-// we can't satisfy both...
+// codi: Helper function to extract double from Scalar
+// Works for both AD types (which have getValue()) and plain doubles
+namespace
+{
+    // For AD types that have getValue()
+    template<typename T>
+    typename std::enable_if<
+        std::is_invocable_v<decltype(&T::getValue), T>,
+        double>::type
+    getScalarValue(const T& val)
+    {
+        return val.getValue();
+    }
+
+    // For plain floating point types
+    template<typename T>
+    typename std::enable_if<
+        std::is_floating_point_v<T>,
+        double>::type
+    getScalarValue(const T& val)
+    {
+        return static_cast<double>(val);
+    }
+}
+
 Ostream& operator<<(Ostream& os, const Scalar val)
 {
-    Info << "************** Warning!! *****************" << endl;
-    Info << " The operator os<<scalar is not implented!" << endl;
-    Info << "************** Warning!! *****************" << endl;
-    //os.write(val);
-    //os.check(FUNCTION_NAME);
+    os.write(getScalarValue(val));
+    os.check(FUNCTION_NAME);
     return os;
 }
 
