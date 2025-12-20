@@ -155,7 +155,7 @@ void patchInjection::correct
             patchInjectedMasses0
         );
 
-        patchInjectedMasses_ = 0;
+        patchInjectedMasses_ = scalar(0); // codi:
     }
 }
 

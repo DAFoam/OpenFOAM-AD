@@ -185,7 +185,7 @@ public:
     // Access
 
         //- Return maximum number of parcels to store per surface
-        label maxStoredParcels() const noexcept { return maxStoredParcels_; }
+        label maxStoredParcels() const noexcept { return maxStoredParcels_.getValue(); } // codi:
 
 
     // Evaluation

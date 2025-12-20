@@ -154,8 +154,8 @@ Foam::FaceInteraction<CloudType>::FaceInteraction
     nEscapeParticles_(),
     nStickParticles_(),
     nReboundParticles_(),
-    dMin_(this->coeffDict().getOrDefault("dMin", -GREAT)),
-    dMax_(this->coeffDict().getOrDefault("dMax", GREAT))
+    dMin_(this->coeffDict().getOrDefault("dMin", scalar(-GREAT))), // codi:
+    dMax_(this->coeffDict().getOrDefault("dMax", scalar(GREAT)))
 {
     const List<Tuple2<word, word>> nameAndInteraction
     (

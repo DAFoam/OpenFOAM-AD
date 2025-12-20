@@ -89,7 +89,7 @@ void waxSolventViscosity::correctMu()
 
     const dimensionedScalar Xsolvent0
     (
-        Ysolvent0*Wsolvent/((1 - Ysolvent0)*Wwax + Ysolvent0*Wsolvent)
+        Ysolvent0*Wsolvent/((dimensionedScalar(1) - Ysolvent0)*Wwax + Ysolvent0*Wsolvent) // codi:
     );
 
     mu_ = pow(muWax_/muSolvent_, (1 - Xsolvent)/(1 - Xsolvent0))*muSolvent_;

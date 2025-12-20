@@ -62,7 +62,7 @@ struct particleInfoCombineOp
         p1.age += p2.age;
 
         // Set latest available values
-        if (p2.isOlderThan(p1))
+        if (p2.isOlderThan(p1).getValue()) // codi:
         {
             p1.position = p2.position;
             p1.d = p2.d;

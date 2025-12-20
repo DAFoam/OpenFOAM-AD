@@ -242,9 +242,9 @@ bool Foam::ensightOutput::writeCloudPositions
             {
                 const vector pos(p.position());
 
-                (*iter).x() = narrowFloat(pos.x());
-                (*iter).y() = narrowFloat(pos.y());
-                (*iter).z() = narrowFloat(pos.z());
+                (*iter).x() = narrowFloat(pos.x().getValue()); // codi:
+                (*iter).y() = narrowFloat(pos.y().getValue());
+                (*iter).z() = narrowFloat(pos.z().getValue());
                 ++iter;
             }
         }

@@ -272,13 +272,13 @@ updateAverages
 )
 {
     // zero the sums
-    volumeAverage_() = 0;
-    radiusAverage_() = 0;
-    rhoAverage_() = 0;
+    volumeAverage_() = scalar(0); // codi: change 0 to scalar(0) for all instances
+    radiusAverage_() = scalar(0);
+    rhoAverage_() = scalar(0);
     uAverage_() = Zero;
-    uSqrAverage_() = 0;
-    frequencyAverage_() = 0;
-    massAverage_() = 0;
+    uSqrAverage_() = scalar(0);
+    frequencyAverage_() = scalar(0);
+    massAverage_() = scalar(0);
 
     // temporary weights
     autoPtr<AveragingMethod<scalar>> weightAveragePtr
@@ -332,7 +332,7 @@ updateAverages
 
     // sauter mean radius
     radiusAverage_() = volumeAverage_();
-    weightAverage = 0;
+    weightAverage = scalar(0);
     for (const typename TrackCloudType::parcelType& p : cloud)
     {
         const tetIndices tetIs = p.currentTetIndices();
@@ -348,7 +348,7 @@ updateAverages
     radiusAverage_->average(weightAverage);
 
     // collision frequency
-    weightAverage = 0;
+    weightAverage = scalar(0);
     for (const typename TrackCloudType::parcelType& p : cloud)
     {
         const tetIndices tetIs = p.currentTetIndices();

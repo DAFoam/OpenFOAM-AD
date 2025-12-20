@@ -423,7 +423,9 @@ bool Foam::functionObjects::forceCoeffs::execute()
             logValues(coeffName, coeffValue, Info);
         }
 
-        setResult(coeffName, coeffValue.x() + coeffValue.y() + coeffValue.z());
+        // codi:
+        scalar totalCoef = coeffValue.x() + coeffValue.y() + coeffValue.z(); 
+        setResult(coeffName, totalCoef);
         setResult(coeffName & "pressure", coeffValue.x());
         setResult(coeffName & "viscous", coeffValue.y());
         setResult(coeffName & "internal", coeffValue.z());

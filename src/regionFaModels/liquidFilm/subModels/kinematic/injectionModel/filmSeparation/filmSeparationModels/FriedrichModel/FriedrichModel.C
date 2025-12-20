@@ -406,7 +406,7 @@ tmp<scalarField> FriedrichModel::Fratio() const
 
         // Characteristic breakup length (FLW:Eq. 15)
         const scalar Lb =
-            0.0388*Foam::sqrt(h[i])*Foam::pow(Re, 0.6)*Foam::pow(We, -0.5);
+            0.0388*Foam::sqrt(h[i])*Foam::pow(Re, scalar(0.6))*Foam::pow(We, scalar(-0.5)); // codi:
 
         // Force ratio - denominator (FLW:Eq. 20)
         const scalar den =
@@ -461,7 +461,7 @@ tmp<scalarField> FriedrichModel::Fratio() const
                 // Characteristic breakup length (FLW:Eq. 15)
                 const scalar Lb =
                     0.0388*Foam::sqrt(hp[i])
-                   *Foam::pow(Re, 0.6)*Foam::pow(We, -0.5);
+                   *Foam::pow(Re, scalar(0.6))*Foam::pow(We, scalar(-0.5)); // codi:
 
                 // Force ratio - denominator (FLW:Eq. 20)
                 const scalar den =

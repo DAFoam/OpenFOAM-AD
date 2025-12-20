@@ -64,7 +64,7 @@ Foam::label Foam::sixDoFRigidBodyMotionConstraints::axis::rotationSector
         return 0;
     }
 
-    return label(sign(thetaDir));
+    return label(sign(thetaDir).getValue()); // codi:
 }
 
 
@@ -81,7 +81,7 @@ bool Foam::sixDoFRigidBodyMotionConstraints::axis::calcDir
         return rotationSector;
     }
 
-    return (label(sign(fmDir)) == 1) ? true : false;
+    return (label(sign(fmDir).getValue()) == 1) ? true : false; // codi:
 }
 
 

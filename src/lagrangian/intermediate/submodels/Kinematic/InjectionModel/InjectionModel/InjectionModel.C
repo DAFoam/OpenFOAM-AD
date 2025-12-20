@@ -271,7 +271,7 @@ Foam::InjectionModel<CloudType>::InjectionModel(CloudType& owner)
     nInjections_(this->template getModelProperty<label>("nInjections")),
     parcelsAddedTotal_
     (
-        this->template getModelProperty<scalar>("parcelsAddedTotal")
+        this->template getModelProperty<scalar>("parcelsAddedTotal").getValue() //  codi:
     ),
     parcelBasis_(pbNumber),
     nParticleFixed_(0.0),
@@ -299,10 +299,10 @@ Foam::InjectionModel<CloudType>::InjectionModel
     massTotal_(0),
     massFlowRate_(nullptr),
     massInjected_(this->template getModelProperty<scalar>("massInjected")),
-    nInjections_(this->template getModelProperty<scalar>("nInjections")),
+    nInjections_(this->template getModelProperty<scalar>("nInjections").getValue()), // codi:
     parcelsAddedTotal_
     (
-        this->template getModelProperty<scalar>("parcelsAddedTotal")
+        this->template getModelProperty<scalar>("parcelsAddedTotal").getValue() // codi:
     ),
     parcelBasis_(pbNumber),
     nParticleFixed_(0.0),

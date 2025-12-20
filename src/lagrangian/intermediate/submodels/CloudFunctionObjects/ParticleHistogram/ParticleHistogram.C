@@ -242,7 +242,7 @@ void Foam::ParticleHistogram<CloudType>::write()
             const scalar delta = range_.span()/scalar(nBins_);
             forAll(globalDiameters, j)
             {
-                const label bini = (globalDiameters[j] - range_.min())/delta;
+                const label bini = ((globalDiameters[j] - range_.min())/delta).getValue(); // codi:
                 if (bini >= 0 && bini < nBins_)
                 {
                     nParticles[bini] += globalParticles[j];

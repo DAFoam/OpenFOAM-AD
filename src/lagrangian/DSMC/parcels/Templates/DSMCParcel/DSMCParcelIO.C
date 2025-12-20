@@ -62,7 +62,7 @@ Foam::DSMCParcel<ParcelType>::DSMCParcel
         {
             is  >> U_ >> Ei_ >> typeId_;
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi:
         {
             // Non-native label or scalar size
 

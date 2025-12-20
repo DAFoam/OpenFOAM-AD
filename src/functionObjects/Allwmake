@@ -4,12 +4,12 @@ cd "${0%/*}" || exit                                # Run from this directory
 
 #------------------------------------------------------------------------------
 
-wmake $targetType field
+#wmake $targetType field
 wmake $targetType forces
-wmake $targetType initialisation
-wmake $targetType utilities
-wmake $targetType solvers
-wmake $targetType phaseSystems
+#wmake $targetType initialisation
+#wmake $targetType utilities
+#wmake $targetType solvers
+#wmake $targetType phaseSystems
 
 ./randomProcesses/Allwmake $targetType
 

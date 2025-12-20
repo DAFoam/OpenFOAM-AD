@@ -924,7 +924,7 @@ void Foam::KinematicCloud<CloudType>::info()
     (
         nTotParcel
       ? (returnReduce(totalParticlePerParcel(), sumOp<scalar>()) / nTotParcel)
-      : 0
+      : scalar(0) // codi:
     );
 
     Log_<< "Cloud: " << this->name() << nl

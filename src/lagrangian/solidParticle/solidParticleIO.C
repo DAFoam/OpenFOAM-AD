@@ -55,7 +55,7 @@ Foam::solidParticle::solidParticle
         {
             is  >> d_ >> U_;
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi: we hard-coded the double type
         {
             // Non-native label or scalar size
 

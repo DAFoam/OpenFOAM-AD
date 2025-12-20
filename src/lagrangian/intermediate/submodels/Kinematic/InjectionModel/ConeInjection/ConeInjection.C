@@ -51,7 +51,7 @@ Foam::ConeInjection<CloudType>::ConeInjection
     duration_(this->coeffDict().getScalar("duration")),
     parcelsPerInjector_
     (
-        this->coeffDict().getScalar("parcelsPerInjector")
+        this->coeffDict().getScalar("parcelsPerInjector").getValue() // codi:
     ),
     flowRateProfile_
     (

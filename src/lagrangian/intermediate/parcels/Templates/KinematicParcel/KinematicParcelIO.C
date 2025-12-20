@@ -86,7 +86,7 @@ Foam::KinematicParcel<ParcelType>::KinematicParcel
                 >> UTurb_
                 >> UCorrect_;
         }
-        else if (!is.checkLabelSize<>() || !is.checkScalarSize<>())
+        else if (!is.checkLabelSize<>() || !is.checkScalarSize<double>()) // codi:
         {
             // Non-native label or scalar size
 

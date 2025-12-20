@@ -242,16 +242,16 @@ void Foam::functionObjects::propellerInfo::setSampleDiskGeometry
     pointField& points
 ) const
 {
-    label nPoint = nRadius*nTheta;
+    label nPoint = (nRadius*nTheta).getValue(); // codi:
     if (r1 < SMALL)
     {
         nPoint += 1; // 1 for origin
     }
     else
     {
-        nPoint += nTheta;
+        nPoint += nTheta.getValue(); // codi:
     }
-    const label nFace = nRadius*nTheta;
+    const label nFace = (nRadius*nTheta).getValue(); // codi:
 
     points.resize_nocopy(nPoint);
     faces.resize_nocopy(nFace);
@@ -284,7 +284,7 @@ void Foam::functionObjects::propellerInfo::setSampleDiskGeometry
     }
 
 
-    const List<label> ptIDs(identity(nTheta));
+    const List<label> ptIDs(identity(nTheta.getValue())); // codi:
 
     // Faces
     label facei = 0;
@@ -317,15 +317,15 @@ void Foam::functionObjects::propellerInfo::setSampleDiskGeometry
             {
                 facePts.clear();
 
-                label offset = pointOffset0 + (radiusi-radiusOffset)*nTheta;
+                label offset = pointOffset0 + ((radiusi-radiusOffset)*nTheta).getValue(); // codi:
 
                 // Inner
                 facePts.append(offset + ptIDs.fcIndex(thetai - 1));
                 facePts.append(offset + ptIDs.fcIndex(thetai));
 
                 // Outer
-                facePts.append(offset + nTheta + ptIDs.fcIndex(thetai));
-                facePts.append(offset + nTheta + ptIDs.fcIndex(thetai - 1));
+                facePts.append(offset + nTheta.getValue() + ptIDs.fcIndex(thetai)); // codi:
+                facePts.append(offset + nTheta.getValue() + ptIDs.fcIndex(thetai - 1));
 
                 faces[facei++] = face(facePts);
             }
