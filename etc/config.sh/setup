@@ -46,44 +46,9 @@ unset WM_SHELL_FUNCTIONS
 # Test out-of-source directories for an "Allwmake" file (source)
 # or a "platforms/" directory (runtime-only)
 
+# codi: For AD version: skip ThirdParty detection entirely
 export WM_THIRD_PARTY_DIR=""  # Empty value (before detection)
-
-if [ -e "$WM_PROJECT_DIR/ThirdParty" ]
-then
-    # Directory or file (masks use of ThirdParty entirely)
-    WM_THIRD_PARTY_DIR="$WM_PROJECT_DIR/ThirdParty"
-else
-    _foamEcho "Locating ThirdParty directory"
-    for _foamFoundDir in \
-        "$_foamPrefixDir/ThirdParty-$WM_PROJECT_VERSION" \
-        "$_foamPrefixDir/ThirdParty-v$FOAM_API" \
-        "$_foamPrefixDir/ThirdParty-$FOAM_API" \
-        "$_foamPrefixDir/ThirdParty-common" \
-        ;
-    do
-        _foamEcho "... $_foamFoundDir"
-        if [ -d "$_foamFoundDir" ]
-        then
-            if [ -f "$_foamFoundDir/Allwmake" ] || \
-               [ -d "$_foamFoundDir/platforms" ]
-            then
-                WM_THIRD_PARTY_DIR="$_foamFoundDir"
-                break
-            else
-                _foamEcho "    does not have Allwmake or platforms/"
-            fi
-        fi
-    done
-fi
-
-if [ -z "$WM_THIRD_PARTY_DIR" ]
-then
-    # Dummy fallback value
-    WM_THIRD_PARTY_DIR="$WM_PROJECT_DIR/ThirdParty"
-    _foamEcho "Dummy ThirdParty $WM_THIRD_PARTY_DIR"
-else
-    _foamEcho "ThirdParty $WM_THIRD_PARTY_DIR"
-fi
+_foamEcho "Skip ThirdParty (AD version)"
 # Done with ThirdParty discovery
 
 
