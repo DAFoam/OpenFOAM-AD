@@ -1,0 +1,24 @@
+name: test_adf
+
+on: [push, pull_request]
+
+env:
+  REPO_NAME: 'OpenFOAM-AD'
+  DOCKER_WORKING_DIR: '/home/dockeruser/$REPO_NAME'
+  DOCKER_MOUNT_DIR: '/home/dockeruser/mount/$REPO_NAME'
+
+jobs:
+
+  test_adf:
+    runs-on: ubuntu-24.04
+    name: Tests
+    steps:
+    - uses: actions/checkout@v3
+    - name: Create the docker container and run the tests
+      run: |
+        docker pull dafoam/openfoam:2506
+        docker run -i -d -u dockeruser --name of_test -v $GITHUB_WORKSPACE:${{env.DOCKER_MOUNT_DIR}} dafoam/openfoam:2506 /bin/bash
+        docker exec -i of_test /bin/bash -c "cp -r ${{env.DOCKER_MOUNT_DIR}} ${{env.DOCKER_WORKING_DIR}}"
+        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}} && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADF/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j"
+        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADF -dvName U0"
+        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADF -dvName Xv"

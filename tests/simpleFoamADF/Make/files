@@ -1,0 +1,3 @@
+simpleFoamADF.C
+
+EXE = $(FOAM_APPBIN)/simpleFoamADF

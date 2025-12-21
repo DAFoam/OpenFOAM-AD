@@ -68,7 +68,7 @@
     {
         rDeltaT =
             rDeltaT0
-           *max(rDeltaT/rDeltaT0, scalar(1) - rDeltaTDampingCoeff);
+           *max(rDeltaT/rDeltaT0, dimensionedScalar("rDeltaLimit", dimless, scalar(1) - rDeltaTDampingCoeff)); // codi:
 
         auto limits = gMinMax(rDeltaT.primitiveField());
         limits.reset(1/(limits.max()+VSMALL), 1/(limits.min()+VSMALL));

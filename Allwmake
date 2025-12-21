@@ -68,6 +68,14 @@ src/Allwmake $targetType $*
 # OpenFOAM applications
 applications/Allwmake $targetType $*
 
+# Compile tests
+if [ "$WM_AD_MODE" = "ADR" ]; then
+    wmake tests/simpleFoamADR
+fi
+if [ "$WM_AD_MODE" = "ADF" ]; then
+    wmake tests/simpleFoamADF
+fi
+
 #------------------------------------------------------------------------------
 # Additional components
 

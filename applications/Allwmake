@@ -26,8 +26,8 @@ echo ========================================
 
 # Compile a few solvers
 wmake $targetType $FOAM_SOLVERS/incompressible/simpleFoam
-#wmake $targetType $FOAM_SOLVERS/incompressible/pimpleFoam
-#wmake $targetType $FOAM_SOLVERS/compressible/rhoSimpleFoam
+wmake $targetType $FOAM_SOLVERS/incompressible/pimpleFoam
+wmake $targetType $FOAM_SOLVERS/compressible/rhoSimpleFoam
 
 # Compile a few utils
 wmake $targetType $FOAM_UTILITIES/parallelProcessing/decomposePar
