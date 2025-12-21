@@ -6,14 +6,14 @@ This repository contains the OpenFOAM source code, differentiated using automati
 Download
 --------
 
-We only differentiate certain versions of OpenFOAM releases. Please check the branches (e.g., v1812-ad) in this repository; **the main branch does not contain any AD code**.
+We only differentiate certain versions of OpenFOAM releases. Please check the branches (e.g., v2506-ad) in this repository; **the main branch does not contain any AD code**.
 
 Installation
 ------------
 
-The default build will be for forward mode AD (`WM_CODI_AD_LIB_POSTFIX=ADF`). To compile reverse mode AD, change `WM_CODI_AD_LIB_POSTFIX` to `ADR` in OpenFOAM-v1812-AD/etc/bashrc, source it, and rebuild.
+The default build will be for the reverse mode AD (`export WM_AD_MODE=ADR`). To compile the forward mode AD, change `WM_AD_MODE` to `ADF` in OpenFOAM-AD/etc/bashrc, source it, and rebuild.
 
-NOTE: OpenFOAM-v1812-AD only differentiates necessary libraries for computing partial derivatives and matrix-vector products for [DAFoam](https://dafoam.github.io), it has NOT differentiated the entire OpenFOAM code yet. In other words, some functionalities are still missing (e.g. combustion models).
+NOTE: OpenFOAM-AD only differentiates necessary libraries for computing partial derivatives and matrix-vector products for [DAFoam](https://dafoam.github.io); it has NOT differentiated the entire OpenFOAM code yet. In other words, some functionalities are still missing (e.g., functionObjects and Thirdparty-related libs).
 
 Acknowledgement
 ---------------
