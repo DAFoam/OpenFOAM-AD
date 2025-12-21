@@ -3,7 +3,7 @@ name: docker
 on:
   push:
     branches:
-      - main
+      - v2506-ad
 
 jobs:
   push_to_registry:
