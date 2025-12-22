@@ -226,11 +226,10 @@ Foam::scalarField Foam::coupledPolyPatch::calcFaceTol
             maxLenSqr = max(maxLenSqr, magSqr(pt - cc));
             maxCmpt = max(maxCmpt, cmptMax(cmptMag(pt)));
         }
-        // force to use codi:: to avoid ambiguity
-        tols[facei] = codi::max
+        tols[facei] = max
         (
             SMALL,
-            codi::max(SMALL*maxCmpt, Foam::sqrt(maxLenSqr))
+            max(SMALL*maxCmpt, Foam::sqrt(maxLenSqr))
         );
     }
     return tols;

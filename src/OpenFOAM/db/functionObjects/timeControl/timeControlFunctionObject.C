@@ -632,15 +632,14 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
                         clipThreshold = deltaTCoeff_;
                     }
                     // Adjust time step
-                    // codi: force to use codi:: to avoid ambiguity
                     if (newDeltaT >= deltaT)
                     {
-                        deltaT = codi::min(newDeltaT, clipThreshold*deltaT);
+                        deltaT = min(newDeltaT, clipThreshold*deltaT);
                     }
                     else
                     {
                         clipThreshold = 1/clipThreshold;
-                        deltaT = codi::max(newDeltaT, clipThreshold*deltaT);
+                        deltaT = max(newDeltaT, clipThreshold*deltaT);
                     }
 
                     const_cast<Time&>(time_).setDeltaT(deltaT, false);
@@ -769,13 +768,12 @@ bool Foam::functionObjects::timeControl::adjustTimeStep()
             if (deltaTCoeff_ != GREAT)
             {
                 // Clip time step change to deltaTCoeff
-                // codi force to use codi:: to avoid ambiguity
                 scalar requiredDeltaTCoeff =
                 (
                     max
                     (
                         1.0/deltaTCoeff_,
-                        codi::min(deltaTCoeff_, wantedDT/deltaT0_)
+                        min(deltaTCoeff_, wantedDT/deltaT0_)
                     )
                 );
 

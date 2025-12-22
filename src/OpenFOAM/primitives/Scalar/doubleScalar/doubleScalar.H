@@ -44,6 +44,8 @@ SourceFiles
 #include "pTraits.H"
 #include "word.H"
 
+#include <type_traits>  // codi: For std::enable_if and std::is_same
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 // Typedef (doubleScalar) in scalarFwd.H
@@ -118,11 +120,75 @@ inline Scalar lgamma(const Scalar s)
     return ::lgamma(s.getValue());
 }
 
-// codi: AD-aware pow for two scalars
-inline Scalar pow(const Scalar& x, const Scalar& y)
+// codi: AD-aware pow function overloads
+// ====================================
+// Problem: Ambiguity between codi::pow and Foam::pow when using CoDiPack AD types
+// Solution: Provide Foam::pow overloads with SFINAE to handle all patterns without ambiguity
+//
+// SFINAE strategy:
+// - Use std::is_same to check if ArgA/ArgB is exactly Scalar::Tape::Real (the base real type)
+// - Overloads for Scalar use is_same check (matches only exact Scalar type)
+// - Overloads for ExpressionInterface use !is_same check (matches expressions, not Scalar)
+// - This prevents overlap: each call matches exactly one overload
+//
+// Note: We do NOT provide pow(ExpressionInterface, ExpressionInterface) because:
+// - Without Foam:: prefix: codi::pow is found via ADL (no ambiguity)
+// - With Foam:: prefix: Adding it creates ambiguity with codi::pow
+// - Currently no Foam::pow(expr, expr) calls exist in the codebase
+
+// pow(Scalar, Scalar)
+template<typename T1 = Scalar, typename T2 = Scalar>
+inline typename std::enable_if<
+    std::is_same<T1, Scalar>::value && std::is_same<T2, Scalar>::value,
+    Scalar
+>::type
+pow(const T1& x, const T2& y)
 {
-    using std::pow;
-    return pow(x, y);
+    return codi::pow(x, y);
+}
+
+// pow(ExpressionInterface, Scalar) - e.g., pow(10*v0_, m_)
+template<typename Real, typename ArgA>
+inline typename std::enable_if<
+    !std::is_same<ArgA, typename Scalar::Tape::Real>::value,
+    decltype(codi::pow(std::declval<codi::ExpressionInterface<Real, ArgA>>(), std::declval<Scalar>()))
+>::type
+pow(const codi::ExpressionInterface<Real, ArgA>& x, const Scalar& y)
+{
+    return codi::pow(x, y);
+}
+
+// pow(Scalar, ExpressionInterface) - e.g., pow(m_, 10*v0_)
+template<typename Real, typename ArgB>
+inline typename std::enable_if<
+    !std::is_same<ArgB, typename Scalar::Tape::Real>::value,  // ArgB is not the base of Scalar
+    decltype(codi::pow(std::declval<Scalar>(), std::declval<codi::ExpressionInterface<Real, ArgB>>()))
+>::type
+pow(const Scalar& x, const codi::ExpressionInterface<Real, ArgB>& y)
+{
+    return codi::pow(x, y);
+}
+
+// pow(Scalar, int) - e.g., pow(d.x(), 3)
+template<typename T = Scalar>
+inline typename std::enable_if<
+    std::is_same<T, Scalar>::value,
+    Scalar
+>::type
+pow(const T& x, int y)
+{
+    return codi::pow(x, Scalar(y));
+}
+
+// pow(Scalar, double) - e.g., pow(dE, 3.0)
+template<typename T = Scalar>
+inline typename std::enable_if<
+    std::is_same<T, Scalar>::value,
+    Scalar
+>::type
+pow(const T& x, double y)
+{
+    return codi::pow(x, Scalar(y));
 }
 
 // Normal (double-precision) transcendental functions

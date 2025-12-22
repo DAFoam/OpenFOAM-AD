@@ -1671,7 +1671,7 @@ Foam::Map<Foam::label> Foam::surfaceFeatures::nearestSamples
 
             // Step to next sample point using local distance.
             // Truncate to max 1/minSampleDist samples per feature edge.
-            s += codi::max(minSampleDist*eMag, sampleDist[sampleI]); // codi: disambiguate
+            s += max(minSampleDist*eMag, sampleDist[sampleI]);
 
             if (s >= (1-minSampleDist)*eMag)
             {

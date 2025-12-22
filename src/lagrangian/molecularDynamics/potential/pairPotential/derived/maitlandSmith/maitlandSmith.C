@@ -74,8 +74,8 @@ scalar maitlandSmith::unscaledEnergy(const scalar r) const
 
     return epsilon_
        *(
-            (6.0 / (nr - 6.0))*Foam::pow(r/rm_, -nr)
-          - (nr / (nr - 6.0))*Foam::pow(r/rm_, -6)
+            (6.0 / (nr - 6.0))*pow(r/rm_, -nr) // codi:
+          - (nr / (nr - 6.0))*pow(r/rm_, -6)
         );
 }
 

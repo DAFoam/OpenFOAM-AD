@@ -347,8 +347,7 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
             }
             else
             {
-                // codi: force to use codi:: to avoid ambiguity
-                if (x <= codi::max(a, log(10.0)))
+                if (x <= max(a, log(10.0)))
                 {
                     // (DM:Eq. 15)
                     return 1 - calcPE15(a, x);
@@ -372,8 +371,7 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
     {
         if (a > x || x >= x0)
         {
-            // codi: force to use codi:: to avoid ambiguity
-            if (x <= codi::max(a, log(10.0)))
+            if (x <= max(a, log(10.0)))
             {
                 // (DM:Eq. 15)
                 return 1 - calcPE15(a, x);
@@ -424,8 +422,7 @@ Foam::scalar Foam::Math::incGammaRatio_Q(const scalar a, const scalar x)
                     return erfc(sqrt(x)) + exp(-x)/sqrt(pi*x)*sum;
                 }
             }
-            // codi: force to use codi:: to avoid ambiguity
-            else if (x <= codi::max(a, log(10.0)))
+            else if (x <= max(a, log(10.0)))
             {
                 // (DM:Eq. 15)
                 return 1 - calcPE15(a, x);

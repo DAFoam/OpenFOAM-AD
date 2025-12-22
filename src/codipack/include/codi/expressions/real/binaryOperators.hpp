@@ -646,7 +646,7 @@ namespace codi {
   };
 
 #define OPERATION_LOGIC OperationMax
-#define FUNCTION max
+#define FUNCTION codi_max // codi: avoid ambiguity with OpenFOAM
 #include "binaryOverloads.tpp"
 
 #define OPERATION_LOGIC OperationMax
@@ -706,7 +706,7 @@ namespace codi {
       }
   };
 #define OPERATION_LOGIC OperationMin
-#define FUNCTION min
+#define FUNCTION codi_min // codi: avoid ambiguity with OpenFOAM
 #include "binaryOverloads.tpp"
 
 #define OPERATION_LOGIC OperationMin
@@ -897,8 +897,8 @@ namespace std {
   using codi::ldexp;
   using codi::ldexpf;
   using codi::ldexpl;
-  using codi::max;
-  using codi::min;
+  using codi::codi_max; // codi: avoid ambiguity with OpenFOAM
+  using codi::codi_min; // codi: avoid ambiguity with OpenFOAM
   using codi::pow;
   using codi::powf;
   using codi::powl;

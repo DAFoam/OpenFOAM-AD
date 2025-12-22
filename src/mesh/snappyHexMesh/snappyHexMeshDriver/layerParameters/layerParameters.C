@@ -952,7 +952,7 @@ Foam::scalar Foam::layerParameters::firstLayerThickness
             }
             else
             {
-                return finalLayerThickness*pow(1.0/expansionRatio, nLayers-1);
+                return finalLayerThickness*codi::pow(1.0/expansionRatio, nLayers-1); // codi:
             }
         }
         break;

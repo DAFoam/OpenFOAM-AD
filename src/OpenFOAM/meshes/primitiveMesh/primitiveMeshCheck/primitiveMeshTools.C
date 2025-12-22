@@ -673,8 +673,7 @@ void Foam::primitiveMeshTools::cellClosedness
 
         for (direction cmpt=0; cmpt<vector::nComponents; cmpt++)
         {
-            // force to use codi:: to avoid ambiguity
-            maxOpenness = codi::max
+            maxOpenness = max
             (
                 maxOpenness,
                 mag(sumClosed[celli][cmpt])
@@ -700,8 +699,7 @@ void Foam::primitiveMeshTools::cellClosedness
         if (nDims == 3)
         {
             scalar v = max(ROOTVSMALL, vols[celli]);
-            // force to use codi:: to avoid ambiguity
-            aspectRatio = codi::max
+            aspectRatio = max
             (
                 aspectRatio,
                 1.0/6.0*cmptSum(sumMagClosed[celli])/pow(v, scalar(2.0/3.0))
