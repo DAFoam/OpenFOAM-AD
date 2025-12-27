@@ -111,15 +111,33 @@ bool Foam::UPstream::mpi_send
 
     if (commsType == UPstream::commsTypes::buffered)
     {
-        returnCode = MPI_Bsend
-        (
-            buf,
-            count,
-            datatype,
-            toProcNo,
-            tag,
-            PstreamGlobals::MPICommunicators_[communicator]
-        );
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            Pout << "*********** AMPI_Bsend " << endl;
+            returnCode = AMPI_Bsend
+            (
+                reinterpret_cast<const typename MpiTypes::Type*>(buf),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                toProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            Pout << "*********** MPI_Bsend " << endl;
+            returnCode = MPI_Bsend
+            (
+                buf,
+                count,
+                datatype,
+                toProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
 
         // Assume these are from scatters ...
         profilingPstream::addScatterTime();
@@ -136,27 +154,63 @@ bool Foam::UPstream::mpi_send
     {
         if (UPstream::sendModes::sync == sendMode)
         {
-            returnCode = MPI_Ssend
-            (
-                buf,
-                count,
-                datatype,
-                toProcNo,
-                tag,
-                PstreamGlobals::MPICommunicators_[communicator]
-            );
+            // codi:
+            if (datatype == MPI_DOUBLE && ::mpiTypes)
+            {
+                Pout << "*********** AMPI_Ssend " << endl;
+                returnCode = AMPI_Ssend
+                (
+                    reinterpret_cast<const typename MpiTypes::Type*>(buf),
+                    count,
+                    ::mpiTypes->MPI_TYPE,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator]
+                );
+            }
+            else
+            {
+                Pout << "*********** MPI_Ssend " << endl;
+                returnCode = MPI_Ssend
+                (
+                    buf,
+                    count,
+                    datatype,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator]
+                );
+            }
         }
         else
         {
-            returnCode = MPI_Send
-            (
-                buf,
-                count,
-                datatype,
-                toProcNo,
-                tag,
-                PstreamGlobals::MPICommunicators_[communicator]
-            );
+            // codi:
+            if (datatype == MPI_DOUBLE && ::mpiTypes)
+            {
+                Pout << "*********** AMPI_Send " << endl;
+                returnCode = AMPI_Send
+                (
+                    reinterpret_cast<const typename MpiTypes::Type*>(buf),
+                    count,
+                    ::mpiTypes->MPI_TYPE,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator]
+                );
+            }
+            else
+            {
+                Pout << "*********** MPI_Send " << endl;
+                returnCode = MPI_Send
+                (
+                    buf,
+                    count,
+                    datatype,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator]
+                );
+            }
         }
 
         // Assume these are from scatters ...
@@ -177,6 +231,7 @@ bool Foam::UPstream::mpi_send
 
         if (UPstream::sendModes::sync == sendMode)
         {
+            Pout << "*********** MPI_Issend " << endl;
             returnCode = MPI_Issend
             (
                 buf,
@@ -190,6 +245,7 @@ bool Foam::UPstream::mpi_send
         }
         else
         {
+            Pout << "*********** MPI_Isend " << endl;
             returnCode = MPI_Isend
             (
                 buf,

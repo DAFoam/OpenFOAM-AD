@@ -152,7 +152,8 @@ bool Foam::UPstream::initNull()
 {
     int flag = 0;
 
-    MPI_Finalized(&flag);
+    // codi:
+    AMPI_Finalized(&flag);
     if (flag)
     {
         // Already finalized - this is an error
@@ -163,7 +164,8 @@ bool Foam::UPstream::initNull()
         return false;
     }
 
-    MPI_Initialized(&flag);
+    // codi:
+    AMPI_Initialized(&flag);
     if (flag)
     {
         if (UPstream::debug)
@@ -175,7 +177,8 @@ bool Foam::UPstream::initNull()
     {
         // Not already initialized
 
-        MPI_Init_thread
+        // codi:
+        AMPI_Init_thread
         (
             nullptr,    // argc
             nullptr,    // argv
@@ -197,7 +200,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
     int flag = 0;
     int provided_thread_support = 0;
 
-    MPI_Finalized(&flag);
+    // codi:
+    AMPI_Finalized(&flag);
     if (flag)
     {
         // Already finalized - this is an error
@@ -208,7 +212,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         return false;
     }
 
-    MPI_Initialized(&flag);
+    // codi:
+    AMPI_Initialized(&flag);
     if (flag)
     {
         // Already initialized.
@@ -228,7 +233,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
             Perr<< "UPstream::init : was already initialized\n";
         }
 
-        MPI_Query_thread(&provided_thread_support);
+        // codi:
+        AMPI_Query_thread(&provided_thread_support);
     }
     else
     {
@@ -240,7 +246,8 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
           : MPI_THREAD_SINGLE
         );
 
-        MPI_Init_thread
+        // codi:
+        AMPI_Init_thread
         (
             &argc,
             &argv,
@@ -651,14 +658,16 @@ void Foam::UPstream::shutdown(int errNo)
 {
     int flag = 0;
 
-    MPI_Initialized(&flag);
+    // codi:
+    AMPI_Initialized(&flag);
     if (!flag)
     {
         // MPI not initialized - we have nothing to do
         return;
     }
 
-    MPI_Finalized(&flag);
+    // codi:
+    AMPI_Finalized(&flag);
     if (flag)
     {
         // MPI already finalized - we have nothing to do
@@ -740,7 +749,8 @@ void Foam::UPstream::shutdown(int errNo)
     PstreamGlobals::deinitDataTypes();
     PstreamGlobals::deinitOpCodes();
 
-    MPI_Finalize();
+    // codi:
+    AMPI_Finalize();
 }
 
 

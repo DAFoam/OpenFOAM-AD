@@ -182,6 +182,15 @@ defineUPstreamDataTraits(type_float,  float);
 defineUPstreamDataTraits(type_double, double);
 defineUPstreamDataTraits(type_long_double, long double);
 
+// codi: Register CoDiPack AD types to use MPI APIs with MediPack (AMPI_xxx)
+// This step is critical to allow all MPI APIs to recognize the AD datatype
+#ifdef CODI_ADR
+defineUPstreamDataTraits(type_double, codi::RealReverse);
+#endif
+#ifdef CODI_ADF
+defineUPstreamDataTraits(type_double, codi::RealForward);
+#endif
+
 #undef defineUPstreamDataTraits
 
 // ------------------------------------------------------------------------- //

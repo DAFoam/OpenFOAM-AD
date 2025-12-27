@@ -34,6 +34,9 @@ Foam::DynamicList<bool> Foam::PstreamGlobals::pendingMPIFree_;
 Foam::DynamicList<MPI_Comm> Foam::PstreamGlobals::MPICommunicators_;
 Foam::DynamicList<MPI_Request> Foam::PstreamGlobals::outstandingRequests_;
 
+// codi: MediPack type for AD-aware scalar communication (global namespace)
+MpiTypes* mpiTypes = nullptr;
+
 Foam::PstreamGlobals::DataTypeCountLookupTable
 Foam::PstreamGlobals::dataTypesCount_(1);
 
@@ -73,6 +76,12 @@ void Foam::PstreamGlobals::initCommunicator(const label index)
 
 void Foam::PstreamGlobals::initDataTypes()
 {
+    // codi: Initialize MediPack type following MediPack example
+    if (!::mpiTypes)
+    {
+        ::mpiTypes = new ::MpiTypes();
+    }
+
     static_assert
     (
         PstreamGlobals::DataTypeCountLookupTable::max_size()
@@ -134,6 +143,13 @@ void Foam::PstreamGlobals::initDataTypes()
 
 void Foam::PstreamGlobals::deinitDataTypes()
 {
+    // codi: Cleanup MediPack type
+    if (::mpiTypes)
+    {
+        delete ::mpiTypes;
+        ::mpiTypes = nullptr;
+    }
+
     // User types only
     auto first =
     (
@@ -324,5 +340,7 @@ bool Foam::PstreamGlobals::checkOpCodes()
     return true;
 }
 
+// codi: MediPack header-only implementation
+#include <medi/medi.cpp>
 
 // ************************************************************************* //

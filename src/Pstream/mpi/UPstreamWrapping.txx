@@ -265,16 +265,35 @@ void Foam::PstreamDetail::allReduce
     {
         profilingPstream::beginTiming();
 
-        returnCode =
-            MPI_Allreduce
+        // codi: 
+        // Use AMPI for all MPI_DOUBLE operations (AD scalars are registered as type_double)
+        // We can't use Type to determine the datatype since Type is of void*
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            Pout << "*********** AMPI_Allreduce " << endl;
+            returnCode = AMPI_Allreduce
             (
-                MPI_IN_PLACE,  // recv is also send
+                AMPI_IN_PLACE,
+                reinterpret_cast<typename MpiTypes::Type*>(values),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                toAMPI_Op(optype),
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            Pout << "*********** MPI_Allreduce " << endl;
+            returnCode = MPI_Allreduce
+            (
+                MPI_IN_PLACE,
                 values,
                 count,
                 datatype,
                 optype,
                 PstreamGlobals::MPICommunicators_[communicator]
             );
+        }
 
         profilingPstream::addReduceTime();
     }

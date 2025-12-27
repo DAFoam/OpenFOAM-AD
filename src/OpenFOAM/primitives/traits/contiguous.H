@@ -92,6 +92,18 @@ template<class T>
 struct is_contiguous_scalar : std::is_same<scalar, std::remove_cv_t<T>> {};
 
 
+// codi: Specialization for CoDi AD types to treat it as contiguous for MPI operations
+#ifdef CODI_ADR
+template<> struct is_contiguous<codi::RealReverse> : std::true_type {};
+template<> struct is_contiguous_scalar<codi::RealReverse> : std::true_type {};
+#endif
+
+#ifdef CODI_ADF
+template<> struct is_contiguous<codi::RealForward> : std::true_type {};
+template<> struct is_contiguous_scalar<codi::RealForward> : std::true_type {};
+#endif
+
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 } // End namespace Foam

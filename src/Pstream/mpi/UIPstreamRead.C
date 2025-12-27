@@ -104,9 +104,26 @@ std::streamsize Foam::UPstream::mpi_receive
     {
         // Not UPstream::commsTypes::nonBlocking
 
-        MPI_Status status;
+        AMPI_Status status;
 
+        // codi: MPI for AD types
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
         {
+            Pout << "*********** AMPI_Recv " << endl;
+            returnCode = AMPI_Recv
+            (
+                reinterpret_cast<typename MpiTypes::Type*>(buf),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                fromProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],
+               &status
+            );
+        }
+        else
+        {
+            Pout << "*********** MPI_Recv " << endl;
             returnCode = MPI_Recv
             (
                 buf,
@@ -142,7 +159,23 @@ std::streamsize Foam::UPstream::mpi_receive
 
         // Check size of message read (number of basic elements)
         MPI_Count num_recv(0);
-        MPI_Get_elements_x(&status, datatype, &num_recv);
+
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // NOTE: MPI_Get_count returns the logical count of MediPack types sent,
+            // not the number of underlying doubles. This matches the 'count'
+            // parameter passed to AMPI_Recv.
+            int ampi_count(0);
+            AMPI_Get_count(&status, ::mpiTypes->MPI_TYPE, &ampi_count);
+            num_recv = ampi_count;
+        }
+        else
+        {
+            MPI_Get_elements_x(&status, datatype, &num_recv);
+            // From number of basic elements to number of 'datatype'
+            num_recv /= PstreamGlobals::dataTypesCount_[int(dataTypeId)];
+        }
 
         // Errors
         if (FOAM_UNLIKELY(num_recv == MPI_UNDEFINED || int64_t(num_recv) < 0))
@@ -152,11 +185,6 @@ std::streamsize Foam::UPstream::mpi_receive
                 << " type:" << int(dataTypeId)
                 << " received count is undefined or negative value"
                 << Foam::abort(FatalError);
-        }
-        else
-        {
-            // From number of basic elements to number of 'datatype'
-            num_recv /= PstreamGlobals::dataTypesCount_[int(dataTypeId)];
         }
 
         if (FOAM_UNLIKELY(int64_t(num_recv) > int64_t(UList<char>::max_size())))
@@ -182,6 +210,8 @@ std::streamsize Foam::UPstream::mpi_receive
     }
     else if (commsType == UPstream::commsTypes::nonBlocking)
     {
+
+        Pout << "*********** MPI_Irecv " << endl;
         MPI_Request request;
 
         {

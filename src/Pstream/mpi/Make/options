@@ -1,6 +1,7 @@
 include $(GENERAL_RULES)/mpi-rules
 
-EXE_INC  = $(PFLAGS) $(PINC) $(c++LESSWARN)
+/* codi: added -Wno-non-virtual-dtor */
+EXE_INC  = $(PFLAGS) $(PINC) $(c++LESSWARN) -Wno-non-virtual-dtor
 
 LIB_LIBS = $(PLIBS)
 

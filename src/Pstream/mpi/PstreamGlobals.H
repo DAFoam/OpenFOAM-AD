@@ -44,6 +44,38 @@ SourceFiles
 #include "UPstream.H"  // For UPstream::Request
 #include "openfoam_mpi.H"
 
+// codi: MediPack for AD-aware MPI
+#include <medi/medi.hpp>
+#include <codi.hpp>
+#include <codi/tools/mpi/codiMpiTypes.hpp>
+
+using namespace medi;
+
+#ifdef CODI_ADF
+using MpiTypes = codi::CoDiMpiTypes<codi::RealForward>;
+#endif
+#ifdef CODI_ADR
+using MpiTypes = codi::CoDiMpiTypes<codi::RealReverse>;
+#endif
+
+// codi: Global MediPack type pointer (defined in PstreamGlobals.C)
+extern MpiTypes* mpiTypes;
+
+// codi: Helper function to convert MPI_Op to AMPI_Op
+inline AMPI_Op toAMPI_Op(MPI_Op op)
+{
+    if (op == MPI_SUM) return AMPI_SUM;
+    if (op == MPI_MAX) return AMPI_MAX;
+    if (op == MPI_MIN) return AMPI_MIN;
+
+    FatalErrorInFunction
+        << "Unsupported MPI_Op for AMPI operations. "
+        << "Only MPI_SUM, MPI_MAX, and MPI_MIN are supported."
+        << Foam::abort(Foam::FatalError);
+
+    return AMPI_SUM;  // Never reached
+}
+
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
 namespace Foam
@@ -211,7 +243,6 @@ inline void push_request
         PstreamGlobals::outstandingRequests_.push_back(request);
     }
 }
-
 
 // * * * * * * * * * * * * * * Convenience Methods * * * * * * * * * * * * * //
 

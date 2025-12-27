@@ -120,22 +120,12 @@ void reduce
     }
     else
     {
-        /*
         // static_assert(false, "unsupported data type");
         static_assert
         (
             stdFoam::dependent_false_v<T>,
             "only for specific, contiguous, known data types"
         );
-        */
-
-        // codi: Fallback for types without a direct MPI datatype (e.g. AD types).
-        // Just reduce each entry individually using the single-value reduce,
-        // which already has a gather/broadcast fallback that works with AD.
-        for (int i = 0; i < count; ++i)
-        {
-            Foam::reduce(values[i], bop, tag, communicator);
-        }
     }
 }
 
@@ -187,22 +177,12 @@ void reduce
     }
     else
     {
-        /*
         // static_assert(false, "unsupported data type");
         static_assert
         (
             stdFoam::dependent_false_v<T>,
             "only for specific, contiguous, known data types"
         );
-        */
-       
-        // codi: Fallback for types without a direct MPI datatype (e.g. AD types).
-        // Just reduce each entry individually using the single-value reduce,
-        // which already has a gather/broadcast fallback that works with AD.
-        for (int i = 0; i < count; ++i)
-        {
-            Foam::reduce(values[i], bop, tag, communicator);
-        }
     }
 }
 
@@ -267,7 +247,8 @@ void sumReduce
     const int communicator = UPstream::worldComm
 )
 {
-    // codi: TODO. Comment out this for now!
+    // codi: Comment out this because we support AD type now, and
+    // the AD type is NOT arithmetic
     // static_assert(std::is_arithmetic_v<CountType>, "Counter not arithmetic");
 
     if (!UPstream::is_parallel(communicator))
