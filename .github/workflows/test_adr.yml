@@ -22,3 +22,5 @@ jobs:
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}} && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADR/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j"
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADR -dvName U0"
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADR -dvName Xv"
+        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && decomposePar && mpirun --oversubscribe -np 4 simpleFoamADR -parallel -dvName U0"
+        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && mpirun --oversubscribe -np 4 MPIUnitTests -parallel"

@@ -92,8 +92,8 @@ extern DynamicList<bool> pendingMPIFree_;
 // (eg, MPI_COMM_SELF, MPI_COMM_WORLD)
 extern DynamicList<MPI_Comm> MPICommunicators_;
 
-//- Outstanding non-blocking operations.
-extern DynamicList<MPI_Request> outstandingRequests_;
+//- codi: Outstanding non-blocking operations (stores both MPI and AMPI requests).
+extern DynamicList<AMPI_Request> outstandingRequests_;
 
 // The fundamental count for each UPstream::dataTypes entry
 typedef Foam::FixedList<int, 17> DataTypeCountLookupTable;
@@ -223,9 +223,33 @@ inline void reset_request(UPstream::Request* req) noexcept
 }
 
 
-//- Transcribe MPI_Request to UPstream::Request
-//- (does not affect the stack of outstanding requests)
-//- or else push onto list of outstanding requests
+// codi: the new push_request to take AMPI_Request as an input
+inline void push_request
+(
+    AMPI_Request request,
+    UPstream::Request* req = nullptr
+)
+{
+    // here AMPI_Request is a struct AMPI_Request.request is an MPI_Request
+    if (MPI_REQUEST_NULL != request.request)
+    {
+        // Always push full AMPI_Request to global list to preserve AD metadata
+        label index = PstreamGlobals::outstandingRequests_.size();
+        PstreamGlobals::outstandingRequests_.push_back(request);
+
+        // NOTE: here we need special treatment if req is provided. 
+        // we Store NEGATIVE index to distinguish from positive MPI_Request handles
+        // Index 0 -> -1, index 1 -> -2, index 2 -> -3, etc.
+        // so if the index is negative, it corresponds to AMPI_Request
+        // if the index is positive, it corresponds to MPI_Request
+        if (req)
+        {
+            *req = UPstream::Request(-(index + 1));
+        }
+    }
+}
+
+// codi: the original push_request that used MPI_Request, we will convert it to AMPI_Request
 inline void push_request
 (
     MPI_Request request,
@@ -234,13 +258,26 @@ inline void push_request
 {
     if (req)
     {
-        // Transcribe as UPstream::Request
+        // Request& API: Transcribe as UPstream::Request
         *req = UPstream::Request(request);
     }
     else if (MPI_REQUEST_NULL != request)
     {
-        // Push onto list of requests
-        PstreamGlobals::outstandingRequests_.push_back(request);
+        // Label-based API: Wrap MPI_Request in AMPI_Request and push to unified list
+        // This ensures waitRequestAtIndex() can find it
+        AMPI_Request ampiReq;
+        ampiReq.request = request;
+        ampiReq.handle = nullptr;
+        ampiReq.func = nullptr;
+        ampiReq.start = nullptr;
+        ampiReq.end = nullptr;
+        ampiReq.isActive = false;
+        ampiReq.reverseData = nullptr;
+        ampiReq.deleteDataFunc = nullptr;
+
+        // Note: outstandingRequests_ saves only AMPI_Request
+        // that is why we need to convert MPI_Request to AMPI_Request above
+        PstreamGlobals::outstandingRequests_.push_back(ampiReq);
     }
 }
 
@@ -260,6 +297,79 @@ inline bool broadcast_int64(int64_t& value, int comm)
         MPI_SUCCESS
      == MPI_Bcast(&value, 1, MPI_INT64_T, 0, MPICommunicators_[comm])
     );
+}
+
+
+// * * * * * * * * * * * * * * codi: Request Helpers * * * * * * * * * * * * * * * //
+// these helper functions allow us to operate based on AMPI_Request with minimal
+// change to the original MPI codes
+
+//- codi: Wait for request at index (handles both MPI and AMPI automatically)
+inline void waitRequestAtIndex(const label i)
+{
+    // All requests (both MPI and AMPI) are now stored in outstandingRequests_
+    // MPI requests use only the .request member, AMPI requests use the full structure
+    if (i >= 0 && i < outstandingRequests_.size())
+    {
+        auto& request = outstandingRequests_[i];
+        if (request.request != MPI_REQUEST_NULL)
+        {
+            // Check if this is a real AMPI request or just a wrapped MPI request
+            // Real AMPI requests have handle != nullptr
+            if (request.handle != nullptr)
+            {
+                // Real AMPI request: use AMPI_Wait
+                if (AMPI_Wait(&request, AMPI_STATUS_IGNORE))
+                {
+                    FatalErrorInFunction
+                        << "AMPI_Wait returned with error for index " << i
+                        << Foam::abort(FatalError);
+                }
+            }
+            else
+            {
+                // Wrapped MPI request: use standard MPI_Wait
+                if (MPI_Wait(&request.request, MPI_STATUS_IGNORE))
+                {
+                    FatalErrorInFunction
+                        << "MPI_Wait returned with error for index " << i
+                        << Foam::abort(FatalError);
+                }
+            }
+        }
+    }
+}
+
+//- codi: Test if request at index is finished (handles both MPI and AMPI)
+inline bool testRequestAtIndex(const label i)
+{
+    // All requests (both MPI and AMPI) are stored in outstandingRequests_
+    if (i >= 0 && i < outstandingRequests_.size())
+    {
+        auto& request = outstandingRequests_[i];
+        if (request.request == MPI_REQUEST_NULL)
+        {
+            return true;
+        }
+
+        int flag = 0;
+
+        // Check if this is a real AMPI request or just a wrapped MPI request
+        if (request.handle != nullptr)
+        {
+            // Real AMPI request: use AMPI_Test
+            AMPI_Test(&request, &flag, AMPI_STATUS_IGNORE);
+        }
+        else
+        {
+            // Wrapped MPI request: use standard MPI_Test
+            MPI_Test(&request.request, &flag, MPI_STATUS_IGNORE);
+        }
+
+        return flag != 0;
+    }
+
+    return true;  // Out of range or invalid index
 }
 
 

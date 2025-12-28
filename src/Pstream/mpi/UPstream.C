@@ -714,9 +714,10 @@ void Foam::UPstream::shutdown(int errNo)
     {
         label nOutstanding = 0;
 
-        for (MPI_Request request : PstreamGlobals::outstandingRequests_)
+        // codi:
+        for (const AMPI_Request& request : PstreamGlobals::outstandingRequests_)
         {
-            if (MPI_REQUEST_NULL != request)
+            if (MPI_REQUEST_NULL != request.request)
             {
                 // TBD: MPI_Cancel(&request); MPI_Request_free(&request);
                 ++nOutstanding;

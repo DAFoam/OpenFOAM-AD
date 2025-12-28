@@ -71,6 +71,7 @@ applications/Allwmake $targetType $*
 # Compile tests
 if [ "$WM_AD_MODE" = "ADR" ]; then
     wmake tests/simpleFoamADR
+    wmake tests/MPIUnitTests
 fi
 if [ "$WM_AD_MODE" = "ADF" ]; then
     wmake tests/simpleFoamADF

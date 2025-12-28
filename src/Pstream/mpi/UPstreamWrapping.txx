@@ -270,7 +270,6 @@ void Foam::PstreamDetail::allReduce
         // We can't use Type to determine the datatype since Type is of void*
         if (datatype == MPI_DOUBLE && ::mpiTypes)
         {
-            Pout << "*********** AMPI_Allreduce " << endl;
             returnCode = AMPI_Allreduce
             (
                 AMPI_IN_PLACE,
@@ -283,7 +282,6 @@ void Foam::PstreamDetail::allReduce
         }
         else
         {
-            Pout << "*********** MPI_Allreduce " << endl;
             returnCode = MPI_Allreduce
             (
                 MPI_IN_PLACE,

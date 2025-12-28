@@ -32,7 +32,8 @@ License
 
 Foam::DynamicList<bool> Foam::PstreamGlobals::pendingMPIFree_;
 Foam::DynamicList<MPI_Comm> Foam::PstreamGlobals::MPICommunicators_;
-Foam::DynamicList<MPI_Request> Foam::PstreamGlobals::outstandingRequests_;
+// codi: we need to use AMPI_Request
+Foam::DynamicList<AMPI_Request> Foam::PstreamGlobals::outstandingRequests_;
 
 // codi: MediPack type for AD-aware scalar communication (global namespace)
 MpiTypes* mpiTypes = nullptr;

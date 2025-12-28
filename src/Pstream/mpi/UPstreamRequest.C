@@ -101,7 +101,18 @@ void Foam::UPstream::addRequest(UPstream::Request& req)
         MPI_Request request = PstreamUtils::Cast::to_mpi(req);
         if (MPI_REQUEST_NULL != request)
         {
-            PstreamGlobals::outstandingRequests_.push_back(request);
+            // codi: Wrap MPI_Request in AMPI_Request structure for unified storage
+            AMPI_Request ampiReq;
+            ampiReq.request = request;
+            ampiReq.handle = nullptr;
+            ampiReq.func = nullptr;
+            ampiReq.start = nullptr;
+            ampiReq.end = nullptr;
+            ampiReq.isActive = false;
+            ampiReq.reverseData = nullptr;
+            ampiReq.deleteDataFunc = nullptr;
+
+            PstreamGlobals::outstandingRequests_.push_back(ampiReq);
         }
     }
 
@@ -124,11 +135,12 @@ void Foam::UPstream::cancelRequest(const label i)
     }
 
     {
+        // codi: we use AMPI_Request
         auto& request = PstreamGlobals::outstandingRequests_[i];
-        if (MPI_REQUEST_NULL != request)  // Active handle is mandatory
+        if (MPI_REQUEST_NULL != request.request)  // Active handle is mandatory
         {
-            MPI_Cancel(&request);
-            MPI_Request_free(&request);  //<- Sets to MPI_REQUEST_NULL
+            MPI_Cancel(&request.request);
+            MPI_Request_free(&request.request);  //<- Sets to MPI_REQUEST_NULL
         }
     }
 }
@@ -203,11 +215,12 @@ void Foam::UPstream::removeRequests(const label pos, label len)
 
     for (const label i : range)
     {
+        // codi: we use AMPI_Request
         auto& request = PstreamGlobals::outstandingRequests_[i];
-        if (MPI_REQUEST_NULL != request)  // Active handle is mandatory
+        if (MPI_REQUEST_NULL != request.request)  // Active handle is mandatory
         {
-            MPI_Cancel(&request);
-            MPI_Request_free(&request);  //<- Sets to MPI_REQUEST_NULL
+            MPI_Cancel(&request.request);
+            MPI_Request_free(&request.request);  //<- Sets to MPI_REQUEST_NULL
         }
     }
 
@@ -301,21 +314,22 @@ void Foam::UPstream::waitRequests(const label pos, label len)
 
     if (count == 1)
     {
-        // On success: sets request to MPI_REQUEST_NULL
-        if (MPI_Wait(waitRequests, MPI_STATUS_IGNORE))
+        // On success: sets request to AMPI_REQUEST_NULL
+        if (AMPI_Wait(waitRequests, MPI_STATUS_IGNORE))
         {
             FatalErrorInFunction
-                << "MPI_Wait returned with error"
+                << "AMPI_Wait returned with error"
                 << Foam::abort(FatalError);
         }
     }
     else if (count > 1)
     {
-        // On success: sets each request to MPI_REQUEST_NULL
-        if (MPI_Waitall(count, waitRequests, MPI_STATUSES_IGNORE))
+        // codi: On success: sets each request to AMPI_REQUEST_NULL
+        // NOTE: we need to use AMPI_Wait
+        if (AMPI_Waitall(count, waitRequests, MPI_STATUSES_IGNORE))
         {
             FatalErrorInFunction
-                << "MPI_Waitall returned with error"
+                << "AMPI_Waitall returned with error"
                 << Foam::abort(FatalError);
         }
     }
@@ -417,12 +431,13 @@ bool Foam::UPstream::waitAnyRequest(const label pos, label len)
 
     profilingPstream::beginTiming();
 
-    // On success: sets request to MPI_REQUEST_NULL
+    // On success: sets request to AMPI_REQUEST_NULL
+    // codi: we need to use AMPI_Wait!
     int index = MPI_UNDEFINED;
-    if (MPI_Waitany(count, waitRequests, &index, MPI_STATUS_IGNORE))
+    if (AMPI_Waitany(count, waitRequests, &index, MPI_STATUS_IGNORE))
     {
         FatalErrorInFunction
-            << "MPI_Waitany returned with error"
+            << "AMPI_Waitany returned with error"
             << Foam::abort(FatalError);
     }
 
@@ -490,11 +505,12 @@ bool Foam::UPstream::waitSomeRequests
 
     profilingPstream::beginTiming();
 
-    // On success: sets non-blocking requests to MPI_REQUEST_NULL
+    // On success: sets non-blocking requests to AMPI_REQUEST_NULL
+    // codi: We need to use AMPI_Wait
     int outcount = 0;
     if
     (
-        MPI_Waitsome
+        AMPI_Waitsome
         (
             count,
             waitRequests,
@@ -505,7 +521,7 @@ bool Foam::UPstream::waitSomeRequests
     )
     {
         FatalErrorInFunction
-            << "MPI_Waitsome returned with error"
+            << "AMPI_Waitsome returned with error"
             << Foam::abort(FatalError);
     }
 
@@ -734,21 +750,10 @@ Foam::label Foam::UPstream::waitAnyRequest(UList<UPstream::Request>& requests)
 
 void Foam::UPstream::waitRequest(const label i)
 {
-    // No-op for non-parallel, or out-of-range (eg, placeholder indices)
-    if
-    (
-        !UPstream::parRun()
-     || i < 0
-     || i >= PstreamGlobals::outstandingRequests_.size()
-    )
-    {
-        return;
-    }
-
-    auto& request = PstreamGlobals::outstandingRequests_[i];
-
-    // No-op for null request
-    if (MPI_REQUEST_NULL == request)
+    // No-op for non-parallel or invalid index
+    // codi: we have to remove the || condition for the size check because
+    // we save both MPI and AMPI requests
+    if (!UPstream::parRun() || i < 0)
     {
         return;
     }
@@ -761,13 +766,8 @@ void Foam::UPstream::waitRequest(const label i)
 
     profilingPstream::beginTiming();
 
-    // On success: sets request to MPI_REQUEST_NULL
-    if (MPI_Wait(&request, MPI_STATUS_IGNORE))
-    {
-        FatalErrorInFunction
-            << "MPI_Wait returned with error"
-            << Foam::abort(FatalError);
-    }
+    // codi: Use helper that handles both MPI and AMPI automatically
+    PstreamGlobals::waitRequestAtIndex(i);
 
     profilingPstream::addWaitTime();
 
@@ -781,27 +781,65 @@ void Foam::UPstream::waitRequest(const label i)
 
 void Foam::UPstream::waitRequest(UPstream::Request& req)
 {
+    // codi: we need to do major change to the waitRequest code logic for AMPI_Request
+
     // No-op for non-parallel
     if (!UPstream::parRun())
     {
         return;
     }
 
-    MPI_Request request = PstreamUtils::Cast::to_mpi(req);
+    // codi: get the request value
+    std::intptr_t value = req.value();
 
-    // No-op for null request
-    if (MPI_REQUEST_NULL == request)
+    // codi: No-op for null request
+    if (value == 0)
     {
         return;
     }
 
     profilingPstream::beginTiming();
 
-    if (MPI_Wait(&request, MPI_STATUS_IGNORE))
+    // codi: Check if this is an AD request (negative index) or MPI request (positive)
+    if (value < 0)
     {
-        FatalErrorInFunction
-            << "MPI_Wait returned with error"
-            << Foam::abort(FatalError);
+        // AD request: stored as negative index
+        // Decode: -1 → index 0, -2 → index 1, etc.
+        label index = -(value + 1);
+
+        if (index >= 0 && index < PstreamGlobals::outstandingRequests_.size())
+        {
+            AMPI_Request& request = PstreamGlobals::outstandingRequests_[index];
+
+            if (AMPI_Wait(&request, MPI_STATUS_IGNORE))
+            {
+                FatalErrorInFunction
+                    << "AMPI_Wait returned with error"
+                    << Foam::abort(FatalError);
+            }
+
+            // Mark as completed (set to REQUEST_NULL)
+            request.request = MPI_REQUEST_NULL;
+        }
+        else
+        {
+            FatalErrorInFunction
+                << "Invalid AD request index: " << index
+                << " (size=" << PstreamGlobals::outstandingRequests_.size() << ")"
+                << Foam::abort(FatalError);
+        }
+    }
+    else
+    {
+        // Standard MPI request: stored as positive value
+        MPI_Request request = PstreamUtils::Cast::to_mpi(req);
+
+        if (MPI_Wait(&request, MPI_STATUS_IGNORE))
+        {
+            FatalErrorInFunction
+                << "MPI_Wait returned with error"
+                << Foam::abort(FatalError);
+        }
     }
 
     profilingPstream::addWaitTime();
@@ -812,13 +850,10 @@ void Foam::UPstream::waitRequest(UPstream::Request& req)
 
 bool Foam::UPstream::finishedRequest(const label i)
 {
-    // No-op for non-parallel, or out-of-range (eg, placeholder indices)
-    if
-    (
-        !UPstream::parRun()
-     || i < 0
-     || i >= PstreamGlobals::outstandingRequests_.size()
-    )
+    // codi: No-op for non-parallel or invalid index
+    // we have to remove the || condition for the size check because
+    // we save both MPI and AMPI requests
+    if (!UPstream::parRun() || i < 0)
     {
         return true;
     }
@@ -829,19 +864,8 @@ bool Foam::UPstream::finishedRequest(const label i)
             << i << endl;
     }
 
-    auto& request = PstreamGlobals::outstandingRequests_[i];
-
-    // Fast-path (no-op) for null request
-    if (MPI_REQUEST_NULL == request)
-    {
-        return true;
-    }
-
-    // On success: sets request to MPI_REQUEST_NULL
-    int flag = 0;
-    MPI_Test(&request, &flag, MPI_STATUS_IGNORE);
-
-    return flag != 0;
+    // codi: Use helper that handles both MPI and AMPI automatically
+    return PstreamGlobals::testRequestAtIndex(i);
 }
 
 
@@ -853,21 +877,63 @@ bool Foam::UPstream::finishedRequest(UPstream::Request& req)
         return true;
     }
 
-    MPI_Request request = PstreamUtils::Cast::to_mpi(req);
+    // codi:
+    std::intptr_t value = req.value();
 
-    // Fast-path (no-op) for null request
-    if (MPI_REQUEST_NULL == request)
+    // codi: Fast-path (no-op) for null request
+    if (value == 0)
     {
         return true;
     }
 
     int flag = 0;
-    MPI_Test(&request, &flag, MPI_STATUS_IGNORE);
 
-    if (flag)
+    // codi: Check if this is an AD request (negative index) or MPI request (positive)
+    if (value < 0)
     {
-        // Success: now inactive
-        req = UPstream::Request(MPI_REQUEST_NULL);
+        // AD request: stored as negative index
+        // Decode: -1 → index 0, -2 → index 1, etc.
+        label index = -(value + 1);
+
+        if (index >= 0 && index < PstreamGlobals::outstandingRequests_.size())
+        {
+            AMPI_Request& request = PstreamGlobals::outstandingRequests_[index];
+
+            // Fast-path for already completed request
+            if (MPI_REQUEST_NULL == request.request)
+            {
+                return true;
+            }
+
+            AMPI_Test(&request, &flag, MPI_STATUS_IGNORE);
+
+            if (flag)
+            {
+                // Success: mark as completed
+                request.request = MPI_REQUEST_NULL;
+                req = UPstream::Request(MPI_REQUEST_NULL);
+            }
+        }
+        else
+        {
+            FatalErrorInFunction
+                << "Invalid AD request index: " << index
+                << " (size=" << PstreamGlobals::outstandingRequests_.size() << ")"
+                << Foam::abort(FatalError);
+        }
+    }
+    else
+    {
+        // Standard MPI request: stored as positive value
+        MPI_Request request = PstreamUtils::Cast::to_mpi(req);
+
+        MPI_Test(&request, &flag, MPI_STATUS_IGNORE);
+
+        if (flag)
+        {
+            // Success: now inactive
+            req = UPstream::Request(MPI_REQUEST_NULL);
+        }
     }
 
     return flag != 0;
@@ -911,19 +977,22 @@ bool Foam::UPstream::finishedRequests(const label pos, label len)
     if (count == 1)
     {
         // Fast-path (no-op) for single null request
-        if (MPI_REQUEST_NULL == *waitRequests)
+        // codi:
+        if (MPI_REQUEST_NULL == waitRequests->request)
         {
             return true;
         }
 
-        // On success: sets request to MPI_REQUEST_NULL
-        MPI_Test(waitRequests, &flag, MPI_STATUS_IGNORE);
+        // On success: sets request to AMPI_REQUEST_NULL
+        // codi:
+        AMPI_Test(waitRequests, &flag, MPI_STATUS_IGNORE);
     }
     else if (count > 1)
     {
-        // On success: sets each request to MPI_REQUEST_NULL
+        // On success: sets each request to AMPI_REQUEST_NULL
         // On failure: no request is modified
-        MPI_Testall(count, waitRequests, &flag, MPI_STATUSES_IGNORE);
+        // codi:
+        AMPI_Testall(count, waitRequests, &flag, MPI_STATUSES_IGNORE);
     }
 
     return flag != 0;
@@ -1007,122 +1076,23 @@ bool Foam::UPstream::finishedRequestPair(label& req0, label& req1)
         return true;
     }
 
-    bool anyActive = false;
-    MPI_Request waitRequests[2];
+    // codi: Use helper functions to test each request individually
+    bool finished0 = PstreamGlobals::testRequestAtIndex(req0);
+    bool finished1 = PstreamGlobals::testRequestAtIndex(req1);
 
-    // No-op for out-of-range (eg, placeholder indices)
-
-    if (req0 >= 0 && req0 < PstreamGlobals::outstandingRequests_.size())
-    {
-        waitRequests[0] = PstreamGlobals::outstandingRequests_[req0];
-    }
-    else
-    {
-        waitRequests[0] = MPI_REQUEST_NULL;
-    }
-
-    if (req1 >= 0 && req1 < PstreamGlobals::outstandingRequests_.size())
-    {
-        waitRequests[1] = PstreamGlobals::outstandingRequests_[req1];
-    }
-    else
-    {
-        waitRequests[1] = MPI_REQUEST_NULL;
-    }
-
-    if (MPI_REQUEST_NULL != waitRequests[0])  // An active handle
-    {
-        anyActive = true;
-    }
-    else
+    // Mark finished requests as done
+    if (finished0)
     {
         req0 = -1;
     }
 
-    if (MPI_REQUEST_NULL != waitRequests[1])  // An active handle
-    {
-        anyActive = true;
-    }
-    else
+    if (finished1)
     {
         req1 = -1;
     }
 
-    if (!anyActive)
-    {
-        // No active handles
-        return true;
-    }
-
-    profilingPstream::beginTiming();
-
-    // On success: sets each request to MPI_REQUEST_NULL
-    int indices[2];
-    int outcount = 0;
-    if
-    (
-        MPI_Testsome
-        (
-            2,
-            waitRequests,
-           &outcount,
-            indices,
-            MPI_STATUSES_IGNORE
-        )
-    )
-    {
-        FatalErrorInFunction
-            << "MPI_Testsome returned with error"
-            << Foam::abort(FatalError);
-    }
-
-    profilingPstream::addWaitTime();
-
-    if (outcount == MPI_UNDEFINED)
-    {
-        // No active request handles.
-        // Slight pedantic, but copy back requests in case they were altered
-
-        if (req0 >= 0)
-        {
-            PstreamGlobals::outstandingRequests_[req0] = waitRequests[0];
-        }
-
-        if (req1 >= 0)
-        {
-            PstreamGlobals::outstandingRequests_[req1] = waitRequests[1];
-        }
-
-        // Flag indices as 'done'
-        req0 = -1;
-        req1 = -1;
-        return true;
-    }
-
-    // Copy back requests to their 'stack' locations
-    for (int i = 0; i < outcount; ++i)
-    {
-        const int idx = indices[i];
-
-        if (idx == 0)
-        {
-            if (req0 >= 0)
-            {
-                PstreamGlobals::outstandingRequests_[req0] = waitRequests[0];
-                req0 = -1;
-            }
-        }
-        if (idx == 1)
-        {
-            if (req1 >= 0)
-            {
-                PstreamGlobals::outstandingRequests_[req1] = waitRequests[1];
-                req1 = -1;
-            }
-        }
-    }
-
-    return (outcount > 0);
+    // Return true if both are finished
+    return (finished0 && finished1);
 }
 
 
@@ -1136,55 +1106,13 @@ void Foam::UPstream::waitRequestPair(label& req0, label& req1)
         return;
     }
 
-    int count = 0;
-    MPI_Request waitRequests[2];
+    // codi: Use helper functions to wait for each request individually
+    PstreamGlobals::waitRequestAtIndex(req0);
+    PstreamGlobals::waitRequestAtIndex(req1);
 
-    // No-op for out-of-range (eg, placeholder indices)
-    // Prefilter inactive handles
-
-    if (req0 >= 0 && req0 < PstreamGlobals::outstandingRequests_.size())
-    {
-        waitRequests[count] = PstreamGlobals::outstandingRequests_[req0];
-        PstreamGlobals::outstandingRequests_[req0] = MPI_REQUEST_NULL;
-
-        if (MPI_REQUEST_NULL != waitRequests[count])  // An active handle
-        {
-            ++count;
-        }
-    }
-
-    if (req1 >= 0 && req1 < PstreamGlobals::outstandingRequests_.size())
-    {
-        waitRequests[count] = PstreamGlobals::outstandingRequests_[req1];
-        PstreamGlobals::outstandingRequests_[req1] = MPI_REQUEST_NULL;
-
-        if (MPI_REQUEST_NULL != waitRequests[count])  // An active handle
-        {
-            ++count;
-        }
-    }
-
-    // Flag in advance as being handled
+    // Flag indices as 'done'
     req0 = -1;
     req1 = -1;
-
-    if (!count)
-    {
-        // No active handles
-        return;
-    }
-
-    profilingPstream::beginTiming();
-
-    // On success: sets each request to MPI_REQUEST_NULL
-    if (MPI_Waitall(count, waitRequests, MPI_STATUSES_IGNORE))
-    {
-        FatalErrorInFunction
-            << "MPI_Waitall returned with error"
-            << Foam::abort(FatalError);
-    }
-
-    profilingPstream::addWaitTime();
 }
 
 

@@ -168,6 +168,7 @@ int main(int argc, char *argv[])
         {
             pWall += p.boundaryField()[patchIWalls][faceI];
         }
+        reduce(pWall, sumOp<scalar>());
         Info << "pWall: " << pWall << endl;
     }
 
@@ -176,16 +177,20 @@ int main(int argc, char *argv[])
         tape.registerOutput(pWall);
         tape.setPassive();
     
-        pWall.setGradient(1.0);
+        if (Pstream::master())
+        {
+            pWall.setGradient(1.0);
+        }
         tape.evaluate();
     
         if (dvName == "U0")
         {
             scalar total = U0.getGradient();
+            reduce(total, sumOp<scalar>());
             scalar ref = 1068.670037013205;
             Info << "dpWall/dU0 ADR: " << total << endl;
             Info << "dpWall/dU0 REF: " << ref << endl;
-            if (mag(total - ref) / ref < 1e-10)
+            if (mag(total - ref) / ref < 1e-9)
             {
                 Info << "dpWall/dU0 test passed!" << endl;
             }

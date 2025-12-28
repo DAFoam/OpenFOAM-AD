@@ -109,7 +109,6 @@ std::streamsize Foam::UPstream::mpi_receive
         // codi: MPI for AD types
         if (datatype == MPI_DOUBLE && ::mpiTypes)
         {
-            Pout << "*********** AMPI_Recv " << endl;
             returnCode = AMPI_Recv
             (
                 reinterpret_cast<typename MpiTypes::Type*>(buf),
@@ -123,7 +122,6 @@ std::streamsize Foam::UPstream::mpi_receive
         }
         else
         {
-            Pout << "*********** MPI_Recv " << endl;
             returnCode = MPI_Recv
             (
                 buf,
@@ -210,10 +208,24 @@ std::streamsize Foam::UPstream::mpi_receive
     }
     else if (commsType == UPstream::commsTypes::nonBlocking)
     {
+        // codi: always use AMPI_Request
+        AMPI_Request request = AMPI_REQUEST_NULL;
 
-        Pout << "*********** MPI_Irecv " << endl;
-        MPI_Request request;
-
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode = AMPI_Irecv
+            (
+                reinterpret_cast<typename MpiTypes::Type*>(buf),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                fromProcNo,
+                tag,
+                PstreamGlobals::MPICommunicators_[communicator],
+               &request
+            );
+        }
+        else
         {
             returnCode = MPI_Irecv
             (
@@ -223,7 +235,7 @@ std::streamsize Foam::UPstream::mpi_receive
                 fromProcNo,
                 tag,
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request  // Use .request member for standard MPI
             );
         }
 

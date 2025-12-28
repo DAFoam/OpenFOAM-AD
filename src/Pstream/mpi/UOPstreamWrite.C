@@ -114,7 +114,6 @@ bool Foam::UPstream::mpi_send
         // codi:
         if (datatype == MPI_DOUBLE && ::mpiTypes)
         {
-            Pout << "*********** AMPI_Bsend " << endl;
             returnCode = AMPI_Bsend
             (
                 reinterpret_cast<const typename MpiTypes::Type*>(buf),
@@ -127,7 +126,6 @@ bool Foam::UPstream::mpi_send
         }
         else
         {
-            Pout << "*********** MPI_Bsend " << endl;
             returnCode = MPI_Bsend
             (
                 buf,
@@ -157,7 +155,6 @@ bool Foam::UPstream::mpi_send
             // codi:
             if (datatype == MPI_DOUBLE && ::mpiTypes)
             {
-                Pout << "*********** AMPI_Ssend " << endl;
                 returnCode = AMPI_Ssend
                 (
                     reinterpret_cast<const typename MpiTypes::Type*>(buf),
@@ -170,7 +167,6 @@ bool Foam::UPstream::mpi_send
             }
             else
             {
-                Pout << "*********** MPI_Ssend " << endl;
                 returnCode = MPI_Ssend
                 (
                     buf,
@@ -187,7 +183,6 @@ bool Foam::UPstream::mpi_send
             // codi:
             if (datatype == MPI_DOUBLE && ::mpiTypes)
             {
-                Pout << "*********** AMPI_Send " << endl;
                 returnCode = AMPI_Send
                 (
                     reinterpret_cast<const typename MpiTypes::Type*>(buf),
@@ -200,7 +195,6 @@ bool Foam::UPstream::mpi_send
             }
             else
             {
-                Pout << "*********** MPI_Send " << endl;
                 returnCode = MPI_Send
                 (
                     buf,
@@ -227,35 +221,68 @@ bool Foam::UPstream::mpi_send
     }
     else if (commsType == UPstream::commsTypes::nonBlocking)
     {
-        MPI_Request request;
+        // codi: always use AMPI_Request
+        AMPI_Request request = AMPI_REQUEST_NULL;
 
         if (UPstream::sendModes::sync == sendMode)
         {
-            Pout << "*********** MPI_Issend " << endl;
-            returnCode = MPI_Issend
-            (
-                buf,
-                count,
-                datatype,
-                toProcNo,
-                tag,
-                PstreamGlobals::MPICommunicators_[communicator],
-               &request
-            );
+            // codi:
+            if (datatype == MPI_DOUBLE && ::mpiTypes)
+            {
+                returnCode = AMPI_Issend
+                (
+                    reinterpret_cast<const typename MpiTypes::Type*>(buf),
+                    count,
+                    ::mpiTypes->MPI_TYPE,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request
+                );
+            }
+            else
+            {
+                returnCode = MPI_Issend
+                (
+                    buf,
+                    count,
+                    datatype,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request.request  // Use .request member for standard MPI
+                );
+            }
         }
         else
         {
-            Pout << "*********** MPI_Isend " << endl;
-            returnCode = MPI_Isend
-            (
-                buf,
-                count,
-                datatype,
-                toProcNo,
-                tag,
-                PstreamGlobals::MPICommunicators_[communicator],
-               &request
-            );
+            // codi:
+            if (datatype == MPI_DOUBLE && ::mpiTypes)
+            {
+                returnCode = AMPI_Isend
+                (
+                    reinterpret_cast<const typename MpiTypes::Type*>(buf),
+                    count,
+                    ::mpiTypes->MPI_TYPE,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request
+                );
+            }
+            else
+            {
+                returnCode = MPI_Isend
+                (
+                    buf,
+                    count,
+                    datatype,
+                    toProcNo,
+                    tag,
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request.request  // Use .request member for standard MPI
+                );
+            }
         }
 
         if (FOAM_UNLIKELY(UPstream::debug))
