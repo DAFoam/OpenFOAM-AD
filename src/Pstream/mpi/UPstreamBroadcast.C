@@ -103,14 +103,30 @@ bool Foam::UPstream::mpi_broadcast
                         << " substage" << Foam::endl;
                 }
 
-                returnCode = MPI_Bcast
-                (
-                    buf,
-                    count,
-                    datatype,
-                    0,  // (root rank) == UPstream::masterNo()
-                    PstreamGlobals::MPICommunicators_[subComm]
-                );
+                // codi:
+                if (datatype == MPI_DOUBLE && ::mpiTypes)
+                {
+                    returnCode = AMPI_Bcast
+                    (
+                        reinterpret_cast<typename MpiTypes::Type*>(buf),
+                        count,
+                        ::mpiTypes->MPI_TYPE,
+                        0,  // (root rank) == UPstream::masterNo()
+                        PstreamGlobals::MPICommunicators_[subComm]
+                    );
+                }
+                else
+                {
+                    returnCode = MPI_Bcast
+                    (
+                        buf,
+                        count,
+                        datatype,
+                        0,  // (root rank) == UPstream::masterNo()
+                        PstreamGlobals::MPICommunicators_[subComm]
+                    );
+                }
+
             }
         }
     }
@@ -119,14 +135,29 @@ bool Foam::UPstream::mpi_broadcast
         // Regular broadcast
         // OR: PstreamDetail::broadcast(buf, count, datatype, communicator);
 
-        returnCode = MPI_Bcast
-        (
-            buf,
-            count,
-            datatype,
-            0,  // (root rank) == UPstream::masterNo()
-            PstreamGlobals::MPICommunicators_[communicator]
-        );
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode = AMPI_Bcast
+            (
+                reinterpret_cast<typename MpiTypes::Type*>(buf),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                0,  // (root rank) == UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            returnCode = MPI_Bcast
+            (
+                buf,
+                count,
+                datatype,
+                0,  // (root rank) == UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
     }
 
     profilingPstream::addBroadcastTime();

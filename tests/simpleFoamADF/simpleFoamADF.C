@@ -121,10 +121,24 @@ int main(int argc, char *argv[])
     else if (dvName == "Xv")
     {
         pointField meshPoints = mesh.points();
-        label pointI = 196;
-        label comp = 1;
-        Info << "Seed mesh coords " << meshPoints[pointI] << endl;
-        meshPoints[pointI][comp].setGradient(1.0);
+        if (Pstream::parRun())
+        {
+            if (Pstream::master())
+            {
+                label pointI = 69;
+                label comp = 1;
+                Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+                meshPoints[pointI][comp].setGradient(1.0);
+            }
+        }
+        else
+        {
+            label pointI = 195;
+            label comp = 1;
+            Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+            meshPoints[pointI][comp].setGradient(1.0);
+        
+        }
         mesh.movePoints(meshPoints);
     }
     
@@ -164,6 +178,7 @@ int main(int argc, char *argv[])
         {
             pWall += p.boundaryField()[patchIWalls][faceI];
         }
+        reduce(pWall, sumOp<scalar>());
         Info << "pWall: " << pWall << endl;
     }
 
@@ -171,10 +186,10 @@ int main(int argc, char *argv[])
     if (dvName == "U0")
     {
         scalar total = pWall.getGradient();
-        scalar ref = 1068.670037013205;
+        scalar ref = 1068.670036423719;
         Info << "dpWall/dU0 ADF: " << total << endl;
         Info << "dpWall/dU0 REF: " << ref << endl;
-        if (mag(total - ref) / ref < 1e-10)
+        if (mag(total - ref) / ref < 1e-11)
         {
             Info << "dpWall/dU0 test passed!" << endl;
         }
@@ -187,10 +202,10 @@ int main(int argc, char *argv[])
     else if (dvName == "Xv")
     {
         scalar total = pWall.getGradient();
-        scalar ref = -5922.669045154439;
+        scalar ref = -4324.066638181656;
         Info << "dpWall/dXv ADF: " << total << endl;
         Info << "dpWall/dXv REF: " << ref << endl;
-        if (mag(total - ref) / ref < 1e-10)
+        if (mag(total - ref) / mag(ref) < 1e-11)
         {
             Info << "dpWall/dXv test passed!" << endl;
         }

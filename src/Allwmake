@@ -133,7 +133,7 @@ wmake $targetType atmosphericModels
 
 
 # interfaceTracking libs
-#dynamicFaMesh/Allwmake $targetType $*
+dynamicFaMesh/Allwmake $targetType $*
 
 
 #------------------------------------------------------------------------------

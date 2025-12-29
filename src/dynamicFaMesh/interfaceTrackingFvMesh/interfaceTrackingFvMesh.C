@@ -896,7 +896,7 @@ void Foam::interfaceTrackingFvMesh::updateSurfactantConcentration()
         surfaceTension() =
             sigma() + surfactant().dSigma(surfactantConcentration())/rho_;
 
-        if (neg(min(surfaceTension().internalField().field())))
+        if (neg(min(surfaceTension().internalField().field())).getValue()) // codi:
         {
             FatalErrorInFunction
                 << "Surface tension is negative"
@@ -2236,9 +2236,9 @@ void Foam::interfaceTrackingFvMesh::writeVTKControlPoints()
     os  << "POINTS " << nPoints << " float" << nl;
     for (const point& p : controlPoints())
     {
-        os  << float(p.x()) << ' '
-            << float(p.y()) << ' '
-            << float(p.z()) << nl;
+        os  << float(p.x().getValue()) << ' ' // codi:
+            << float(p.y().getValue()) << ' '
+            << float(p.z().getValue()) << nl;
     }
 
     os  << "VERTICES " << nPoints << ' ' << 2*nPoints << nl;

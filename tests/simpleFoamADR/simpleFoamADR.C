@@ -109,8 +109,6 @@ int main(int argc, char *argv[])
     scalar pWall = 0.0;
     label patchIWalls = mesh.boundaryMesh().findPatchID("walls");
     pointField meshPoints = mesh.points();
-    label pointI = 196;
-    label comp = 1;
     
     if (dvName == "U0")
     {
@@ -127,8 +125,23 @@ int main(int argc, char *argv[])
     else if (dvName == "Xv")
     {
         tape.setActive();
-        Info << "Seed mesh coords " << meshPoints[pointI] << endl;
-        tape.registerInput(meshPoints[pointI][comp]);
+        if (Pstream::parRun())
+        {
+            if (Pstream::master())
+            {
+                label pointI = 69;
+                label comp = 1;
+                Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+                tape.registerInput(meshPoints[pointI][comp]);
+            }
+        }
+        else
+        {
+            label pointI = 195;
+            label comp = 1;
+            Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+            tape.registerInput(meshPoints[pointI][comp]);
+        }
         mesh.movePoints(meshPoints);
     }
     
@@ -187,10 +200,10 @@ int main(int argc, char *argv[])
         {
             scalar total = U0.getGradient();
             reduce(total, sumOp<scalar>());
-            scalar ref = 1068.670037013205;
+            scalar ref = 1068.670036423719;
             Info << "dpWall/dU0 ADR: " << total << endl;
             Info << "dpWall/dU0 REF: " << ref << endl;
-            if (mag(total - ref) / ref < 1e-9)
+            if (mag(total - ref) / ref < 1e-11)
             {
                 Info << "dpWall/dU0 test passed!" << endl;
             }
@@ -202,11 +215,27 @@ int main(int argc, char *argv[])
         }
         else if (dvName == "Xv")
         {
-            scalar total = meshPoints[pointI][comp].getGradient();
-            scalar ref = -5922.669045154439;
+            scalar total = 0.0; 
+            if (Pstream::parRun())
+            {
+                if (Pstream::master())
+                {
+                    label pointI = 69;
+                    label comp = 1;
+                    total = meshPoints[pointI][comp].getGradient();
+                }
+            }
+            else
+            {
+                label pointI = 195;
+                label comp = 1;
+                total = meshPoints[pointI][comp].getGradient();
+            }
+
+            scalar ref = -4324.066638181656;
             Info << "dpWall/dXv ADR: " << total << endl;
             Info << "dpWall/dXv REF: " << ref << endl;
-            if (mag(total - ref) / ref < 1e-10)
+            if (mag(total - ref) / mag(ref) < 1e-11)
             {
                 Info << "dpWall/dXv test passed!" << endl;
             }

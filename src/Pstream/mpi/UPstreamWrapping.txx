@@ -53,6 +53,20 @@ bool Foam::PstreamDetail::broadcast
 
     profilingPstream::beginTiming();
 
+    // codi:
+    if (datatype == MPI_DOUBLE && ::mpiTypes)
+    {
+        returnCode =
+            AMPI_Bcast
+            (
+                reinterpret_cast<typename MpiTypes::Type*>(values),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                0,  // (root rank) == UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+    }
+    else
     {
         returnCode =
             MPI_Bcast
@@ -133,9 +147,33 @@ void Foam::PstreamDetail::reduce
     {
         // MPI-3 : eg, openmpi-1.7 (2013) and later
         profilingPstream::beginTiming();
-        MPI_Request request;
+        AMPI_Request request;
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // Set AD-specific buffer pointer based on whether this is in-place
+            const typename MpiTypes::Type* send_buffer_ad =
+                (send_buffer == MPI_IN_PLACE)
+                ? AMPI_IN_PLACE
+                : reinterpret_cast<const typename MpiTypes::Type*>(send_buffer);
+
+            returnCode =
+            AMPI_Ireduce
+            (
+                send_buffer_ad,
+                reinterpret_cast<typename MpiTypes::Type*>(values),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                toAMPI_Op(optype),
+                0,  // (root rank) == UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator],
+               &request
+            );
+        }
+        else
+        {
+            returnCode =
             MPI_Ireduce
             (
                 send_buffer,
@@ -145,8 +183,9 @@ void Foam::PstreamDetail::reduce
                 optype,
                 0,  // (root rank) == UPstream::masterNo()
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request
             );
+        }
 
         PstreamGlobals::push_request(request, req);
         profilingPstream::addRequestTime();
@@ -156,7 +195,30 @@ void Foam::PstreamDetail::reduce
     {
         profilingPstream::beginTiming();
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // Set AD-specific buffer pointer based on whether this is in-place
+            const typename MpiTypes::Type* send_buffer_ad =
+                (send_buffer == MPI_IN_PLACE)
+                ? AMPI_IN_PLACE
+                : reinterpret_cast<const typename MpiTypes::Type*>(send_buffer);
+
+            returnCode =
+            AMPI_Reduce
+            (
+                send_buffer_ad,
+                reinterpret_cast<typename MpiTypes::Type*>(values),
+                count,
+                ::mpiTypes->MPI_TYPE,
+                toAMPI_Op(optype),
+                0,  // (root rank) == UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            returnCode =
             MPI_Reduce
             (
                 send_buffer,
@@ -167,6 +229,7 @@ void Foam::PstreamDetail::reduce
                 0,  // (root rank) == UPstream::masterNo()
                 PstreamGlobals::MPICommunicators_[communicator]
             );
+        }
 
         profilingPstream::addReduceTime();
     }
@@ -243,9 +306,26 @@ void Foam::PstreamDetail::allReduce
     {
         // MPI-3 : eg, openmpi-1.7 (2013) and later
         profilingPstream::beginTiming();
-        MPI_Request request;
+        AMPI_Request request;
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode =
+                AMPI_Iallreduce
+                (
+                    AMPI_IN_PLACE,  // recv is also send
+                    reinterpret_cast<typename MpiTypes::Type*>(values),
+                    count,
+                    ::mpiTypes->MPI_TYPE,
+                    toAMPI_Op(optype),
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request
+                );
+        }
+        else
+        {
+            returnCode =
             MPI_Iallreduce
             (
                 MPI_IN_PLACE,  // recv is also send
@@ -254,8 +334,9 @@ void Foam::PstreamDetail::allReduce
                 datatype,
                 optype,
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request
             );
+        }
 
         PstreamGlobals::push_request(request, req);
         profilingPstream::addRequestTime();
@@ -376,9 +457,29 @@ void Foam::PstreamDetail::allToAll
     {
         // MPI-3 : eg, openmpi-1.7 (2013) and later
         profilingPstream::beginTiming();
-        MPI_Request request;
+        AMPI_Request request;
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode =
+                AMPI_Ialltoall
+                (
+                    // NOTE: const_cast is a temporary hack for
+                    // backward-compatibility with versions of OpenMPI < 1.7.4
+                    reinterpret_cast<const typename MpiTypes::Type*>(sendData.cdata()),
+                    1,                      // one element per rank
+                    ::mpiTypes->MPI_TYPE,
+                    reinterpret_cast<typename MpiTypes::Type*>(recvData.data()),
+                    1,                      // one element per rank
+                    ::mpiTypes->MPI_TYPE,
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request
+                );
+        }
+        else
+        {
+            returnCode =
             MPI_Ialltoall
             (
                 // NOTE: const_cast is a temporary hack for
@@ -390,8 +491,9 @@ void Foam::PstreamDetail::allToAll
                 1,                      // one element per rank
                 datatype,
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request
             );
+        }
 
         PstreamGlobals::push_request(request, req);
         profilingPstream::addRequestTime();
@@ -401,7 +503,26 @@ void Foam::PstreamDetail::allToAll
     {
         profilingPstream::beginTiming();
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode =
+                AMPI_Alltoall
+                (
+                    // NOTE: const_cast is a temporary hack for
+                    // backward-compatibility with versions of OpenMPI < 1.7.4
+                    reinterpret_cast<const typename MpiTypes::Type*>(sendData.cdata()),
+                    1,                      // one element per rank
+                    ::mpiTypes->MPI_TYPE,
+                    reinterpret_cast<typename MpiTypes::Type*>(recvData.data()),
+                    1,                      // one element per rank
+                    ::mpiTypes->MPI_TYPE,
+                    PstreamGlobals::MPICommunicators_[communicator]
+                );
+        }
+        else
+        {
+            returnCode =
             MPI_Alltoall
             (
                 // NOTE: const_cast is a temporary hack for
@@ -414,6 +535,7 @@ void Foam::PstreamDetail::allToAll
                 datatype,
                 PstreamGlobals::MPICommunicators_[communicator]
             );
+        }
 
         profilingPstream::addAllToAllTime();
     }
@@ -449,6 +571,8 @@ void Foam::PstreamDetail::allToAllv
     UPstream::Request* req
 )
 {
+    Pout << "************* Warning PstreamDetail::allToAllv not AD **************" << endl;
+
     static_assert(!std::is_void_v<Type>, "Does not handle void types");
 
     PstreamGlobals::reset_request(req);
@@ -589,6 +713,7 @@ void Foam::PstreamDetail::allToAllConsensus
     const int communicator
 )
 {
+    Pout << "************* Warning PstreamDetail::allToAllConsensus not AD **************" << endl;
     static_assert(!std::is_void_v<Type>, "Does not handle void types");
 
     const bool initialBarrier = (UPstream::tuning_NBX_ > 0);
@@ -793,6 +918,7 @@ void Foam::PstreamDetail::allToAllConsensus
     const int communicator
 )
 {
+    Pout << "************* Warning PstreamDetail::allToAllConsensus not AD **************" << endl;
     static_assert(!std::is_void_v<Type>, "Does not handle void types");
 
     const bool initialBarrier = (UPstream::tuning_NBX_ > 0);
@@ -1046,17 +1172,43 @@ void Foam::PstreamDetail::gather
     {
         // MPI-3 : eg, openmpi-1.7 (2013) and later
         profilingPstream::beginTiming();
-        MPI_Request request;
+        AMPI_Request request;
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // Set AD-specific buffer pointer based on whether this is in-place
+            const typename MpiTypes::Type* send_buffer_ad =
+                (send_buffer == MPI_IN_PLACE)
+                ? AMPI_IN_PLACE
+                : reinterpret_cast<const typename MpiTypes::Type*>(send_buffer);
+
+            returnCode =
+                AMPI_Igather
+                (
+                    send_buffer_ad, 
+                    count, 
+                    ::mpiTypes->MPI_TYPE,
+                    reinterpret_cast<typename MpiTypes::Type*>(recvData),
+                    count, 
+                    ::mpiTypes->MPI_TYPE,
+                    0,  // root: UPstream::masterNo()
+                    PstreamGlobals::MPICommunicators_[communicator],
+                   &request
+                );
+        }
+        else
+        {
+            returnCode =
             MPI_Igather
             (
                 send_buffer, count, datatype,
                 recvData, count, datatype,
                 0,  // root: UPstream::masterNo()
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request
             );
+        }
 
         PstreamGlobals::push_request(request, req);
         profilingPstream::addRequestTime();
@@ -1066,7 +1218,30 @@ void Foam::PstreamDetail::gather
     {
         profilingPstream::beginTiming();
 
-        returnCode =
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // Set AD-specific buffer pointer based on whether this is in-place
+            const typename MpiTypes::Type* send_buffer_ad =
+                (send_buffer == MPI_IN_PLACE)
+                ? AMPI_IN_PLACE
+                : reinterpret_cast<const typename MpiTypes::Type*>(send_buffer);
+            
+            returnCode =
+            AMPI_Gather
+            (
+                send_buffer_ad, 
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                reinterpret_cast<typename MpiTypes::Type*>(recvData),
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                0,  // root: UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            returnCode =
             MPI_Gather
             (
                 send_buffer, count, datatype,
@@ -1074,6 +1249,7 @@ void Foam::PstreamDetail::gather
                 0,  // root: UPstream::masterNo()
                 PstreamGlobals::MPICommunicators_[communicator]
             );
+        }
 
         profilingPstream::addGatherTime();
     }
@@ -1167,18 +1343,42 @@ void Foam::PstreamDetail::scatter
     {
         // MPI-3 : eg, openmpi-1.7 (2013) and later
         profilingPstream::beginTiming();
-        MPI_Request request;
+        AMPI_Request request;
 
-        returnCode =
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // Set AD-specific buffer pointer based on whether this is in-place
+            typename MpiTypes::Type* recv_buffer_ad =
+                (recv_buffer == MPI_IN_PLACE)
+                ? AMPI_IN_PLACE
+                : reinterpret_cast<typename MpiTypes::Type*>(recv_buffer);
+            
+            returnCode =
+            AMPI_Iscatter
+            (
+                reinterpret_cast<const typename MpiTypes::Type*>(sendData),
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                recv_buffer_ad, 
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                0,  // root: UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator],
+               &request
+            );
+        }
+        else
+        {
+            returnCode =
             MPI_Iscatter
             (
                 sendData, count, datatype,
                 recv_buffer, count, datatype,
                 0,  // root: UPstream::masterNo()
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request
             );
-
+        }
         PstreamGlobals::push_request(request, req);
         profilingPstream::addRequestTime();
     }
@@ -1187,7 +1387,30 @@ void Foam::PstreamDetail::scatter
     {
         profilingPstream::beginTiming();
 
-        returnCode =
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            // Set AD-specific buffer pointer based on whether this is in-place
+            typename MpiTypes::Type* recv_buffer_ad =
+                (recv_buffer == MPI_IN_PLACE)
+                ? AMPI_IN_PLACE
+                : reinterpret_cast<typename MpiTypes::Type*>(recv_buffer);
+            
+            returnCode =
+            AMPI_Scatter
+            (
+                reinterpret_cast<const typename MpiTypes::Type*>(sendData),
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                recv_buffer_ad, 
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                0,  // root: UPstream::masterNo()
+                PstreamGlobals::MPICommunicators_[communicator]
+            );
+        }
+        else
+        {
+            returnCode =
             MPI_Scatter
             (
                 sendData, count, datatype,
@@ -1195,6 +1418,7 @@ void Foam::PstreamDetail::scatter
                 0,  // root: UPstream::masterNo()
                 PstreamGlobals::MPICommunicators_[communicator]
             );
+        }
 
         profilingPstream::addScatterTime();
     }
@@ -1229,6 +1453,7 @@ void Foam::PstreamDetail::gatherv
     UPstream::Request* req
 )
 {
+    Pout << "************* Warning PstreamDetail::gatherv not AD **************" << endl;
     PstreamGlobals::reset_request(req);
 
     const bool immediate = (req);
@@ -1376,6 +1601,7 @@ void Foam::PstreamDetail::scatterv
     UPstream::Request* req
 )
 {
+    Pout << "************* Warning PstreamDetail::scatterv not AD **************" << endl;
     PstreamGlobals::reset_request(req);
 
     const bool immediate = (req);
@@ -1547,16 +1773,35 @@ void Foam::PstreamDetail::allGather
     {
         // MPI-3 : eg, openmpi-1.7 (2013) and later
         profilingPstream::beginTiming();
-        MPI_Request request;
+        AMPI_Request request;
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode =
+            AMPI_Iallgather
+            (
+                AMPI_IN_PLACE, 
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                reinterpret_cast<typename MpiTypes::Type*>(allData),
+                count, 
+                ::mpiTypes->MPI_TYPE,
+                PstreamGlobals::MPICommunicators_[communicator],
+               &request
+            );
+        }
+        else
+        {
+            returnCode =
             MPI_Iallgather
             (
                 MPI_IN_PLACE, count, datatype,
                 allData, count, datatype,
                 PstreamGlobals::MPICommunicators_[communicator],
-               &request
+               &request.request
             );
+        }
 
         PstreamGlobals::push_request(request, req);
         profilingPstream::addRequestTime();
@@ -1566,13 +1811,31 @@ void Foam::PstreamDetail::allGather
     {
         profilingPstream::beginTiming();
 
-        returnCode =
+        // codi:
+        if (datatype == MPI_DOUBLE && ::mpiTypes)
+        {
+            returnCode =
+                AMPI_Allgather
+                (
+                    AMPI_IN_PLACE, 
+                    count, 
+                    ::mpiTypes->MPI_TYPE,
+                    reinterpret_cast<typename MpiTypes::Type*>(allData), 
+                    count, 
+                    ::mpiTypes->MPI_TYPE,
+                    PstreamGlobals::MPICommunicators_[communicator]
+                );
+        }
+        else
+        {
+            returnCode =
             MPI_Allgather
             (
                 MPI_IN_PLACE, count, datatype,
                 allData, count, datatype,
                 PstreamGlobals::MPICommunicators_[communicator]
             );
+        }
 
         // Is actually gather/scatter but we can't split it apart
         profilingPstream::addGatherTime();
