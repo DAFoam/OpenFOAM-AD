@@ -212,12 +212,41 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
                 << exit(FatalError);
         }
 
-        UOPstream toNeighbProc(neighbProcNo(), pBufs);
+        //UOPstream toNeighbProc(neighbProcNo(), pBufs);
 
-        toNeighbProc
-            << faceCentres()
-            << faceAreas()
-            << faceCellCentres();
+        //toNeighbProc
+        //    << faceCentres()
+        //    << faceAreas()
+        //    << faceCellCentres();
+
+        // codi: NOTE: we cant use the PstreamBuffers to transfer data because
+        // it converts everything into char and will lose the AD seeds
+        // Here we send geometry data as scalarField to preserve AD seeds
+        const vectorField fc = faceCentres();
+        const vectorField fa = faceAreas();
+        const vectorField fcc = faceCellCentres();
+
+        const label nFaces = size();
+
+        // Flatten vectors into scalar array
+        scalarField sendBuf(nFaces * 9);
+        label idx = 0;
+        forAll(fc, i)
+        {
+            sendBuf[idx++] = fc[i].x();  sendBuf[idx++] = fc[i].y();  sendBuf[idx++] = fc[i].z();
+            sendBuf[idx++] = fa[i].x();  sendBuf[idx++] = fa[i].y();  sendBuf[idx++] = fa[i].z();
+            sendBuf[idx++] = fcc[i].x(); sendBuf[idx++] = fcc[i].y(); sendBuf[idx++] = fcc[i].z();
+        }
+
+        // always use blocking MPI so we don't need to worry about the request/wait stuff
+        UOPstream::write
+        (
+            UPstream::commsTypes::buffered,
+            neighbProcNo(),
+            sendBuf,
+            tag(),
+            comm()
+        );
     }
 }
 
@@ -226,6 +255,7 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
 {
     if (Pstream::parRun())
     {
+        /*
         {
             UIPstream fromNeighbProc(neighbProcNo(), pBufs);
 
@@ -233,6 +263,46 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
                 >> neighbFaceCentres_
                 >> neighbFaceAreas_
                 >> neighbFaceCellCentres_;
+        }
+        */
+        
+        // codi: NOTE: we cant use the PstreamBuffers to transfer data because
+        // it converts everything into char and will lose the AD seeds
+        // Here we receive geometry data as scalarField to preserve AD seeds
+        const label nFaces = size();
+
+        // Receive flattened scalar array
+        scalarField recvBuf(nFaces * 9);
+
+        // always use blocking MPI so we don't need to worry about the request/wait stuff
+        UIPstream::read
+        (
+            UPstream::commsTypes::buffered,
+            neighbProcNo(),
+            recvBuf,
+            tag(),
+            comm()
+        );
+
+        // Reconstruct vector fields from received scalar data
+        neighbFaceCentres_.setSize(nFaces);
+        neighbFaceAreas_.setSize(nFaces);
+        neighbFaceCellCentres_.setSize(nFaces);
+
+        label idx = 0;
+        forAll(neighbFaceCentres_, i)
+        {
+            neighbFaceCentres_[i].x() = recvBuf[idx++];
+            neighbFaceCentres_[i].y() = recvBuf[idx++];
+            neighbFaceCentres_[i].z() = recvBuf[idx++];
+
+            neighbFaceAreas_[i].x() = recvBuf[idx++];
+            neighbFaceAreas_[i].y() = recvBuf[idx++];
+            neighbFaceAreas_[i].z() = recvBuf[idx++];
+
+            neighbFaceCellCentres_[i].x() = recvBuf[idx++];
+            neighbFaceCellCentres_[i].y() = recvBuf[idx++];
+            neighbFaceCellCentres_[i].z() = recvBuf[idx++];
         }
 
         // My normals

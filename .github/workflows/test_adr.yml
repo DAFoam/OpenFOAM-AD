@@ -23,4 +23,5 @@ jobs:
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADR -dvName U0"
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADR -dvName Xv"
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && decomposePar && mpirun --oversubscribe -np 4 simpleFoamADR -parallel -dvName U0"
+        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && mpirun --oversubscribe -np 4 simpleFoamADR -parallel -dvName Xv"
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && mpirun --oversubscribe -np 4 MPIUnitTests -parallel"

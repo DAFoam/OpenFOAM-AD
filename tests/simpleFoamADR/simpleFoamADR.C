@@ -231,6 +231,9 @@ int main(int argc, char *argv[])
                 label comp = 1;
                 total = meshPoints[pointI][comp].getGradient();
             }
+            // in parallel, only master has the total value, other proces have total=0
+            // so we need to reduce() the total value to all procs
+            reduce(total, sumOp<scalar>());
 
             scalar ref = -4324.066638181656;
             Info << "dpWall/dXv ADR: " << total << endl;
