@@ -24,50 +24,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    simpleFoam
+    rhoSimpleFoam
 
 Group
-    grpIncompressibleSolvers
+    grpCompressibleSolvers
 
 Description
-    Steady-state solver for incompressible, turbulent flows.
-
-    \heading Solver details
-    The solver uses the SIMPLE algorithm to solve the continuity equation:
-
-        \f[
-            \div \vec{U} = 0
-        \f]
-
-    and momentum equation:
-
-        \f[
-            \div \left( \vec{U} \vec{U} \right) - \div \gvec{R}
-          = - \grad p + \vec{S}_U
-        \f]
-
-    Where:
-    \vartable
-        \vec{U} | Velocity
-        p       | Pressure
-        \vec{R} | Stress tensor
-        \vec{S}_U | Momentum source
-    \endvartable
-
-    \heading Required fields
-    \plaintable
-        U       | Velocity [m/s]
-        p       | Kinematic pressure, p/rho [m2/s2]
-        \<turbulence fields\> | As required by user selection
-    \endplaintable
+    Steady-state solver for compressible turbulent flow.
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "dynamicFvMesh.H"
-#include "singlePhaseTransportModel.H"
-#include "turbulentTransportModel.H"
+#include "fluidThermo.H"
+#include "turbulentFluidThermoModel.H"
 #include "simpleControl.H"
+#include "pressureControl.H"
 #include "fvOptions.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -76,7 +47,7 @@ int main(int argc, char *argv[])
 {
     argList::addNote
     (
-        "Steady-state solver for incompressible, turbulent flows."
+        "Steady-state solver for compressible turbulent flow."
     );
 
     argList::addOption(
@@ -89,9 +60,10 @@ int main(int argc, char *argv[])
     #include "addCheckCaseOptions.H"
     #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createDynamicFvMesh.H"
+    #include "createMesh.H"
     #include "createControl.H"
     #include "createFields.H"
+    #include "createFieldRefs.H"
     #include "initContinuityErrs.H"
 
     word dvName = "None";
@@ -104,18 +76,14 @@ int main(int argc, char *argv[])
         Info << "dvName not set!" << endl;
     }
 
-    codi::RealReverse::Tape& tape = codi::RealReverse::getTape();
     scalar U0 = 10.0;
     scalar pWall = 0.0;
     label patchIWalls = mesh.boundaryMesh().findPatchID("walls");
-    pointField meshPoints = mesh.points();
     
     if (dvName == "U0")
     {
-        tape.setActive();
         label patchIInlet = mesh.boundaryMesh().findPatchID("inlet");
-        
-        tape.registerInput(U0);
+        U0.setGradient(1.0);
         forAll(U.boundaryField()[patchIInlet], faceI)
         {
             U.boundaryFieldRef()[patchIInlet][faceI][0] = U0;
@@ -124,7 +92,7 @@ int main(int argc, char *argv[])
     }
     else if (dvName == "Xv")
     {
-        tape.setActive();
+        pointField meshPoints = mesh.points();
         if (Pstream::parRun())
         {
             if (Pstream::master())
@@ -132,7 +100,7 @@ int main(int argc, char *argv[])
                 label pointI = 69;
                 label comp = 1;
                 Info << "Seed mesh coords " << meshPoints[pointI] << endl;
-                tape.registerInput(meshPoints[pointI][comp]);
+                meshPoints[pointI][comp].setGradient(1.0);
             }
         }
         else
@@ -140,11 +108,12 @@ int main(int argc, char *argv[])
             label pointI = 195;
             label comp = 1;
             Info << "Seed mesh coords " << meshPoints[pointI] << endl;
-            tape.registerInput(meshPoints[pointI][comp]);
+            meshPoints[pointI][comp].setGradient(1.0);
+        
         }
         mesh.movePoints(meshPoints);
     }
-    
+
     turbulence->validate();
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -155,21 +124,19 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        // Do any mesh changes
-        mesh.controlledUpdate();
+        // Pressure-velocity SIMPLE corrector
+        #include "UEqn.H"
+        #include "EEqn.H"
 
-        if (mesh.changing())
+        if (simple.consistent())
         {
-            MRF.update();
+            #include "pcEqn.H"
         }
-
-        // --- Pressure-velocity SIMPLE corrector
+        else
         {
-            #include "UEqn.H"
             #include "pEqn.H"
         }
 
-        laminarTransport.correct();
         turbulence->correct();
 
         runTime.write();
@@ -185,68 +152,36 @@ int main(int argc, char *argv[])
         Info << "pWall: " << pWall << endl;
     }
 
-    if (dvName != "None")
+    if (dvName == "U0")
     {
-        tape.registerOutput(pWall);
-        tape.setPassive();
-    
-        if (Pstream::master())
+        scalar total = pWall.getGradient();
+        scalar ref = 1265.293612277306;
+        Info << "dpWall/dU0 ADF: " << total << endl;
+        Info << "dpWall/dU0 REF: " << ref << endl;
+        if (mag(total - ref) / ref < 1e-8)
         {
-            pWall.setGradient(1.0);
+            Info << "dpWall/dU0 test passed!" << endl;
         }
-        tape.evaluate();
-    
-        if (dvName == "U0")
+        else
         {
-            scalar total = U0.getGradient();
-            reduce(total, sumOp<scalar>());
-            scalar ref = 1068.670036423719;
-            Info << "dpWall/dU0 ADR: " << total << endl;
-            Info << "dpWall/dU0 REF: " << ref << endl;
-            if (mag(total - ref) / ref < 1e-8)
-            {
-                Info << "dpWall/dU0 test passed!" << endl;
-            }
-            else
-            {
-                Info << "dpWall/dU0 test failed!" << endl;
-                return 1;
-            }
+            Info << "dpWall/dU0 test failed!" << endl;
+            return 1;
         }
-        else if (dvName == "Xv")
+    }
+    else if (dvName == "Xv")
+    {
+        scalar total = pWall.getGradient();
+        scalar ref = -5120.116613136466;
+        Info << "dpWall/dXv ADF: " << total << endl;
+        Info << "dpWall/dXv REF: " << ref << endl;
+        if (mag(total - ref) / mag(ref) < 1e-7)
         {
-            scalar total = 0.0; 
-            if (Pstream::parRun())
-            {
-                if (Pstream::master())
-                {
-                    label pointI = 69;
-                    label comp = 1;
-                    total = meshPoints[pointI][comp].getGradient();
-                }
-            }
-            else
-            {
-                label pointI = 195;
-                label comp = 1;
-                total = meshPoints[pointI][comp].getGradient();
-            }
-            // in parallel, only master has the total value, other proces have total=0
-            // so we need to reduce() the total value to all procs
-            reduce(total, sumOp<scalar>());
-
-            scalar ref = -4324.066638181656;
-            Info << "dpWall/dXv ADR: " << total << endl;
-            Info << "dpWall/dXv REF: " << ref << endl;
-            if (mag(total - ref) / mag(ref) < 1e-7)
-            {
-                Info << "dpWall/dXv test passed!" << endl;
-            }
-            else
-            {
-                Info << "dpWall/dXv test failed!" << endl;
-                return 1;
-            }
+            Info << "dpWall/dXv test passed!" << endl;
+        }
+        else
+        {
+            Info << "dpWall/dXv test failed!" << endl;
+            return 1;
         }
     }
 

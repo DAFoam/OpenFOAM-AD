@@ -2,6 +2,7 @@
 
 #include "fvCFD.H"
 #include "vector.H"
+#include "UPstreamWrapping.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
@@ -9,6 +10,7 @@ int main(int argc, char *argv[])
 {
     #include "setRootCaseLists.H"
     #include "createTime.H"
+    #include "createMesh.H"
 
     codi::RealReverse::Tape& tape = codi::RealReverse::getTape();
 
@@ -1033,11 +1035,507 @@ int main(int argc, char *argv[])
              << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
     }
 
+    // ************************************************************************
+    // Test 18: AD waitRequestPair API
+    //
+    // Description: Tests AMPI waitRequestPair with AD types in non-blocking communication
+    // Each rank sends two AD scalars (sendVal1^2, sendVal2^3) to next rank
+    // Uses two separate non-blocking send/recv operations
+    // Expectation: Both requests complete correctly, derivatives propagate
+    //              Master receives from rank N-1, so rank N-1 gets derivatives
+    // ************************************************************************
+    {
+        tape.reset();
+        tape.setActive();
+
+        int myRank = Pstream::myProcNo();
+        int nProcs = Pstream::nProcs();
+        int sendTo = (myRank + 1) % nProcs;
+        int recvFrom = (myRank - 1 + nProcs) % nProcs;
+
+        scalar sendVal1 = myRank + 1000.0;
+        scalar sendVal2 = myRank + 2000.0;
+        tape.registerInput(sendVal1);
+        tape.registerInput(sendVal2);
+
+        scalar sendVal1_sqr = sendVal1 * sendVal1;
+        scalar sendVal2_cube = sendVal2 * sendVal2 * sendVal2;
+
+        Field<scalar> recvBuf1(1);
+        Field<scalar> recvBuf2(1);
+        Field<scalar> sendBuf1(1);
+        Field<scalar> sendBuf2(1);
+        sendBuf1[0] = sendVal1_sqr;
+        sendBuf2[0] = sendVal2_cube;
+
+        // Track request indices manually
+        label startIdx = UPstream::nRequests();
+
+        UIPstream::read(UPstream::commsTypes::nonBlocking, recvFrom,
+                        recvBuf1.data(), recvBuf1.size(), 0, UPstream::worldComm);
+        UIPstream::read(UPstream::commsTypes::nonBlocking, recvFrom,
+                        recvBuf2.data(), recvBuf2.size(), 1, UPstream::worldComm);
+        UOPstream::write(UPstream::commsTypes::nonBlocking, sendTo,
+                         sendBuf1.cdata(), sendBuf1.size(), 0, UPstream::worldComm);
+        UOPstream::write(UPstream::commsTypes::nonBlocking, sendTo,
+                         sendBuf2.cdata(), sendBuf2.size(), 1, UPstream::worldComm);
+
+        // Calculate indices
+        label recvReq1 = startIdx;
+        label recvReq2 = startIdx + 1;
+        label sendReq1 = startIdx + 2;
+        label sendReq2 = startIdx + 3;
+
+        // Use waitRequestPair
+        UPstream::waitRequestPair(recvReq1, recvReq2);
+        UPstream::waitRequestPair(sendReq1, sendReq2);
+
+        scalar recvVal1_sqr = recvBuf1[0];
+        scalar recvVal2_cube = recvBuf2[0];
+
+        tape.registerOutput(recvVal1_sqr);
+        tape.registerOutput(recvVal2_cube);
+        tape.setPassive();
+
+        // Only master sets gradients
+        if (Pstream::master())
+        {
+            recvVal1_sqr.setGradient(1.0);
+            recvVal2_cube.setGradient(1.0);
+        }
+
+        tape.evaluate();
+
+        scalar computed_deriv1 = sendVal1.getGradient();
+        scalar computed_deriv2 = sendVal2.getGradient();
+
+        scalar expected_deriv1 = 0.0;
+        scalar expected_deriv2 = 0.0;
+        if (myRank == nProcs - 1)
+        {
+            expected_deriv1 = 2.0 * sendVal1.getValue();
+            expected_deriv2 = 3.0 * sendVal2.getValue() * sendVal2.getValue();
+        }
+
+        bool passed = (mag(computed_deriv1 - expected_deriv1) < 1e-10) &&
+                      (mag(computed_deriv2 - expected_deriv2) < 1e-10);
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 18 (AD waitRequestPair): "
+             << "sendVal1=" << sendVal1 << " sendVal2=" << sendVal2
+             << " | recvVal1_sqr=" << recvVal1_sqr << " recvVal2_cube=" << recvVal2_cube
+             << " | df/dsendVal1=" << computed_deriv1 << " (expected=" << expected_deriv1 << ")"
+             << " df/dsendVal2=" << computed_deriv2 << " (expected=" << expected_deriv2 << ")"
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 19: AD finishedRequestPair API
+    //
+    // Description: Tests AMPI finishedRequestPair with AD types by polling completion
+    // Each rank sends two AD scalars (sendVal1+10, sendVal2+20) to next rank
+    // Uses non-blocking operations and polls with finishedRequestPair
+    // Expectation: Both requests complete correctly, derivatives propagate
+    //              Derivative of (x+c) is 1 for each value
+    // ************************************************************************
+    {
+        tape.reset();
+        tape.setActive();
+
+        int myRank = Pstream::myProcNo();
+        int nProcs = Pstream::nProcs();
+        int sendTo = (myRank + 1) % nProcs;
+        int recvFrom = (myRank - 1 + nProcs) % nProcs;
+
+        scalar sendVal1 = myRank + 3000.0;
+        scalar sendVal2 = myRank + 4000.0;
+        tape.registerInput(sendVal1);
+        tape.registerInput(sendVal2);
+
+        scalar sendVal1_plus = sendVal1 + 10.0;
+        scalar sendVal2_plus = sendVal2 + 20.0;
+
+        Field<scalar> recvBuf1(1);
+        Field<scalar> recvBuf2(1);
+        Field<scalar> sendBuf1(1);
+        Field<scalar> sendBuf2(1);
+        sendBuf1[0] = sendVal1_plus;
+        sendBuf2[0] = sendVal2_plus;
+
+        // Track request indices manually
+        label startIdx = UPstream::nRequests();
+
+        UIPstream::read(UPstream::commsTypes::nonBlocking, recvFrom,
+                        recvBuf1.data(), recvBuf1.size(), 0, UPstream::worldComm);
+        UIPstream::read(UPstream::commsTypes::nonBlocking, recvFrom,
+                        recvBuf2.data(), recvBuf2.size(), 1, UPstream::worldComm);
+        UOPstream::write(UPstream::commsTypes::nonBlocking, sendTo,
+                         sendBuf1.cdata(), sendBuf1.size(), 0, UPstream::worldComm);
+        UOPstream::write(UPstream::commsTypes::nonBlocking, sendTo,
+                         sendBuf2.cdata(), sendBuf2.size(), 1, UPstream::worldComm);
+
+        // Calculate indices
+        label recvReq1 = startIdx;
+        label recvReq2 = startIdx + 1;
+        label sendReq1 = startIdx + 2;
+        label sendReq2 = startIdx + 3;
+
+        // Poll with finishedRequestPair
+        while (!UPstream::finishedRequestPair(recvReq1, recvReq2) ||
+               !UPstream::finishedRequestPair(sendReq1, sendReq2))
+        {
+            // Busy wait
+        }
+
+        scalar recvVal1_plus = recvBuf1[0];
+        scalar recvVal2_plus = recvBuf2[0];
+
+        tape.registerOutput(recvVal1_plus);
+        tape.registerOutput(recvVal2_plus);
+        tape.setPassive();
+
+        // Only master sets gradients
+        if (Pstream::master())
+        {
+            recvVal1_plus.setGradient(1.0);
+            recvVal2_plus.setGradient(1.0);
+        }
+
+        tape.evaluate();
+
+        scalar computed_deriv1 = sendVal1.getGradient();
+        scalar computed_deriv2 = sendVal2.getGradient();
+
+        scalar expected_deriv1 = (myRank == nProcs - 1) ? 1.0 : 0.0;
+        scalar expected_deriv2 = (myRank == nProcs - 1) ? 1.0 : 0.0;
+
+        bool passed = (mag(computed_deriv1 - expected_deriv1) < 1e-10) &&
+                      (mag(computed_deriv2 - expected_deriv2) < 1e-10);
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 19 (AD finishedRequestPair): "
+             << "sendVal1=" << sendVal1 << " sendVal2=" << sendVal2
+             << " | recvVal1_plus=" << recvVal1_plus << " recvVal2_plus=" << recvVal2_plus
+             << " | df/dsendVal1=" << computed_deriv1 << " (expected=" << expected_deriv1 << ")"
+             << " df/dsendVal2=" << computed_deriv2 << " (expected=" << expected_deriv2 << ")"
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 20: AD Broadcast operation
+    //
+    // Description: Tests AMPI_Bcast for broadcasting AD scalar from root to all ranks
+    // Master (rank 0) has val = 100.5, computes val^2, then broadcasts
+    // Other ranks receive the broadcast value
+    // Expectation: All ranks receive same value, derivative exists only on master
+    //              df/dval = 2*val on rank 0, 0 on other ranks
+    // ************************************************************************
+    {
+        tape.reset();
+        tape.setActive();
+
+        int myRank = Pstream::myProcNo();
+
+        scalar val;
+        if (Pstream::master())
+        {
+            val = 100.5;
+            tape.registerInput(val);
+        }
+
+        scalar val_sqr;
+        if (Pstream::master())
+        {
+            val_sqr = val * val;
+        }
+        else
+        {
+            val_sqr = 0.0;  // Initialize on non-master ranks
+        }
+
+        // Broadcast from master to all ranks
+        Pstream::broadcast(val_sqr);
+
+        tape.registerOutput(val_sqr);
+        tape.setPassive();
+
+        // Only master sets gradient
+        if (Pstream::master())
+        {
+            val_sqr.setGradient(1.0);
+        }
+
+        tape.evaluate();
+
+        scalar computed_deriv = 0.0;
+        if (Pstream::master())
+        {
+            computed_deriv = val.getGradient();
+        }
+
+        scalar expected_deriv = Pstream::master() ? 2.0 * 100.5 : 0.0;
+        scalar expected_val = 100.5 * 100.5;
+
+        bool passed = (mag(val_sqr.getValue() - expected_val) < 1e-10);
+        if (Pstream::master())
+        {
+            passed = passed && (mag(computed_deriv - expected_deriv) < 1e-10);
+        }
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 20 (AD Broadcast): val_sqr=" << val_sqr
+             << " df/dval=" << computed_deriv
+             << " (expected=" << expected_deriv << ")"
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 21: Non-AD Broadcast operation
+    //
+    // Description: Tests MPI_Bcast for broadcasting non-AD label from root to all ranks
+    // Master (rank 0) has value = 12345
+    // Other ranks receive the broadcast value
+    // Expectation: All ranks receive 12345, no AD involved
+    // ************************************************************************
+    {
+        int myRank = Pstream::myProcNo();
+
+        label val = Pstream::master() ? 12345 : 0;
+
+        // Broadcast from master to all ranks
+        Pstream::broadcast(val);
+
+        label expected_val = 12345;
+        bool passed = (val == expected_val);
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 21 (non-AD Broadcast): val=" << val
+             << " (expected=" << expected_val << ")"
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 22: AD AllToAll operation
+    //
+    // Description: Tests AMPI_Alltoall for all-to-all exchange of AD scalars
+    // Each rank i computes val_i = (i+1)^2 and sends to all ranks
+    // Each rank j receives (j+1)^2 from each rank j
+    // Expectation: recvData[j] = (j+1)^2 for all j
+    //              Derivatives: d((j+1)^2)/d(j+1) = 2*(j+1) on ALL ranks (master receives from all)
+    // Uses low-level PstreamDetail::allToAll with MPI_DOUBLE datatype
+    // ************************************************************************
+    {
+        tape.reset();
+        tape.setActive();
+
+        int myRank = Pstream::myProcNo();
+        int nProcs = Pstream::nProcs();
+
+        // Each rank computes its value
+        scalar myVal = myRank + 1.0;
+        tape.registerInput(myVal);
+        scalar myVal_sqr = myVal * myVal;
+
+        // Prepare send buffer: same value to all ranks
+        List<scalar> sendData(nProcs, myVal_sqr);
+        List<scalar> recvData(nProcs);
+
+        // AllToAll exchange using low-level API
+        PstreamDetail::allToAll
+        (
+            sendData,
+            recvData,
+            MPI_DOUBLE,
+            UPstream::worldComm
+        );
+
+        // Register all received values as outputs
+        forAll(recvData, i)
+        {
+            tape.registerOutput(recvData[i]);
+        }
+        tape.setPassive();
+
+        // Only master sets gradients on received data
+        if (Pstream::master())
+        {
+            forAll(recvData, i)
+            {
+                recvData[i].setGradient(1.0);
+            }
+        }
+
+        tape.evaluate();
+
+        // Check values
+        bool passed = true;
+        for (int i = 0; i < nProcs; ++i)
+        {
+            scalar expected_val = (i + 1.0) * (i + 1.0);
+            if (mag(recvData[i].getValue() - expected_val) > 1e-10)
+            {
+                passed = false;
+                break;
+            }
+        }
+
+        // Check derivative on this rank
+        scalar computed_deriv = myVal.getGradient();
+        // In AllToAll, master receives from all ranks, so all ranks get derivatives
+        // d(myVal^2)/d(myVal) = 2*myVal for all ranks
+        scalar expected_deriv = 2.0 * myVal.getValue();
+        passed = passed && (mag(computed_deriv - expected_deriv) < 1e-10);
+
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 22 (AD AllToAll): myVal=" << myVal
+             << " myVal_sqr=" << myVal_sqr
+             << " df/dmyVal=" << computed_deriv
+             << " (expected=" << expected_deriv << ")"
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 23: Non-AD AllToAll operation
+    //
+    // Description: Tests MPI_Alltoall for all-to-all exchange of labels (integers)
+    // Each rank i sends value (i*10 + j) to rank j
+    // Each rank j receives value (i*10 + j) from rank i
+    // Expectation: recvData[i] = i*10 + myRank for all i
+    //              No AD involved
+    // ************************************************************************
+    {
+        int myRank = Pstream::myProcNo();
+        int nProcs = Pstream::nProcs();
+
+        // Each rank prepares unique data to send to each other rank
+        labelList sendData(nProcs);
+        for (label i = 0; i < nProcs; ++i)
+        {
+            sendData[i] = myRank * 10 + i;  // rank 0: [0,1,2,3], rank 1: [10,11,12,13], etc.
+        }
+
+        labelList recvData(nProcs);
+
+        // AllToAll exchange
+        UPstream::allToAll(sendData, recvData);
+
+        // Verify received data
+        bool passed = true;
+        for (label i = 0; i < nProcs; ++i)
+        {
+            label expected = i * 10 + myRank;  // from rank i
+            if (recvData[i] != expected)
+            {
+                passed = false;
+                break;
+            }
+        }
+
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 23 (non-AD AllToAll): sendData=" << sendData
+             << " recvData=" << recvData
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 24: Non-AD listGatherValues operation
+    //
+    // Description: Tests MPI_Gather for gathering label values to master
+    // Each rank has val = rank * 100
+    // Master collects all values: [0, 100, 200, 300, ...]
+    // Expectation: Master has complete list, others have empty list
+    //              No AD involved
+    // NOTE: AMPI_Gather exists but has no high-level AD-enabled API in OpenFOAM
+    // ************************************************************************
+    {
+        int myRank = Pstream::myProcNo();
+        int nProcs = Pstream::nProcs();
+
+        label val = myRank * 100;
+
+        // Gather values to master
+        labelList gathered = Pstream::listGatherValues(val);
+
+        // Verify
+        bool passed = true;
+        if (Pstream::master())
+        {
+            if (gathered.size() != nProcs)
+            {
+                passed = false;
+            }
+            else
+            {
+                for (label i = 0; i < nProcs; ++i)
+                {
+                    if (gathered[i] != i * 100)
+                    {
+                        passed = false;
+                        break;
+                    }
+                }
+            }
+        }
+        else
+        {
+            passed = (gathered.size() == 0);
+        }
+
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 24 (non-AD listGatherValues): val=" << val
+             << " gathered.size=" << gathered.size()
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // ************************************************************************
+    // Test 25: Non-AD listScatterValues operation
+    //
+    // Description: Tests MPI_Scatter for scattering label values from master
+    // Master has list [1000, 2000, 3000, 4000] and scatters to ranks
+    // Each rank i receives value (i+1)*1000
+    // Expectation: Each rank gets correct value, no AD involved
+    // NOTE: AMPI_Scatter exists but has no high-level AD-enabled API in OpenFOAM
+    // ************************************************************************
+    {
+        int myRank = Pstream::myProcNo();
+        int nProcs = Pstream::nProcs();
+
+        labelList scatterData;
+        if (Pstream::master())
+        {
+            scatterData.setSize(nProcs);
+            for (label i = 0; i < nProcs; ++i)
+            {
+                scatterData[i] = (i + 1) * 1000;
+            }
+        }
+
+        // Scatter values from master
+        label myValue = Pstream::listScatterValues(scatterData);
+
+        // Verify
+        label expected_val = (myRank + 1) * 1000;
+        bool passed = (myValue == expected_val);
+
+        allTestsPassed = allTestsPassed && passed;
+
+        Pout << "Test 25 (non-AD listScatterValues): myValue=" << myValue
+             << " (expected=" << expected_val << ")"
+             << " [" << (passed ? "PASS" : "FAIL") << "]" << endl;
+    }
+
+    // Reduce allTestsPassed across all ranks to ensure global pass/fail status
+    bool globalTestsPassed = allTestsPassed;
+    Pstream::reduceAnd(globalTestsPassed);
+
     // Print summary and return appropriate exit code
     if (Pstream::master())
     {
         Info << endl << "========================================" << endl;
-        if (allTestsPassed)
+        if (globalTestsPassed)
         {
             Info << "ALL TESTS PASSED" << endl;
         }
@@ -1048,7 +1546,7 @@ int main(int argc, char *argv[])
         Info << "========================================" << endl;
     }
 
-    return allTestsPassed ? 0 : 1;
+    return globalTestsPassed ? 0 : 1;
 }
 
 

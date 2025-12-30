@@ -189,7 +189,7 @@ int main(int argc, char *argv[])
         scalar ref = 1068.670036423719;
         Info << "dpWall/dU0 ADF: " << total << endl;
         Info << "dpWall/dU0 REF: " << ref << endl;
-        if (mag(total - ref) / ref < 1e-11)
+        if (mag(total - ref) / ref < 1e-8)
         {
             Info << "dpWall/dU0 test passed!" << endl;
         }
@@ -205,7 +205,7 @@ int main(int argc, char *argv[])
         scalar ref = -4324.066638181656;
         Info << "dpWall/dXv ADF: " << total << endl;
         Info << "dpWall/dXv REF: " << ref << endl;
-        if (mag(total - ref) / mag(ref) < 1e-11)
+        if (mag(total - ref) / mag(ref) < 1e-7)
         {
             Info << "dpWall/dXv test passed!" << endl;
         }

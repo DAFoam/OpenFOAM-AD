@@ -24,50 +24,21 @@ License
     along with OpenFOAM.  If not, see <http://www.gnu.org/licenses/>.
 
 Application
-    simpleFoam
+    rhoSimpleFoam
 
 Group
-    grpIncompressibleSolvers
+    grpCompressibleSolvers
 
 Description
-    Steady-state solver for incompressible, turbulent flows.
-
-    \heading Solver details
-    The solver uses the SIMPLE algorithm to solve the continuity equation:
-
-        \f[
-            \div \vec{U} = 0
-        \f]
-
-    and momentum equation:
-
-        \f[
-            \div \left( \vec{U} \vec{U} \right) - \div \gvec{R}
-          = - \grad p + \vec{S}_U
-        \f]
-
-    Where:
-    \vartable
-        \vec{U} | Velocity
-        p       | Pressure
-        \vec{R} | Stress tensor
-        \vec{S}_U | Momentum source
-    \endvartable
-
-    \heading Required fields
-    \plaintable
-        U       | Velocity [m/s]
-        p       | Kinematic pressure, p/rho [m2/s2]
-        \<turbulence fields\> | As required by user selection
-    \endplaintable
+    Steady-state solver for compressible turbulent flow.
 
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
-#include "dynamicFvMesh.H"
-#include "singlePhaseTransportModel.H"
-#include "turbulentTransportModel.H"
+#include "fluidThermo.H"
+#include "turbulentFluidThermoModel.H"
 #include "simpleControl.H"
+#include "pressureControl.H"
 #include "fvOptions.H"
 
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -76,7 +47,7 @@ int main(int argc, char *argv[])
 {
     argList::addNote
     (
-        "Steady-state solver for incompressible, turbulent flows."
+        "Steady-state solver for compressible turbulent flow."
     );
 
     argList::addOption(
@@ -89,9 +60,10 @@ int main(int argc, char *argv[])
     #include "addCheckCaseOptions.H"
     #include "setRootCaseLists.H"
     #include "createTime.H"
-    #include "createDynamicFvMesh.H"
+    #include "createMesh.H"
     #include "createControl.H"
     #include "createFields.H"
+    #include "createFieldRefs.H"
     #include "initContinuityErrs.H"
 
     word dvName = "None";
@@ -144,7 +116,7 @@ int main(int argc, char *argv[])
         }
         mesh.movePoints(meshPoints);
     }
-    
+
     turbulence->validate();
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
@@ -155,21 +127,19 @@ int main(int argc, char *argv[])
     {
         Info<< "Time = " << runTime.timeName() << nl << endl;
 
-        // Do any mesh changes
-        mesh.controlledUpdate();
+        // Pressure-velocity SIMPLE corrector
+        #include "UEqn.H"
+        #include "EEqn.H"
 
-        if (mesh.changing())
+        if (simple.consistent())
         {
-            MRF.update();
+            #include "pcEqn.H"
         }
-
-        // --- Pressure-velocity SIMPLE corrector
+        else
         {
-            #include "UEqn.H"
             #include "pEqn.H"
         }
 
-        laminarTransport.correct();
         turbulence->correct();
 
         runTime.write();
@@ -200,7 +170,7 @@ int main(int argc, char *argv[])
         {
             scalar total = U0.getGradient();
             reduce(total, sumOp<scalar>());
-            scalar ref = 1068.670036423719;
+            scalar ref = 1265.293612277306;
             Info << "dpWall/dU0 ADR: " << total << endl;
             Info << "dpWall/dU0 REF: " << ref << endl;
             if (mag(total - ref) / ref < 1e-8)
@@ -235,7 +205,7 @@ int main(int argc, char *argv[])
             // so we need to reduce() the total value to all procs
             reduce(total, sumOp<scalar>());
 
-            scalar ref = -4324.066638181656;
+            scalar ref = -5120.116613136466;
             Info << "dpWall/dXv ADR: " << total << endl;
             Info << "dpWall/dXv REF: " << ref << endl;
             if (mag(total - ref) / mag(ref) < 1e-7)

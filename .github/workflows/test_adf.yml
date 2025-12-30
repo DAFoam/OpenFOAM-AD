@@ -20,7 +20,4 @@ jobs:
         docker run -i -d -u dockeruser --name of_test -v $GITHUB_WORKSPACE:${{env.DOCKER_MOUNT_DIR}} dafoam/openfoam:2506 /bin/bash
         docker exec -i of_test /bin/bash -c "cp -r ${{env.DOCKER_MOUNT_DIR}} ${{env.DOCKER_WORKING_DIR}}"
         docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}} && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADF/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j"
-        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADF -dvName U0"
-        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && simpleFoamADF -dvName Xv"
-        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && decomposePar && mpirun --oversubscribe -np 4 simpleFoamADF -parallel -dvName U0"
-        docker exec -i of_test /bin/bash -c "cd ${{env.DOCKER_WORKING_DIR}}/tests/Channel && . ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && mpirun --oversubscribe -np 4 simpleFoamADF -parallel -dvName Xv"
+        docker exec -i of_test /bin/bash -c ". ${{env.DOCKER_WORKING_DIR}}/etc/bashrc && cd ${{env.DOCKER_WORKING_DIR}}/tests &&  ./Allrun.sh"
