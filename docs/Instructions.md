@@ -44,7 +44,9 @@ git checkout v2512-ad && \
 git rebase v2512-orig
 </pre>
 
-During the re-base, you may see some conflicts and you need to resolve them before you can push it to the new v2512-ad branch. After the conflicts are solved, you can do
+During the re-base, you may see some conflicts and you need to resolve them. You will need to resolve the conflict one-by-one. For each conflict, you can open VS Code and click "Source Control" in the left panel. Then, you can see the conflicting files with an escalation mark. Open these files, and you will see the code with the conflict marked in colors. You will most likely choose "Accept Current Change", which will use the latest code from v2512-orig (you might need to slightly tweak the code to fix any potential AD compilation errors). Once you resolve the conflicts, run `git add .` to add the edited files, and then run `git rebase --continue` to resolve the next conflict. Right after you run `git rebase --continue`, you will see some pop-up texts about the conflict, and you need to close the window by running `:wq` (assuming you use vim). You need to repeat this for all conflicts!
+
+After ALL the conflicts are solved, you can do
 
 <pre>
 git push -u origin v2512-ad
