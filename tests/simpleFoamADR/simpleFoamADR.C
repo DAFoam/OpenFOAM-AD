@@ -144,6 +144,28 @@ int main(int argc, char *argv[])
         }
         mesh.movePoints(meshPoints);
     }
+    else if (dvName == "XvAMI")
+    {
+        tape.setActive();
+        if (Pstream::parRun())
+        {
+            if (Pstream::myProcNo() == 1)
+            {
+                label pointI = 28;
+                label comp = 1;
+                Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+                tape.registerInput(meshPoints[pointI][comp]);
+            }
+        }
+        else
+        {
+            label pointI = 64;
+            label comp = 1;
+            Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+            tape.registerInput(meshPoints[pointI][comp]);
+        }
+        mesh.movePoints(meshPoints);
+    }
     
     turbulence->validate();
 
@@ -236,6 +258,48 @@ int main(int argc, char *argv[])
             reduce(total, sumOp<scalar>());
 
             scalar ref = -4324.066638181656;
+            Info << "dpWall/dXv ADR: " << total << endl;
+            Info << "dpWall/dXv REF: " << ref << endl;
+            if (mag(total - ref) / mag(ref) < 1e-7)
+            {
+                Info << "dpWall/dXv test passed!" << endl;
+            }
+            else
+            {
+                Info << "dpWall/dXv test failed!" << endl;
+                return 1;
+            }
+        }
+        else if (dvName == "XvAMI")
+        {
+            scalar total = 0.0; 
+            if (Pstream::parRun())
+            {
+                if (Pstream::myProcNo() == 1)
+                {
+                    label pointI = 28;
+                    label comp = 1;
+                    total = meshPoints[pointI][comp].getGradient();
+                }
+            }
+            else
+            {
+                label pointI = 64;
+                label comp = 1;
+                total = meshPoints[pointI][comp].getGradient();
+            }
+            // in parallel, only proc == 1 has the total value, other proces have total=0
+            // so we need to reduce() the total value to all procs
+            reduce(total, sumOp<scalar>());
+
+            scalar ref = -245.3789605391472;
+            // parallel run has a slightly diff obj pWall (AMI communication)
+            // so the ref total is slightlly diff
+            if (Pstream::parRun())
+            {
+                ref = -245.3786967058061;
+            }
+
             Info << "dpWall/dXv ADR: " << total << endl;
             Info << "dpWall/dXv REF: " << ref << endl;
             if (mag(total - ref) / mag(ref) < 1e-7)

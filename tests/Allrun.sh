@@ -1,11 +1,12 @@
 #!/bin/sh
 set -e  # exit if any command fails
 
-# Test if --oversubscribe is supported
-if mpirun --help 2>&1 | grep -q "oversubscribe"; then
-    OVERSUBSCRIBE="--oversubscribe"
-else
-    OVERSUBSCRIBE=""
+OVERSUBSCRIBE=""
+
+mpi_version=$(mpirun -V --help 2>&1 | head -1)
+
+if echo "$mpi_version" | grep -qi "open.*mpi"; then
+    OVERSUBSCRIBE="-oversubscribe"
 fi
 
 cd Channel
@@ -20,7 +21,14 @@ simpleFoam${WM_AD_MODE} -dvName Xv
 mpirun $OVERSUBSCRIBE -np 4 simpleFoam${WM_AD_MODE} -dvName U0 -parallel
 mpirun $OVERSUBSCRIBE -np 4 simpleFoam${WM_AD_MODE} -dvName Xv -parallel
 
+cd ../ChannelAMI
+rm -rf processor*
+decomposePar
+simpleFoam${WM_AD_MODE} -dvName XvAMI
+mpirun $OVERSUBSCRIBE -np 4 simpleFoam${WM_AD_MODE} -dvName XvAMI -parallel
+
 # test rhoSimpleFoam
+cd ../Channel
 cp 0.compressible/* 0/
 cp system.compressible/* system/
 rm -rf processor*

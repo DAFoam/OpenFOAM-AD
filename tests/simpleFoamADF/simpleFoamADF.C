@@ -141,6 +141,29 @@ int main(int argc, char *argv[])
         }
         mesh.movePoints(meshPoints);
     }
+    else if (dvName == "XvAMI")
+    {
+        pointField meshPoints = mesh.points();
+        if (Pstream::parRun())
+        {
+            if (Pstream::myProcNo() == 1)
+            {
+                label pointI = 28;
+                label comp = 1;
+                Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+                meshPoints[pointI][comp].setGradient(1.0);
+            }
+        }
+        else
+        {
+            label pointI = 64;
+            label comp = 1;
+            Info << "Seed mesh coords " << meshPoints[pointI] << endl;
+            meshPoints[pointI][comp].setGradient(1.0);
+        
+        }
+        mesh.movePoints(meshPoints);
+    }
     
     turbulence->validate();
 
@@ -215,7 +238,28 @@ int main(int argc, char *argv[])
             return 1;
         }
     }
-
+    else if (dvName == "XvAMI")
+    {
+        scalar total = pWall.getGradient();
+        scalar ref = -245.3789605391472;
+        // parallel run has a slightly diff obj pWall (AMI communication)
+        // so the ref total is slightlly diff
+        if (Pstream::parRun())
+        {
+            ref = -245.3786967058061;
+        }
+        Info << "dpWall/dXv ADF: " << total << endl;
+        Info << "dpWall/dXv REF: " << ref << endl;
+        if (mag(total - ref) / mag(ref) < 1e-7)
+        {
+            Info << "dpWall/dXv test passed!" << endl;
+        }
+        else
+        {
+            Info << "dpWall/dXv test failed!" << endl;
+            return 1;
+        }
+    }
 
     Info<< "End\n" << endl;
 
