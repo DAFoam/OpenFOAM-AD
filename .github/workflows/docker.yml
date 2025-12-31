@@ -5,6 +5,9 @@ on:
     branches:
       - v2506-ad
 
+env:
+  OF_DIR: '/home/dockeruser/dafoam/OpenFOAM'
+
 jobs:
   push_to_registry:
     name: deploy
@@ -14,13 +17,13 @@ jobs:
     - name: Build and push
       run: |
         echo ${{ secrets.DOCKER_PASSWORD }} | docker login -u dafoam --password-stdin
-        docker pull dafoam/openfoam:2506
-        docker run -i -d -u dockeruser --name build_latest dafoam/openfoam:2506 /bin/bash
-        docker exec -i build_latest /bin/bash -c "cd /home/dockeruser/OpenFOAM && rm -rf OpenFOAM-AD && wget https://github.com/DAFoam/OpenFOAM-AD/archive/refs/heads/v2506-ad.tar.gz && tar -xf v2506-ad.tar.gz && mv OpenFOAM-AD* OpenFOAM-AD"
-        docker exec -i build_latest /bin/bash -c "cd /home/dockeruser/OpenFOAM/OpenFOAM-AD && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADF/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j && rm -rf build"
-        docker exec -i build_latest /bin/bash -c "cd /home/dockeruser/OpenFOAM/OpenFOAM-AD && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADR/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j"
-        docker export build_latest | docker import - dafoam/openfoam:2506new
+        docker pull dafoam/opt-packages:v5
+        docker run -i -d -u dockeruser --name build_latest dafoam/opt-packages:v5 /bin/bash
+        docker exec -i build_latest /bin/bash -c "cd ${{env.OF_DIR}} && rm -rf OpenFOAM-AD v2506-ad.tar.gz && wget https://github.com/DAFoam/OpenFOAM-AD/archive/refs/heads/v2506-ad.tar.gz && tar -xf v2506-ad.tar.gz && rm -rf v2506-ad.tar.gz && mv OpenFOAM-AD* OpenFOAM-AD"
+        docker exec -i build_latest /bin/bash -c "cd ${{env.OF_DIR}}/OpenFOAM-AD && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADF/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j && ./renameAD.sh platforms/linux64GccDPInt32OptADF --commit --ADF && rm -rf build tutorials"
+        docker exec -i build_latest /bin/bash -c "cd ${{env.OF_DIR}}/OpenFOAM-AD && sed -i 's/export WM_AD_MODE=.*/export WM_AD_MODE=ADR/' etc/bashrc && . etc/bashrc && export WM_QUIET=true && ./Allwmake -j && ./renameAD.sh platforms/linux64GccDPInt32OptADR --commit --ADR && rm -rf build"
+        docker export build_latest | docker import - dafoam/opt-packages:v5new
         docker rm -f $(docker ps -a -q)
-        docker rmi -f dafoam/openfoam:2506
-        docker tag dafoam/openfoam:2506new dafoam/openfoam:2506
-        docker push dafoam/openfoam:2506
+        docker rmi -f dafoam/opt-packages:v5
+        docker tag dafoam/opt-packages:v5new dafoam/opt-packages:v5
+        docker push dafoam/opt-packages:v5

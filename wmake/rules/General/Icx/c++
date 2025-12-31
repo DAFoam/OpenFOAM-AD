@@ -10,8 +10,9 @@ c++DBUG    :=
 c++OPT     := -O2
 ptFLAGS    := -DNoRepository
 
+# codi: added -Wno-overloaded-virtual
 c++WARN     = \
-    -Wall -Wextra \
+    -Wall -Wextra -Wno-overloaded-virtual \
     -Wnon-virtual-dtor -Wno-unused-parameter -Wno-invalid-offsetof \
     -Wno-unknown-pragmas \
     -Wno-undefined-var-template \
