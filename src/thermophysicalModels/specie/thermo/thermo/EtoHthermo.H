@@ -4,7 +4,7 @@ inline scalar Cp
     const scalar T
 ) const
 {
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile const scalar cv = Cv(p, T);
     volatile const scalar cpmcv = EquationOfState::CpMCv(p, T);
     return cv + cpmcv;
@@ -19,7 +19,7 @@ inline scalar Hs
     const scalar T
 ) const
 {
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile const scalar es = Es(p, T);
     volatile const scalar rho = EquationOfState::rho(p, T);
     return es + p/rho;
@@ -34,7 +34,7 @@ inline scalar Ha
     const scalar T
 ) const
 {
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile const scalar ea = Ea(p, T);
     volatile const scalar rho = EquationOfState::rho(p, T);
     return ea + p/rho;

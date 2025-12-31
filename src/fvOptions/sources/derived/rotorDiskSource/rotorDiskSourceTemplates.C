@@ -100,7 +100,7 @@ void Foam::fv::rotorDiskSource::calculate
             }
 
             // Effective angle of attack
-            scalar alphaEff = alphaGeom - atan2(-Uc.z(), Uc.y());
+            scalar alphaEff = alphaGeom - codi::atan2(-Uc.z(), Uc.y()); // codi:
             if (alphaEff > mathematical::pi)
             {
                 alphaEff -= mathematical::twoPi;

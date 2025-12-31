@@ -124,7 +124,7 @@ template<class Thermo, template<class> class Type>
 inline Foam::scalar
 Foam::species::thermo<Thermo, Type>::gamma(const scalar p, const scalar T) const
 {
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile const scalar Cp = this->Cp(p, T);
     #else
     const scalar Cp = this->Cp(p, T);

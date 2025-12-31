@@ -82,7 +82,7 @@ public:
                 const scalar T
             ) const
             {
-                #ifdef __clang__
+                #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
                 // Using volatile to prevent compiler optimisations leading to
                 // a sigfpe
                 volatile const scalar cp = thermo.Cp(p, T);
@@ -111,7 +111,7 @@ public:
                 const scalar T
             ) const
             {
-                #ifdef __clang__
+                #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
                 // Using volatile to prevent compiler optimisations leading to
                 // a sigfpe
                 volatile const scalar hs = thermo.Hs(p, T);
@@ -131,7 +131,7 @@ public:
                 const scalar T0
             ) const
             {
-                #ifdef __clang__
+                #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
                 // Using volatile to prevent compiler optimisations leading to
                 // a sigfpe
                 volatile const scalar ths = thermo.THs(h, p, T0);

@@ -243,10 +243,10 @@ void Foam::isoAdvection::limitFluxes
         {
             // Check if still unbounded
             //scalarField alphaNew(alpha1In_ - fvc::surfaceIntegrate(dVf_)());
-            label maxAlphaMinus1 = max(alpha1_.primitiveField() - 1);
+            label maxAlphaMinus1 = max(alpha1_.primitiveField() - 1).getValue(); //  codi:
             scalar minAlpha = min(alpha1_.primitiveField());
-            label nUndershoots = sum(neg0(alpha1_.primitiveField() + aTol));
-            label nOvershoots = sum(pos0(alpha1_.primitiveField() - 1 - aTol));
+            label nUndershoots = sum(neg0(alpha1_.primitiveField() + aTol)).getValue(); // codi:
+            label nOvershoots = sum(pos0(alpha1_.primitiveField() - 1 - aTol)).getValue(); // codi:
 
             Info<< "After bounding number " << n + 1 << " of time "
                 << mesh_.time().value() << ":" << nl
@@ -508,7 +508,7 @@ void Foam::isoAdvection::advect(const SpType& Sp, const SuType& Su)
     advectionTime_ += (mesh_.time().elapsedCpuTime() - advectionStartTime);
     DebugInfo
         << "isoAdvection: time consumption = "
-        << label(100*advectionTime_/(mesh_.time().elapsedCpuTime() + SMALL))
+        << label((100*advectionTime_/(mesh_.time().elapsedCpuTime() + SMALL)).getValue()) // codi:
         << "%" << endl;
 
     alphaPhi_ = dVf_/mesh_.time().deltaT();

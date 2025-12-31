@@ -143,7 +143,7 @@ inline Point Foam::line<Point, PointRef>::unitVec() const
 {
     const Point v = (b_ - a_);
 
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile  // Use volatile to avoid aggressive branch optimization
     #endif
     const scalar s(::Foam::mag(v));

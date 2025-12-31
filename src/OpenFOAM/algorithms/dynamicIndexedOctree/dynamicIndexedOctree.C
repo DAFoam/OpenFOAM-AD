@@ -2042,10 +2042,10 @@ Foam::dynamicIndexedOctree<Type>::dynamicIndexedOctree
     maxLevels_(maxLevels),
     nLevelsMax_(0),
     maxLeafRatio_(maxLeafRatio),
-    minSize_(label(maxLeafRatio)),
+    minSize_(label(maxLeafRatio.getValue())), // codi:
     maxDuplicity_(maxDuplicity),
-    nodes_(label(shapes.size() / maxLeafRatio_)),
-    contents_(label(shapes.size() / maxLeafRatio_)),
+    nodes_(label((shapes.size() / maxLeafRatio_).getValue())), // codi:
+    contents_(label((shapes.size() / maxLeafRatio_).getValue())), // codi:
     nodeTypes_()
 {
     if (shapes_.size() == 0)

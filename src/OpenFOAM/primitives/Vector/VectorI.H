@@ -120,7 +120,7 @@ inline Foam::scalar Foam::Vector<Cmpt>::dist(const Vector<Cmpt>& v2) const
 template<class Cmpt>
 inline Foam::Vector<Cmpt>& Foam::Vector<Cmpt>::normalise(const scalar tol)
 {
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile  // Use volatile to avoid aggressive branch optimization
     #endif
     const scalar s = this->mag();

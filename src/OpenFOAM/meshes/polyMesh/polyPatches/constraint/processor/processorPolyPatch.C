@@ -222,9 +222,9 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
         // codi: NOTE: we cant use the PstreamBuffers to transfer data because
         // it converts everything into char and will lose the AD seeds
         // Here we send geometry data as scalarField to preserve AD seeds
-        const vectorField fc = faceCentres();
-        const vectorField fa = faceAreas();
-        const vectorField fcc = faceCellCentres();
+        const vectorField fc(faceCentres());
+        const vectorField fa(faceAreas());
+        const vectorField fcc(faceCellCentres());
 
         const label nFaces = size();
 

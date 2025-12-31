@@ -435,7 +435,7 @@ inline VectorSpace<Form, Cmpt, Ncmpts> normalised
     const VectorSpace<Form, Cmpt, Ncmpts>& vs
 )
 {
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     volatile  // Use volatile to avoid aggressive branch optimization
     #endif
     const scalar s(mag(vs));

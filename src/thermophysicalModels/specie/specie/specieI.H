@@ -159,7 +159,7 @@ inline Foam::specie Foam::operator==(const specie& st1, const specie& st2)
 
     const scalar diffRW = st2.Y_/st2.molWeight_ - st1.Y_/st1.molWeight_;
 
-    #ifdef __clang__
+    #if defined(__clang__) && !defined(__INTEL_LLVM_COMPILER) // codi: intel AD not work with volatile
     // Using intermediate volatile bool to prevent compiler optimising out the
     // if block (above) - CLANG 3.7.1
     volatile const bool valid = (mag(diffRW) > SMALL);
