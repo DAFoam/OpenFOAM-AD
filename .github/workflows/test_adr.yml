@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 env:
   DOCKER_WORKING_DIR: '/home/dockeruser/OpenFOAM-AD'
-  DOCKER_MOUNT_DIR: '/home/dockeruser/mount/OpenFOAM-AD
+  DOCKER_MOUNT_DIR: '/home/dockeruser/mount/OpenFOAM-AD'
 
 jobs:
 
