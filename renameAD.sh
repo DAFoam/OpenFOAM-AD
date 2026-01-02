@@ -299,6 +299,10 @@ patch_needed_entries() {
         done
         echo
 
+        # Collect all replacements needed for this file
+        declare -a PATCHELF_ARGS
+        has_replacements=false
+
         # For each NEEDED entry, check if we need to patch it
         while IFS= read -r lib; do
             [ -z "$lib" ] && continue
@@ -311,26 +315,38 @@ patch_needed_entries() {
                     echo "    [DRY-RUN] Replace: $lib -> $new_lib"
                 else
                     echo "    Patching: $lib -> $new_lib"
-                    # Use patchelf to replace the NEEDED entry
-                    patchelf --replace-needed "$lib" "$new_lib" "$file_path"
-                    PATCHED_COUNT=$((PATCHED_COUNT + 1))
+                    # Collect patchelf arguments instead of executing immediately
+                    PATCHELF_ARGS+=("--replace-needed" "$lib" "$new_lib")
+                    has_replacements=true
                 fi
             fi
         done <<< "$current_needed"
+
+        # Execute all replacements in a SINGLE patchelf call to avoid repeated padding
+        if [ "$has_replacements" = true ] && [ "$DRY_RUN" = false ]; then
+            patchelf "${PATCHELF_ARGS[@]}" "$file_path"
+            # Count total replacements made
+            PATCHED_COUNT=$((PATCHED_COUNT + ${#PATCHELF_ARGS[@]} / 3))
+        fi
     fi
 
     echo
 }
 
-# Patch all renamed libraries
-for old_name in "${!LIB_MAPPING[@]}"; do
-    new_name="${LIB_MAPPING[$old_name]}"
+# Patch all libraries in the lib directory exactly once
+# Process all lib*.so* files to update their NEEDED references
+declare -A PROCESSED_LIBS
+while IFS= read -r -d '' lib_path; do
+    lib_basename=$(basename "$lib_path")
 
-    # Find all renamed libraries
-    while IFS= read -r -d '' lib_path; do
-        patch_needed_entries "$lib_path" "library"
-    done < <(find "$ACTUAL_LIB_DIR" -name "${new_name}" -type f -print0)
-done
+    # Skip if we've already processed this library (avoid duplicate patching)
+    if [ -n "${PROCESSED_LIBS[$lib_basename]}" ]; then
+        continue
+    fi
+    PROCESSED_LIBS["$lib_basename"]=1
+
+    patch_needed_entries "$lib_path" "library"
+done < <(find "$ACTUAL_LIB_DIR" -name "lib*.so*" -type f -print0)
 
 # ============================================================================
 # Step 4b: Patch NEEDED references in executables
