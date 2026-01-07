@@ -50,6 +50,9 @@ static int attachedBufLen = 0;
 // Track if we initialized MPI
 static bool ourMpi = false;
 
+// codi: If OpenFOAM's parallel environment has been setup.
+// This is used to avoid multiple initializations when ourMpi is false in the DAFoam mode
+static bool ofMpiSetup = false;
 
 // * * * * * * * * * * * * * * * Local Functions * * * * * * * * * * * * * * //
 
@@ -231,6 +234,13 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
         else if (UPstream::debug)
         {
             Perr<< "UPstream::init : was already initialized\n";
+        }
+
+        // codi: If we already completed the setup for external MPI, just return
+        // without re-initializing the OpenFOAM parallel environment
+        if (ofMpiSetup)
+        {
+            return true;
         }
 
         // codi:
@@ -650,12 +660,26 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
 
     attachOurBuffers();
 
+    // codi: Set ofMpiSetup to true to mark external MPI setup as complete
+    if (!ourMpi)
+    {
+        ofMpiSetup = true;
+    }
+
     return true;
 }
 
 
 void Foam::UPstream::shutdown(int errNo)
 {
+
+    // codi: if MPI was initialized externally, we skip the shutdown here
+    // Instead, we will let the external DAFoam environment handle the finalization
+    if (!ourMpi)
+    {
+        return;
+    }
+
     int flag = 0;
 
     // codi:
@@ -757,6 +781,13 @@ void Foam::UPstream::shutdown(int errNo)
 
 void Foam::UPstream::exit(int errNo)
 {
+    // codi: if MPI was initialized externally, we skip the shutdown here
+    // Instead, we will let the external DAFoam environment handle the finalization
+    if (!ourMpi)
+    {
+        return;
+    }
+    
     UPstream::shutdown(errNo);
     std::exit(errNo);
 }
