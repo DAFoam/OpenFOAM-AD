@@ -243,6 +243,10 @@ bool Foam::UPstream::init(int& argc, char**& argv, const bool needsThread)
             return true;
         }
 
+        // codi: If MPI is initialized externally, call the AMPI_Init_common function
+        // to initialize MeDiPack environment, check MeDiPack/include/medi/ampi/wrappers.hpp
+        AMPI_Init_common();
+
         // codi:
         AMPI_Query_thread(&provided_thread_support);
     }
