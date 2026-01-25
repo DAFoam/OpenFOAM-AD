@@ -228,25 +228,34 @@ void Foam::processorPolyPatch::initGeometry(PstreamBuffers& pBufs)
 
         const label nFaces = size();
 
-        // Flatten vectors into scalar array
-        scalarField sendBuf(nFaces * 9);
-        label idx = 0;
-        forAll(fc, i)
+        if (nFaces > 0)
         {
-            sendBuf[idx++] = fc[i].x();  sendBuf[idx++] = fc[i].y();  sendBuf[idx++] = fc[i].z();
-            sendBuf[idx++] = fa[i].x();  sendBuf[idx++] = fa[i].y();  sendBuf[idx++] = fa[i].z();
-            sendBuf[idx++] = fcc[i].x(); sendBuf[idx++] = fcc[i].y(); sendBuf[idx++] = fcc[i].z();
-        }
+            const label bufSize = nFaces * 9;
+            if (sendBuf_.size() < bufSize)
+            {
+                sendBuf_.resize(bufSize);
+            }
 
-        // always use blocking MPI so we don't need to worry about the request/wait stuff
-        UOPstream::write
-        (
-            UPstream::commsTypes::buffered,
-            neighbProcNo(),
-            sendBuf,
-            tag(),
-            comm()
-        );
+            label idx = 0;
+            forAll(fc, i)
+            {
+                sendBuf_[idx++] = fc[i].x();  sendBuf_[idx++] = fc[i].y();  sendBuf_[idx++] = fc[i].z();
+                sendBuf_[idx++] = fa[i].x();  sendBuf_[idx++] = fa[i].y();  sendBuf_[idx++] = fa[i].z();
+                sendBuf_[idx++] = fcc[i].x(); sendBuf_[idx++] = fcc[i].y(); sendBuf_[idx++] = fcc[i].z();
+            }
+
+            // Use nonBlocking MPI to avoid deadlocks on large core counts
+            // Save request number for later synchronization
+            sendRequest_ = UPstream::nRequests();
+            UOPstream::write
+            (
+                UPstream::commsTypes::nonBlocking,
+                neighbProcNo(),
+                sendBuf_,
+                tag(),
+                comm()
+            );
+        }
     }
 }
 
@@ -270,39 +279,60 @@ void Foam::processorPolyPatch::calcGeometry(PstreamBuffers& pBufs)
         // it converts everything into char and will lose the AD seeds
         // Here we receive geometry data as scalarField to preserve AD seeds
         const label nFaces = size();
-
-        // Receive flattened scalar array
-        scalarField recvBuf(nFaces * 9);
-
-        // always use blocking MPI so we don't need to worry about the request/wait stuff
-        UIPstream::read
-        (
-            UPstream::commsTypes::buffered,
-            neighbProcNo(),
-            recvBuf,
-            tag(),
-            comm()
-        );
-
-        // Reconstruct vector fields from received scalar data
-        neighbFaceCentres_.setSize(nFaces);
-        neighbFaceAreas_.setSize(nFaces);
-        neighbFaceCellCentres_.setSize(nFaces);
-
-        label idx = 0;
-        forAll(neighbFaceCentres_, i)
+        if (nFaces > 0)
         {
-            neighbFaceCentres_[i].x() = recvBuf[idx++];
-            neighbFaceCentres_[i].y() = recvBuf[idx++];
-            neighbFaceCentres_[i].z() = recvBuf[idx++];
+            const label bufSize = nFaces * 9;
+            if (recvBuf_.size() < bufSize)
+            {
+                recvBuf_.resize(bufSize);
+            }
 
-            neighbFaceAreas_[i].x() = recvBuf[idx++];
-            neighbFaceAreas_[i].y() = recvBuf[idx++];
-            neighbFaceAreas_[i].z() = recvBuf[idx++];
+            // Post receive FIRST to avoid deadlock - other processor may be waiting to send
+            // Save request number for later synchronization
+            recvRequest_ = UPstream::nRequests();
+            UIPstream::read
+            (
+                UPstream::commsTypes::nonBlocking,
+                neighbProcNo(),
+                recvBuf_,
+                tag(),
+                comm()
+            );
 
-            neighbFaceCellCentres_[i].x() = recvBuf[idx++];
-            neighbFaceCellCentres_[i].y() = recvBuf[idx++];
-            neighbFaceCellCentres_[i].z() = recvBuf[idx++];
+            // Now wait for the send from initGeometry to complete
+            if (sendRequest_ >= 0)
+            {
+                UPstream::waitRequest(sendRequest_);
+                sendRequest_ = -1;
+            }
+
+            // Wait for the receive to complete before using the data
+            UPstream::waitRequest(recvRequest_);
+            recvRequest_ = -1;
+
+            // Reconstruct vector fields from received scalar data
+            if (neighbFaceCentres_.size() != nFaces)
+            {
+                neighbFaceCentres_.setSize(nFaces);
+                neighbFaceAreas_.setSize(nFaces);
+                neighbFaceCellCentres_.setSize(nFaces);
+            }
+
+            label idx = 0;
+            forAll(neighbFaceCentres_, i)
+            {
+                neighbFaceCentres_[i].x() = recvBuf_[idx++];
+                neighbFaceCentres_[i].y() = recvBuf_[idx++];
+                neighbFaceCentres_[i].z() = recvBuf_[idx++];
+
+                neighbFaceAreas_[i].x() = recvBuf_[idx++];
+                neighbFaceAreas_[i].y() = recvBuf_[idx++];
+                neighbFaceAreas_[i].z() = recvBuf_[idx++];
+
+                neighbFaceCellCentres_[i].x() = recvBuf_[idx++];
+                neighbFaceCellCentres_[i].y() = recvBuf_[idx++];
+                neighbFaceCellCentres_[i].z() = recvBuf_[idx++];
+            }
         }
 
         // My normals

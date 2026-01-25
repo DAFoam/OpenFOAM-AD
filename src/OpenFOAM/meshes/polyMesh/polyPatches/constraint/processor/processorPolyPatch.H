@@ -82,6 +82,18 @@ class processorPolyPatch
         //  (so edges()[i] == neighb.edges()[neighbEdges_[i]])
         mutable autoPtr<labelList> neighbEdgesPtr_;
 
+        //- Send buffer for nonBlocking MPI communication
+        scalarField sendBuf_;
+
+        //- Receive buffer for nonBlocking MPI communication
+        scalarField recvBuf_;
+
+        //- MPI request for send operation
+        label sendRequest_ = -1;
+
+        //- MPI request for receive operation
+        label recvRequest_ = -1;
+
 protected:
 
     // Protected constructors
