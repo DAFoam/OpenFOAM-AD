@@ -163,7 +163,8 @@ void Foam::fvMesh::clearAddressing(const bool isMeshUpdate)
 
 void Foam::fvMesh::storeOldVol(const scalarField& V)
 {
-    if (curTimeIndex_ < time().timeIndex())
+    // codi: change < to != to make it compatible with reverse mode AD
+    if (curTimeIndex_ != time().timeIndex())
     {
         DebugInFunction
             << " Storing old time volumes since from time " << curTimeIndex_
@@ -894,7 +895,8 @@ void Foam::fvMesh::movePoints(const pointField& p)
 
     // Grab old time volumes if the time has been incremented
     // This will update V0, V00
-    if (curTimeIndex_ < time().timeIndex())
+    // codi: change < to != to make it compatible with reverse mode AD
+    if (curTimeIndex_ != time().timeIndex())
     {
         storeOldVol(V());
     }
